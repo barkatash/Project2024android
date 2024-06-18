@@ -36,7 +36,9 @@
             <TextView
                 android:id="@+id/tvContent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textAlignment="viewStart"
+                android:textSize="18dp"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -59,7 +61,7 @@
                     android:id="@+id/tvDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10 min"/>
+                    android:text="duration"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -71,7 +73,7 @@
                     android:id="@+id/tvViews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1.2M views"/>
+                    android:text="views"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -83,7 +85,7 @@
                     android:id="@+id/tvUploadDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2 days ago"/>
+                    android:text="uploadDate"/>
             </LinearLayout>
 
 
