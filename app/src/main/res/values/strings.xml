@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">youtube</string>
+    <string name="logo_description">youtube logo</string>
+    <string name="app_name_youtube">YouTube</string>
+    <string name="search_description">search_button</string>
+    <string name="home_btn_description">home_btn</string>
+    <string name="aboutYou">about_user</string>
+    <string name="sub">subscriptions</string>
+    <string name="uploadBtn">uploadBtn\n</string>
+    <string name="home_youtube">Home\n</string>
+    <string name="sign_in">sign in</string>
+    <string name="new_button">New</string>
+    <string name="subbtn">subBtn</string>
+    <string name="test">test</string>
 </resources>
