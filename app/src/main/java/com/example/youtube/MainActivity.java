@@ -39,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, SearchActivity.class);
             startActivity(i);
         });
+
+        ImageButton homeBtn = binding.homeBtn;
+        homeBtn.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, MainActivity.class);
+            videoRepository.resetVideos();
+            startActivity(i);
+        });
     }
 
     @Override

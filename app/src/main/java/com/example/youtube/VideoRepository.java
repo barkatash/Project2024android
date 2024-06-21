@@ -53,4 +53,9 @@ public class VideoRepository {
             }
         }
     }
+
+    public void resetVideos() {
+        filteredVideos.clear();
+        filteredVideos.addAll(originalVideos);
+    }
 }

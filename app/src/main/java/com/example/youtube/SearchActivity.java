@@ -33,7 +33,6 @@ public class SearchActivity extends AppCompatActivity {
 
         VideoRepository videoRepository = VideoRepository.getInstance();
         videoRepository.searchVideos(query);
-
         finish();
     }
 }

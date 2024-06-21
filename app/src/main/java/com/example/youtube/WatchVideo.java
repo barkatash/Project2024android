@@ -1,2 +1,4 @@
-package com.example.youtube;public class WatchVideo {
+package com.example.youtube;
+
+public class WatchVideo {
 }
