@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 import com.example.youtube.R;
 
 @Entity
-public class Post {
+public class Video {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -18,7 +18,7 @@ public class Post {
     private String views;
     private String uploadDate;
 
-    public Post(String author, String content, String duration , String views, String uploadDate, int pic) {
+    public Video(String author, String content, String duration , String views, String uploadDate, int pic) {
         this.author = author;
         this.content = content;
         this.pic = pic;
@@ -26,7 +26,7 @@ public class Post {
         this.views = views;
         this.uploadDate = uploadDate;
     }
-    public Post() {
+    public Video() {
         this.pic = R.drawable.osher;
     }
 
