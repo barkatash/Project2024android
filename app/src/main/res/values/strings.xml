@@ -14,4 +14,11 @@
     <string name="test">test</string>
     <string name="back">backword</string>
     <string name="search">Search YouTube</string>
+    <string name="comments_description">comments</string>
+    <string name="upload_date">upload_date</string>
+    <string name="views">views</string>
+    <string name="duration">duration</string>
+    <string name="author">author</string>
+    <string name="image_description">image</string>
+    <string name="title_description">title</string>
 </resources>
