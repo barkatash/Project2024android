@@ -9,7 +9,6 @@ import com.example.youtube.R;
 public class Video {
     @PrimaryKey(autoGenerate = true)
     private int id;
-
     private String author;
     private String content;
     private int likes;

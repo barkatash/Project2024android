@@ -7,7 +7,7 @@ import java.util.List;
 
 public class VideoRepository {
     private static VideoRepository instance;
-    private List<Video> originalVideos;
+    private static List<Video> originalVideos;
     private List<Video> filteredVideos;
 
     private VideoRepository() {
@@ -35,6 +35,15 @@ public class VideoRepository {
             instance = new VideoRepository();
         }
         return instance;
+    }
+
+    public static Video getVideoById(int videoId) {
+        for (Video video : originalVideos) {
+            if (video.getId() == videoId) {
+                return video;
+            }
+        }
+        return null;
     }
 
     public List<Video> getVideos() {

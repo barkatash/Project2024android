@@ -1,6 +1,7 @@
 package com.example.youtube.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtube.R;
+import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.entities.Video;
 
 import java.util.List;
@@ -54,8 +56,19 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.tvDuration.setText(current.getDuration());
             holder.tvViews.setText(current.getViews());
             holder.tvUploadDate.setText(current.getUploadDate());
+            holder.ivPic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, WatchVideoActivity.class);
+                    intent.putExtra("videoId", current.getId());
+                    context.startActivity(intent);
+                }
+            });
         }
+
     }
+
 
     public void setVideos(List<Video> s) {
         videos = s;
