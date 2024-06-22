@@ -62,7 +62,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="All"
+                android:text="@string/all"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#D3D3D3"
                 android:textColor="@color/black"/>
@@ -70,7 +70,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Music"
+                android:text="@string/music"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#D3D3D3"
                 android:textColor="@color/black"/>
@@ -78,22 +78,14 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Entertainment"
+                android:text="@string/entertainment"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#D3D3D3"
                 android:textColor="@color/black"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sports"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="News"
+                android:text="@string/sports"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#D3D3D3"
                 android:textColor="@color/black"/>
@@ -101,7 +93,15 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Learning"
+                android:text="@string/news"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#D3D3D3"
+                android:textColor="@color/black"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/learning"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#D3D3D3"
                 android:textColor="@color/black"/>

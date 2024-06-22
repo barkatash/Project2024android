@@ -14,6 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomLayout" />
 
+
     <!-- Other Views Below VideoView -->
     <LinearLayout
         android:id="@+id/bottomLayout"
@@ -31,9 +32,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="viewStart"
-            android:textSize="18sp"
+            android:textSize="22sp"
             android:paddingTop="5dp"
-            android:text="Title"
+            android:textStyle="bold"
+            android:text="@string/title"
             android:contentDescription="@string/title_description"
             android:importantForAccessibility="yes" />
 
@@ -47,7 +49,7 @@
                 android:id="@+id/tvAuthor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Author"
+                android:text="@string/author"
                 android:contentDescription="@string/author"
                 android:importantForAccessibility="yes" />
 
@@ -62,7 +64,7 @@
                 android:id="@+id/tvDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="duration"
+                android:text="@string/duration"
                 android:contentDescription="@string/duration"
                 android:importantForAccessibility="yes" />
 
@@ -77,7 +79,7 @@
                 android:id="@+id/tvViews"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="views"
+                android:text="@string/views"
                 android:contentDescription="@string/views"
                 android:importantForAccessibility="yes" />
 
@@ -92,7 +94,7 @@
                 android:id="@+id/tvUploadDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="uploadDate"
+                android:text="@string/uploadDate"
                 android:contentDescription="@string/upload_date"
                 android:importantForAccessibility="yes" />
         </LinearLayout>
@@ -101,9 +103,24 @@
             android:id="@+id/comments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Comments"
+            android:text="@string/comments"
             android:textSize="15sp"
             android:contentDescription="@string/comments_description"
-            android:importantForAccessibility="yes" />
+            android:importantForAccessibility="yes"
+            android:textStyle="bold"/>
+
+        <!-- SwipeRefreshLayout with RecyclerView -->
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lstComments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

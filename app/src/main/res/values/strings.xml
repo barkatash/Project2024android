@@ -12,7 +12,7 @@
     <string name="new_button">New</string>
     <string name="subbtn">subBtn</string>
     <string name="test">test</string>
-    <string name="back">backword</string>
+    <string name="back">backward</string>
     <string name="search">Search YouTube</string>
     <string name="comments_description">comments</string>
     <string name="upload_date">upload_date</string>
@@ -21,4 +21,24 @@
     <string name="author">author</string>
     <string name="image_description">image</string>
     <string name="title_description">title</string>
+    <string name="username">userName</string>
+    <string name="desc">Desc</string>
+    <string name="point"> • </string>
+    <string name="uploadDateComment">uploadDate</string>
+    <string name="likes">likes</string>
+    <string name="unlikes">unlikes</string>
+    <string name="dislikes">dislikes</string>
+    <string name="dislike_button">dislikes</string>
+    <string name="like_button">like button\n</string>
+    <string name="comment_text">comment\n</string>
+    <string name="title">Title</string>
+    <string name="uploadDate">upload date\n</string>
+    <string name="comments">Comments</string>
+    <string name="all">All</string>
+    <string name="music">Music</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="sports">Sports</string>
+    <string name="news">News</string>
+    <string name="learning">Learning</string>
+    <string name="profile_picture">profile</string>
 </resources>
