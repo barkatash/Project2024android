@@ -99,16 +99,31 @@
                 android:importantForAccessibility="yes" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/comments"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/comments"
-            android:textSize="15sp"
-            android:contentDescription="@string/comments_description"
-            android:importantForAccessibility="yes"
-            android:textStyle="bold"/>
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/comments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/comments"
+                android:textSize="15sp"
+                android:contentDescription="@string/comments_description"
+                android:importantForAccessibility="yes"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:contentDescription="@string/amount"
+                android:importantForAccessibility="yes"
+                android:paddingLeft="8dp"/>
+
+        </LinearLayout>
         <!-- SwipeRefreshLayout with RecyclerView -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"

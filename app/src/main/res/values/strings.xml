@@ -41,4 +41,5 @@
     <string name="news">News</string>
     <string name="learning">Learning</string>
     <string name="profile_picture">profile</string>
+    <string name="amount">amount</string>
 </resources>

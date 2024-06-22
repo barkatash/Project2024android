@@ -3,6 +3,7 @@ package com.example.youtube;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,8 @@ public class WatchVideoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityWatchVideoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        TextView amount = binding.amount;
 
         RecyclerView lstComments = binding.lstComments;
         adapter = new CommentsListAdapter(this);
@@ -72,7 +75,7 @@ public class WatchVideoActivity extends AppCompatActivity {
         }
 
         adapter.setComments(filteredComments);
-
+        amount.setText(String.valueOf(filteredComments.size()));
     }
 
     private void updateUI(Video video) {
