@@ -26,7 +26,7 @@ public class WatchVideoActivity extends AppCompatActivity {
 
     private ActivityWatchVideoBinding binding;
     private VideoView videoView;
-    private MediaController mediaController;
+    //private MediaController mediaController;
     private CommentsListAdapter adapter;
 
 
@@ -36,6 +36,7 @@ public class WatchVideoActivity extends AppCompatActivity {
         binding = ActivityWatchVideoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        MediaController mediaController = binding.mediaController;
         TextView amount = binding.amount;
 
         RecyclerView lstComments = binding.lstComments;

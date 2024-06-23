@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- VideoView -->
-    <VideoView
-        android:id="@+id/videoView"
+    <!-- VideoView with MediaController -->
+    <FrameLayout
+        android:id="@+id/videoLayout"
         android:layout_width="0dp"
-        android:layout_height="270dp"
+        android:layout_height="280dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottomLayout" />
+        app:layout_constraintBottom_toTopOf="@id/bottomLayout">
 
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"/>
 
+        <MediaController
+            android:id="@+id/media_controller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            />
+    </FrameLayout>
 
     <!-- Other Views Below VideoView -->
     <LinearLayout
@@ -23,12 +38,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/videoView"
+        app:layout_constraintTop_toBottomOf="@id/videoLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="6dp"
         android:padding="10dp">
 
+        <!-- Title and Back Button -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/title_description"
                 android:importantForAccessibility="yes"
+                android:paddingStart="8dp"
                 android:paddingTop="5dp"
                 android:text="@string/title"
                 android:textAlignment="viewStart"
@@ -61,13 +78,14 @@
 
         </LinearLayout>
 
+        <!-- Author, Duration, Views, Upload Date -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingBottom="11dp"
-            app:layout_constraintStart_toStartOf="@id/tvContent"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            app:layout_constraintStart_toStartOf="@id/tvContent">
 
             <TextView
                 android:id="@+id/tvAuthor"
@@ -123,6 +141,7 @@
                 android:importantForAccessibility="yes" />
         </LinearLayout>
 
+        <!-- Comments Section Header -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -147,7 +166,6 @@
                 android:importantForAccessibility="yes"
                 android:paddingStart="8dp"
                 tools:ignore="RtlSymmetry" />
-
         </LinearLayout>
 
         <!-- Add Comment Section -->
@@ -182,7 +200,7 @@
                 />
         </LinearLayout>
 
-        <!-- SwipeRefreshLayout with RecyclerView -->
+        <!-- RecyclerView for Comments -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
