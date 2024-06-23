@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="6dp">
+    android:layout_marginBottom="6dp"
+    android:background="@color/backgroundColor"
+    android:textColor="@color/textColor">
 
     <LinearLayout
         android:id="@+id/topLayout"
@@ -38,7 +40,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/username"
                     android:textSize="14sp"
-                    android:textColor="@color/black"
                     android:importantForAccessibility="yes"
                     android:layout_marginEnd="8dp" />
                 
@@ -63,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/comment_text"
                 android:textSize="14sp"
-                android:textColor="@color/black"
                 android:paddingTop="4dp" />
         </LinearLayout>
     </LinearLayout>
@@ -81,7 +81,7 @@
             android:id="@+id/ivLike"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_thumb_up"
+            android:src="@drawable/baseline_thumb_up_24"
             android:contentDescription="@string/like_button"
             android:layout_marginEnd="4dp" />
 
@@ -92,7 +92,6 @@
             android:layout_height="wrap_content"
             android:text="@string/likes"
             android:textSize="12sp"
-            android:textColor="@color/black"
             android:layout_marginEnd="16dp" />
 
         <!-- Dislike Button -->
@@ -100,17 +99,10 @@
             android:id="@+id/tvDislikes"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_thumb_down"
+            android:src="@drawable/baseline_thumb_down_24"
             android:contentDescription="@string/dislike_button"
             android:layout_marginEnd="4dp" />
 
-        <!-- Dislike Count -->
-        <TextView
-            android:id="@+id/tvUnlikes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dislikes"
-            android:textSize="12sp"
-            android:textColor="@color/black" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

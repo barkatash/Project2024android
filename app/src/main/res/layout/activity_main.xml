@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_vertical"
-    android:background="#FFFFFF">
+    android:background="@color/backgroundColor"
+    android:textColor="@color/textColor">
 
     <!-- Top header with logo, app name, and search button -->
     <LinearLayout
@@ -17,10 +18,11 @@
 
         <ImageView
             android:id="@+id/myImageView"
-            android:layout_width="55dp"
-            android:layout_height="42dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="5dp"
             android:contentDescription="@string/logo_description"
-            android:src="@drawable/youtubelogo" />
+            android:src="@drawable/youtubeicon" />
 
         <TextView
             android:layout_width="118dp"
@@ -35,6 +37,17 @@
             android:layout_weight="1" /> <!-- Empty space to push ImageButton to the right -->
 
         <ImageButton
+            android:id="@+id/modeBtn"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/mode"
+            android:gravity="center"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/baseline_brightness_3_24" />
+
+        <ImageButton
             android:id="@+id/searchBtn"
             android:layout_width="60dp"
             android:layout_height="50dp"
@@ -43,7 +56,7 @@
             android:gravity="center"
             android:padding="5dp"
             android:scaleType="centerInside"
-            android:src="@drawable/search" />
+            android:src="@drawable/baseline_search_24" />
     </LinearLayout>
 
 
@@ -57,54 +70,55 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:textColor="@color/textColor">
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/all"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/music"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/entertainment"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sports"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/news"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/learning"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
 
             <!-- Add more categories as needed -->
         </LinearLayout>
@@ -144,9 +158,8 @@
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/search_description"
-                android:padding="9dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/home" />
+                app:srcCompat="@drawable/baseline_home_24" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -169,9 +182,8 @@
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/uploadBtn"
-                android:padding="9dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/upload" />
+                app:srcCompat="@drawable/baseline_add_circle_outline_24" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -196,7 +208,7 @@
                 android:contentDescription="@string/subbtn"
                 android:padding="9dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/subscriptions" />
+                app:srcCompat="@drawable/baseline_subscriptions_24" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -215,13 +227,12 @@
 
             <ImageButton
                 android:id="@+id/youBtn"
-                android:layout_width="48dp"
+                android:layout_width="70dp"
                 android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/aboutYou"
-                android:padding="9dp"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/you" />
+                app:srcCompat="@drawable/baseline_account_circle_24" />
 
             <TextView
                 android:layout_width="wrap_content"

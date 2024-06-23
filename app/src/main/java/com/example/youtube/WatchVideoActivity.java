@@ -2,6 +2,10 @@ package com.example.youtube;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -24,6 +28,7 @@ public class WatchVideoActivity extends AppCompatActivity {
     private VideoView videoView;
     private MediaController mediaController;
     private CommentsListAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +79,25 @@ public class WatchVideoActivity extends AppCompatActivity {
             }
         }
 
+
+        ImageButton btnAddComment = binding.btnAddComment;
+        EditText etComment = binding.etComment;
+        btnAddComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String comment = etComment.getText().toString().trim();
+                if (!TextUtils.isEmpty(comment)) {
+                    filteredComments.add(new Comment(videoId, "@user",comment,"now",0,0));
+                    etComment.setText("");
+                    amount.setText(String.valueOf(filteredComments.size()));
+                }
+
+            }
+        });
+
         adapter.setComments(filteredComments);
         amount.setText(String.valueOf(filteredComments.size()));
+
     }
 
     private void updateUI(Video video) {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,6 +16,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottomLayout" />
 
 
+
     <!-- Other Views Below VideoView -->
     <LinearLayout
         android:id="@+id/bottomLayout"
@@ -27,23 +29,45 @@
         android:layout_marginTop="6dp"
         android:padding="10dp">
 
-        <TextView
-            android:id="@+id/tvContent"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="viewStart"
-            android:textSize="22sp"
-            android:paddingTop="5dp"
-            android:textStyle="bold"
-            android:text="@string/title"
-            android:contentDescription="@string/title_description"
-            android:importantForAccessibility="yes" />
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Go Back ImageButton -->
+            <ImageButton
+                android:id="@+id/btnGoBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_back_ios_24"
+                android:contentDescription="@string/back"
+                android:background="@null"
+                android:padding="12dp"/>
+
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/title_description"
+                android:importantForAccessibility="yes"
+                android:paddingTop="5dp"
+                android:text="@string/title"
+                android:textAlignment="viewStart"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/btnGoBack" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="11dp">
+            android:paddingBottom="11dp"
+            app:layout_constraintStart_toStartOf="@id/tvContent"
+            android:paddingTop="10dp">
 
             <TextView
                 android:id="@+id/tvAuthor"
@@ -112,7 +136,7 @@
                 android:textSize="15sp"
                 android:contentDescription="@string/comments_description"
                 android:importantForAccessibility="yes"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/amount"
@@ -121,9 +145,43 @@
                 android:textSize="15sp"
                 android:contentDescription="@string/amount"
                 android:importantForAccessibility="yes"
-                android:paddingLeft="8dp"/>
+                android:paddingStart="8dp"
+                tools:ignore="RtlSymmetry" />
 
         </LinearLayout>
+
+        <!-- Add Comment Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <EditText
+                android:id="@+id/etComment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:hint="@string/add_comment_hint"
+                android:importantForAccessibility="yes"
+                android:inputType=""
+                android:textColor="@color/black"
+                android:padding="12dp"
+                android:background="@drawable/background"
+                android:textColorHint="#A9A9A9"/>
+
+            <ImageButton
+                android:id="@+id/btnAddComment"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/send"
+                android:src="@drawable/baseline_send_24"
+                android:background="@null"
+                android:padding="20dp"
+                />
+        </LinearLayout>
+
         <!-- SwipeRefreshLayout with RecyclerView -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"
