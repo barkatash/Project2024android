@@ -35,6 +35,17 @@
             android:layout_weight="1" /> <!-- Empty space to push ImageButton to the right -->
 
         <ImageButton
+            android:id="@+id/modeBtn"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/mode"
+            android:gravity="center"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_mode" />
+
+        <ImageButton
             android:id="@+id/searchBtn"
             android:layout_width="60dp"
             android:layout_height="50dp"

@@ -42,4 +42,5 @@
     <string name="learning">Learning</string>
     <string name="profile_picture">profile</string>
     <string name="amount">amount</string>
+    <string name="mode">mode</string>
 </resources>
