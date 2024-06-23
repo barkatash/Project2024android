@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_vertical"
-    android:background="#FFFFFF">
+    android:background="@color/backgroundColor"
+    android:textColor="@color/textColor">
 
     <!-- Top header with logo, app name, and search button -->
     <LinearLayout
@@ -17,10 +18,11 @@
 
         <ImageView
             android:id="@+id/myImageView"
-            android:layout_width="55dp"
-            android:layout_height="42dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="5dp"
             android:contentDescription="@string/logo_description"
-            android:src="@drawable/youtubelogo" />
+            android:src="@drawable/youtubeicon" />
 
         <TextView
             android:layout_width="118dp"
@@ -68,54 +70,55 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:textColor="@color/textColor">
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/all"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/music"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/entertainment"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sports"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/news"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/learning"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="#D3D3D3"
-                android:textColor="@color/black"/>
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
 
             <!-- Add more categories as needed -->
         </LinearLayout>
