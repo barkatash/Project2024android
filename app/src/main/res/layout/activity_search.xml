@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    tools:context=".SearchActivity"
+    android:textColor="@color/black">
 
     <!-- Top header with logo, app name, and search button -->
     <LinearLayout
@@ -21,7 +22,7 @@
             android:layout_width="55dp"
             android:layout_height="42dp"
             android:contentDescription="@string/back"
-            android:src="@drawable/ic_arrow"
+            android:src="@drawable/baseline_arrow_back_ios_24"
             android:padding="6dp"/>
 
         <EditText
@@ -29,12 +30,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:autofillHints=""
             android:hint="@string/search"
             android:textSize="18sp"
             android:inputType="text"
             android:background="@drawable/background"
             android:padding="12dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/black"/>
 
         <ImageButton
             android:id="@+id/searchBtn"
