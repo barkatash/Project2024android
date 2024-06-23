@@ -142,8 +142,10 @@
                 android:hint="@string/add_comment_hint"
                 android:importantForAccessibility="yes"
                 android:inputType=""
+                android:textColor="@color/black"
                 android:padding="12dp"
-                android:background="@drawable/background" />
+                android:background="@drawable/background"
+                android:textColorHint="#A9A9A9"/>
 
             <ImageButton
                 android:id="@+id/btnAddComment"

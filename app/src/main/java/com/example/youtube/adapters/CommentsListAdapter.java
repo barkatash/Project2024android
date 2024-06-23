@@ -17,7 +17,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
         private final TextView tvDescription;
         private final TextView tvUploadDate;
         private final TextView tvLikes;
-        private final TextView tvUnlikes;
 
         private CommentViewHolder(View itemView) {
             super(itemView);
@@ -25,7 +24,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             tvDescription = itemView.findViewById(R.id.tvDescription);
             tvUploadDate = itemView.findViewById(R.id.tvUploadDateComment);
             tvLikes = itemView.findViewById(R.id.tvLikes);
-            tvUnlikes = itemView.findViewById(R.id.tvUnlikes);
         }
     }
 
@@ -47,7 +45,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             holder.tvDescription.setText(current.getDescription());
             holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
-            holder.tvUnlikes.setText(String.valueOf(current.getDislikes()));
         }
 
     }

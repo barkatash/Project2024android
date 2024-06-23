@@ -103,12 +103,6 @@
             android:contentDescription="@string/dislike_button"
             android:layout_marginEnd="4dp" />
 
-        <!-- Dislike Count -->
-        <TextView
-            android:id="@+id/tvUnlikes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dislikes"
-            android:textSize="12sp" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
