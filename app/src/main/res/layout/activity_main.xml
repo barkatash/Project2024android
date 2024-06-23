@@ -62,37 +62,49 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category 1"
-                android:layout_marginEnd="8dp" />
+                android:text="@string/all"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#D3D3D3"
+                android:textColor="@color/black"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category 2"
-                android:layout_marginEnd="8dp" />
+                android:text="@string/music"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#D3D3D3"
+                android:textColor="@color/black"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category 3"
-                android:layout_marginEnd="8dp" />
+                android:text="@string/entertainment"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#D3D3D3"
+                android:textColor="@color/black"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category 1"
-                android:layout_marginEnd="8dp" />
+                android:text="@string/sports"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#D3D3D3"
+                android:textColor="@color/black"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category 2"
-                android:layout_marginEnd="8dp" />
+                android:text="@string/news"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#D3D3D3"
+                android:textColor="@color/black"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Category 3"
-                android:layout_marginEnd="8dp" />
+                android:text="@string/learning"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#D3D3D3"
+                android:textColor="@color/black"/>
 
             <!-- Add more categories as needed -->
         </LinearLayout>
@@ -106,7 +118,7 @@
         android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/lstPosts"
+            android:id="@+id/lst_videos"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

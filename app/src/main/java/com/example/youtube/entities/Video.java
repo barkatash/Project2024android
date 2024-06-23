@@ -6,27 +6,39 @@ import androidx.room.PrimaryKey;
 import com.example.youtube.R;
 
 @Entity
-public class Post {
+public class Video {
     @PrimaryKey(autoGenerate = true)
     private int id;
-
     private String author;
+
+    private int video;
+
     private String content;
     private int likes;
     private int pic;
     private String duration;
     private String views;
+
+    public int getVideo() {
+        return video;
+    }
+
+    public void setVideo(int video) {
+        this.video = video;
+    }
+
     private String uploadDate;
 
-    public Post(String author, String content, String duration , String views, String uploadDate, int pic) {
+    public Video(String author, String content, String duration , String views, String uploadDate, int pic, int video) {
         this.author = author;
         this.content = content;
         this.pic = pic;
         this.duration = duration;
         this.views = views;
         this.uploadDate = uploadDate;
+        this.video = video;
     }
-    public Post() {
+    public Video() {
         this.pic = R.drawable.osher;
     }
 

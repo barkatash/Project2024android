@@ -1,6 +1,7 @@
 package com.example.youtube.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,13 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtube.R;
-import com.example.youtube.entities.Post;
+import com.example.youtube.WatchVideoActivity;
+import com.example.youtube.entities.Video;
 
 import java.util.List;
 
-public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostViewHolder> {
-    class PostViewHolder extends RecyclerView.ViewHolder {
+public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.VideoViewHolder> {
+    class VideoViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvAuthor;
         private final TextView tvContent;
         private final ImageView ivPic;
@@ -23,7 +25,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         private final TextView tvViews;
         private final TextView tvUploadDate;
 
-        private PostViewHolder(View itemView) {
+        private VideoViewHolder(View itemView) {
             super(itemView);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
             tvContent = itemView.findViewById(R.id.tvContent);
@@ -35,42 +37,51 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     }
 
     private final LayoutInflater mInflater;
-    private List<Post> posts;
+    private List<Video> videos;
 
-    public PostsListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
-
-
+    public VideosListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
     @Override
-    public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.post_layout, parent, false);
-        return new PostViewHolder(itemView);
+    public VideoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = mInflater.inflate(R.layout.video_layout, parent, false);
+        return new VideoViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(PostViewHolder holder, int position) {
-        if (posts != null) {
-            final Post current = posts.get(position);
+    public void onBindViewHolder(VideoViewHolder holder, int position) {
+        if (videos != null) {
+            final Video current = videos.get(position);
             holder.tvAuthor.setText(current.getAuthor());
             holder.tvContent.setText(current.getContent());
             holder.ivPic.setImageResource(current.getPic());
             holder.tvDuration.setText(current.getDuration());
             holder.tvViews.setText(current.getViews());
             holder.tvUploadDate.setText(current.getUploadDate());
+            holder.ivPic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, WatchVideoActivity.class);
+                    intent.putExtra("videoId", current.getId());
+                    context.startActivity(intent);
+                }
+            });
         }
+
     }
 
-    public void setPosts(List<Post> s) {
-        posts = s;
+
+    public void setVideos(List<Video> s) {
+        videos = s;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        if (posts != null)
-            return posts.size();
+        if (videos != null)
+            return videos.size();
         else return 0;
     }
 
-    public List<Post> getPosts() { return posts; }
+    public List<Video> getVideos() { return videos; }
 }
 
