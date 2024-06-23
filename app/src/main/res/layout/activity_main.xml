@@ -43,9 +43,9 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/mode"
             android:gravity="center"
-            android:padding="5dp"
+            android:padding="10dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_mode" />
+            android:src="@drawable/baseline_brightness_3_24" />
 
         <ImageButton
             android:id="@+id/searchBtn"
