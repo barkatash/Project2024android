@@ -43,4 +43,7 @@
     <string name="profile_picture">profile</string>
     <string name="amount">amount</string>
     <string name="mode">mode</string>
+    <string name="add_comment">add comment</string>
+    <string name="add_comment_hint">Add a comment...</string>
+    <string name="send">send</string>
 </resources>
