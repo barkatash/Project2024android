@@ -46,7 +46,8 @@
         android:layout_height="wrap_content"
         android:hint="Username"
         app:layout_constraintTop_toBottomOf="@id/signin_to_continue_TextView"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:padding="12dp"/>
 
     <EditText
         android:id="@+id/signin_displayNameInput"
@@ -54,6 +55,7 @@
         android:layout_height="wrap_content"
         android:hint="Display Name"
         app:layout_constraintTop_toBottomOf="@id/signin_usernameInput"
+        android:padding="12dp"
         android:layout_marginTop="16dp"/>
 
     <EditText
@@ -63,7 +65,8 @@
         android:hint="Password"
         android:inputType="textPassword"
         app:layout_constraintTop_toBottomOf="@id/signin_displayNameInput"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:padding="12dp"/>
 
     <EditText
         android:id="@+id/signin_verifyPasswordInput"
@@ -72,8 +75,8 @@
         android:hint="Verify Password"
         android:inputType="textPassword"
         app:layout_constraintTop_toBottomOf="@id/signin_passwordInput"
-        android:layout_marginTop="16dp"/>
-
+        android:layout_marginTop="16dp"
+        android:padding="12dp"/>
 
 
     <ImageView
@@ -89,7 +92,7 @@
     <Button
         android:id="@+id/signin_uploadImageButton"
         android:layout_width="wrap_content"
-        android:layout_height="58dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="@string/upload_image"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,7 +108,7 @@
         android:layout_height="wrap_content"
         android:text="Sign In"
         app:layout_constraintTop_toBottomOf="@id/signin_uploadImageButton"
-        android:layout_marginTop="16dp"
+
         android:backgroundTint="#D3D3D3"
         android:textColor="@color/black"
         android:textSize="15sp"
