@@ -14,6 +14,9 @@ public class Comment {
     private String uploadDate;
     private int likes;
     private int dislikes;
+    private boolean liked;
+    private boolean unliked;
+
 
     public Comment(int videoId, String author, String description, String uploadDate , int likes, int dislikes) {
         this.author = author;
@@ -22,8 +25,24 @@ public class Comment {
         this.likes = likes;
         this.uploadDate = uploadDate;
         this.dislikes = dislikes;
+        this.liked = false;
+        this.unliked = false;
     }
 
+    public boolean isLiked() { return liked; }
+
+    public boolean isUnliked() {
+        return unliked;
+    }
+
+    public int getUnlikes() { return dislikes; }
+
+    public void setUnlikes(int unlikes) { this.dislikes = unlikes; }
+    public void setUnliked(boolean unliked) {
+        this.unliked = unliked;
+    }
+
+    public void setLiked(boolean liked) { this.liked = liked; }
     public int getId() {
         return id;
     }
