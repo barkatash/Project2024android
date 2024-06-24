@@ -26,9 +26,8 @@ public class WatchVideoActivity extends AppCompatActivity {
 
     private ActivityWatchVideoBinding binding;
     private VideoView videoView;
-    private MediaController mediaController;
     private CommentsListAdapter adapter;
-
+    List<Comment> comments = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,21 +35,24 @@ public class WatchVideoActivity extends AppCompatActivity {
         binding = ActivityWatchVideoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        MediaController mediaController = binding.mediaController;
         TextView amount = binding.amount;
 
         RecyclerView lstComments = binding.lstComments;
         adapter = new CommentsListAdapter(this);
         lstComments.setAdapter(adapter);
         lstComments.setLayoutManager(new LinearLayoutManager(this));
-        List<Comment> comments = new ArrayList<>();
 
-        int idCounter = 0;
-        comments.add(new Comment(1, "omer", "good song", "11 months ago", 30, 2));
-        comments.add(new Comment(4, "bar", "love this!", "3 months ago", 10, 0));
-        comments.add(new Comment(6, "yael", "amazing", "7 days ago", 4, 6));
+        if (comments.isEmpty()) {
+            int idCounter = 0;
+            comments.add(new Comment(1, "omer", "good song", "11 months ago", 30, 2));
+            comments.add(new Comment(4, "bar", "love this!", "3 months ago", 10, 0));
+            comments.add(new Comment(6, "yael", "amazing", "7 days ago", 4, 6));
 
-        for (Comment comment : comments) {
-            comment.setId(idCounter++);
+            for (Comment comment : comments) {
+                comment.setId(idCounter++);
+            }
+
         }
 
 
@@ -87,7 +89,10 @@ public class WatchVideoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String comment = etComment.getText().toString().trim();
                 if (!TextUtils.isEmpty(comment)) {
-                    filteredComments.add(new Comment(videoId, "@user",comment,"now",0,0));
+                    Comment newComment = new Comment(videoId, "@user",comment,"now",0,0);
+                    newComment.setId(filteredComments.size() + 1);
+                    filteredComments.add(newComment);
+                    comments.add(newComment);
                     etComment.setText("");
                     amount.setText(String.valueOf(filteredComments.size()));
                 }
@@ -97,6 +102,14 @@ public class WatchVideoActivity extends AppCompatActivity {
 
         adapter.setComments(filteredComments);
         amount.setText(String.valueOf(filteredComments.size()));
+
+        ImageButton btnGoBack = findViewById(R.id.btnGoBack);
+        btnGoBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 
