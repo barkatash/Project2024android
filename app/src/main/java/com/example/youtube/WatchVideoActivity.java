@@ -27,7 +27,8 @@ public class WatchVideoActivity extends AppCompatActivity {
     private ActivityWatchVideoBinding binding;
     private VideoView videoView;
     private CommentsListAdapter adapter;
-    List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
+    private List<Comment> filteredComments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +44,7 @@ public class WatchVideoActivity extends AppCompatActivity {
         lstComments.setAdapter(adapter);
         lstComments.setLayoutManager(new LinearLayoutManager(this));
 
-        if (comments.isEmpty()) {
-            int idCounter = 0;
-            comments.add(new Comment(1, "omer", "good song", "11 months ago", 30, 2));
-            comments.add(new Comment(4, "bar", "love this!", "3 months ago", 10, 0));
-            comments.add(new Comment(6, "yael", "amazing", "7 days ago", 4, 6));
-
-            for (Comment comment : comments) {
-                comment.setId(idCounter++);
-            }
-
-        }
-
+        comments = CommentsManager.getInstance().getComments();
 
         videoView = binding.videoView;
         mediaController = new MediaController(this);
@@ -74,29 +64,28 @@ public class WatchVideoActivity extends AppCompatActivity {
             }
         }
 
-        List<Comment> filteredComments = new ArrayList<>();
+        filteredComments = new ArrayList<>();
         for (Comment comment : comments) {
             if (comment.getVideoId() == videoId) {
                 filteredComments.add(comment);
             }
         }
 
-
         ImageButton btnAddComment = binding.btnAddComment;
         EditText etComment = binding.etComment;
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String comment = etComment.getText().toString().trim();
-                if (!TextUtils.isEmpty(comment)) {
-                    Comment newComment = new Comment(videoId, "@user",comment,"now",0,0);
+                String commentText = etComment.getText().toString().trim();
+                if (!TextUtils.isEmpty(commentText)) {
+                    Comment newComment = new Comment(videoId, "@user", commentText, "now", 0, 0);
                     newComment.setId(filteredComments.size() + 1);
-                    filteredComments.add(newComment);
-                    comments.add(newComment);
+                    filteredComments.add(0, newComment);  // Add the new comment at the beginning
+                    CommentsManager.getInstance().addComment(newComment);
                     etComment.setText("");
                     amount.setText(String.valueOf(filteredComments.size()));
+                    adapter.setComments(filteredComments);
                 }
-
             }
         });
 
@@ -110,7 +99,6 @@ public class WatchVideoActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
     private void updateUI(Video video) {
