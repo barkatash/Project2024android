@@ -110,7 +110,7 @@ public class SignInActivity extends AppCompatActivity {
         users.add(newUser);
 
         Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(SignInActivity.this, LoginActivity.class));
+        startActivity(new Intent(SignInActivity.this, LogInActivity.class));
         finish();
     }
 }

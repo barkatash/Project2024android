@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton youBtn = binding.youBtn;
         youBtn.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            Intent i = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(i);
         });
     }

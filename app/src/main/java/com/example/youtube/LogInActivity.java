@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.youtube.databinding.ActivityLoginBinding;
 import com.example.youtube.entities.User;
 
-public class LoginActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity {
     private EditText usernameInput, passwordInput;
     private ActivityLoginBinding binding;
     private Button logInButton;
@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Button signInButton = binding.loginSignInButton;
         signInButton.setOnClickListener(v -> {
-            Intent i = new Intent(LoginActivity.this, SignInActivity.class);
+            Intent i = new Intent(LogInActivity.this, SignInActivity.class);
             startActivity(i);
         });
     }
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                 logInButton.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intent = new Intent(LogInActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish(); // Optional: close LoginActivity so it's not in the back stack
                     }
