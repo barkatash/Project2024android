@@ -64,6 +64,12 @@ public class MainActivity extends AppCompatActivity {
             videoRepository.resetVideos();
             startActivity(i);
         });
+
+        ImageButton youBtn = binding.youBtn;
+        youBtn.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, LogInActivity.class);
+            startActivity(i);
+        });
     }
 
     @Override
