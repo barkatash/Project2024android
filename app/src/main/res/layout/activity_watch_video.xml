@@ -74,7 +74,8 @@
                 android:textAlignment="viewStart"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/btnGoBack" />
+                app:layout_constraintStart_toEndOf="@id/btnGoBack"
+                tools:ignore="RtlSymmetry" />
 
         </LinearLayout>
 
