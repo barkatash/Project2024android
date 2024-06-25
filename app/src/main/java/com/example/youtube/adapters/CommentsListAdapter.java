@@ -2,9 +2,12 @@ package com.example.youtube.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -21,8 +24,13 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
         private final TextView tvDescription;
         private final TextView tvUploadDate;
         private final TextView tvLikes;
-
         ImageButton btnLike, btnUnlike;
+        private EditText etEditComment;
+        private ImageButton btnEdit;
+        private ImageButton btnDelete;
+        private Button btnSave;
+        private Button btnCancel;
+
         private CommentViewHolder(View itemView) {
 
             super(itemView);
@@ -32,12 +40,16 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             tvLikes = itemView.findViewById(R.id.tvLikes);
             btnLike = itemView.findViewById(R.id.tvLike);
             btnUnlike = itemView.findViewById(R.id.tvDislikes);
+            etEditComment = itemView.findViewById(R.id.etEditComment);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnSave = itemView.findViewById(R.id.btnSave);
+            btnCancel = itemView.findViewById(R.id.btnCancel);
         }
     }
 
     private final LayoutInflater mInflater;
     private List<Comment> comments;
-
     public CommentsListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
     @Override
     public CommentsListAdapter.CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -74,6 +86,46 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                     current.setUnlikes(current.getUnlikes() + 1);
                 }
                 notifyItemChanged(position);
+            });
+
+            holder.btnEdit.setOnClickListener(v -> {
+                holder.etEditComment.setVisibility(View.VISIBLE);
+                holder.etEditComment.setText(current.getDescription());
+                holder.tvDescription.setVisibility(View.GONE);
+                holder.btnEdit.setVisibility(View.GONE);
+                holder.btnDelete.setVisibility(View.GONE);
+                holder.btnSave.setVisibility(View.VISIBLE);
+                holder.btnCancel.setVisibility(View.VISIBLE);
+            });
+            // Save button click listener
+            holder.btnSave.setOnClickListener(v -> {
+                String editedCommentText = holder.etEditComment.getText().toString().trim();
+                if (!TextUtils.isEmpty(editedCommentText)) {
+                    current.setDescription(editedCommentText);
+                    notifyDataSetChanged();
+                }
+                holder.etEditComment.setVisibility(View.GONE);
+                holder.tvDescription.setVisibility(View.VISIBLE);
+                holder.btnEdit.setVisibility(View.VISIBLE);
+                holder.btnDelete.setVisibility(View.VISIBLE);
+                holder.btnSave.setVisibility(View.GONE);
+                holder.btnCancel.setVisibility(View.GONE);
+            });
+
+            holder.btnCancel.setOnClickListener(v -> {
+                holder.etEditComment.setVisibility(View.GONE);
+                holder.tvDescription.setVisibility(View.VISIBLE);
+                holder.btnEdit.setVisibility(View.VISIBLE);
+                holder.btnDelete.setVisibility(View.VISIBLE);
+                holder.btnSave.setVisibility(View.GONE);
+                holder.btnCancel.setVisibility(View.GONE);
+            });
+
+            holder.btnDelete.setOnClickListener(v -> {
+                comments.remove(current);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
+
             });
 
         }

@@ -48,4 +48,10 @@
     <string name="send">send</string>
     <string name="signin">Sign In</string>
     <string name="upload_image">Upload Image</string>
+    <string name="unlike">unlike</string>
+    <string name="like">like</string>
+    <string name="edit_button">edit</string>
+    <string name="delete_button">delete</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>
