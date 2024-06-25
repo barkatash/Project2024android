@@ -56,7 +56,7 @@ public class UsersManager {
         return loggedInUsername != null;
     }
 
-    public String getLoggedInUserId() {
+    public String getLoggedInUserUsername() {
         return loggedInUsername;
     }
 }
