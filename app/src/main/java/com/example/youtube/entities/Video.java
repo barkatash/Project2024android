@@ -10,14 +10,15 @@ public class Video {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String author;
-
     private int video;
-
     private String content;
     private int likes;
     private int pic;
     private String duration;
     private String views;
+
+    private String videoFileUri;
+    private String imageFileUri;
 
     public int getVideo() {
         return video;
@@ -104,5 +105,21 @@ public class Video {
 
     public void setLikes(int likes) {
         this.likes = likes;
+    }
+
+    public String getVideoFileUri() {
+        return videoFileUri;
+    }
+
+    public void setVideoFileUri(String videoFileUri) {
+        this.videoFileUri = videoFileUri;
+    }
+
+    public String getImageFileUri() {
+        return imageFileUri;
+    }
+
+    public void setImageFileUri(String imageFileUri) {
+        this.imageFileUri = imageFileUri;
     }
 }

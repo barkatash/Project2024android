@@ -70,4 +70,23 @@ public class VideoRepository {
         filteredVideos.clear();
         filteredVideos.addAll(originalVideos);
     }
+    public void updateVideo(Video updatedVideo) {
+        for (int i = 0; i < originalVideos.size(); i++) {
+            if (originalVideos.get(i).getId() == updatedVideo.getId()) {
+                originalVideos.set(i, updatedVideo);
+                break;
+            }
+        }
+        resetVideos();
+    }
+
+    public void deleteVideo(int videoId) {
+        for (Video video : originalVideos) {
+            if (video.getId() == videoId) {
+                originalVideos.remove(video);
+                break;
+            }
+        }
+        resetVideos(); // Reset filteredVideos after delete
+    }
 }

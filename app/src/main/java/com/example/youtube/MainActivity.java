@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         List<Video> videos = videoRepository.getVideos();
         videoAdapter.setVideos(videos);
 
-        // Setup user list
+
         RecyclerView lstUsers = binding.lstUsers;
         userAdapter = new UsersListAdapter(this);
         lstUsers.setAdapter(userAdapter);
