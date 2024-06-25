@@ -28,7 +28,6 @@ public class SignInActivity extends AppCompatActivity {
     private Button signInButton, uploadImageButton;
     private ImageView profileImageView;
     private Uri imageUri;
-    public static ArrayList<User> users = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,7 @@ public class SignInActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handleSignUp();
+                handleSignIn();
             }
         });
     }
@@ -84,7 +83,7 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    private void handleSignUp() {
+    private void handleSignIn() {
         String username = usernameInput.getText().toString();
         String displayName = displayNameInput.getText().toString();
         String password = passwordInput.getText().toString();
@@ -107,7 +106,7 @@ public class SignInActivity extends AppCompatActivity {
         }
 
         User newUser = new User(username, displayName, password, imageUri != null ? imageUri.toString() : null);
-        users.add(newUser);
+        UsersManager.addUser(newUser);
 
         Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(SignInActivity.this, LogInActivity.class));

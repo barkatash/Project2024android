@@ -59,7 +59,6 @@
             android:src="@drawable/baseline_search_24" />
     </LinearLayout>
 
-
     <!-- Category Navigation Bar -->
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -96,6 +95,7 @@
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/button"
                 android:textColor="@color/textColor"/>
+
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -135,6 +135,12 @@
             android:id="@+id/lst_videos"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/lstUsers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- Bottom navigation bar -->
