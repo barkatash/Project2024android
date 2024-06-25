@@ -30,4 +30,18 @@ public class CommentsManager {
     public void addComment(Comment comment) {
         comments.add(0, comment);
     }
+
+    public void deleteComment(Comment comment) {
+        comments.remove(comment);
+    }
+
+    public List<Comment> getCommentsForVideo(int videoId) {
+        List<Comment> commentsForVideo = new ArrayList<>();
+        for (Comment comment : comments) {
+            if (comment.getVideoId() == videoId) {
+                commentsForVideo.add(comment);
+            }
+        }
+        return commentsForVideo;
+    }
 }

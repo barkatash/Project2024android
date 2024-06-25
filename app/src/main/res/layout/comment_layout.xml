@@ -24,8 +24,9 @@
             android:contentDescription="@string/profile_picture" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <!-- Username and Upload Date -->
@@ -42,13 +43,14 @@
                     android:textSize="14sp"
                     android:importantForAccessibility="yes"
                     android:layout_marginEnd="8dp" />
-                
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" • "
                     android:textStyle="bold"
                     android:importantForAccessibility="no" />
+
                 <TextView
                     android:id="@+id/tvUploadDateComment"
                     android:layout_width="wrap_content"
@@ -65,17 +67,80 @@
                 android:text="@string/comment_text"
                 android:textSize="14sp"
                 android:paddingTop="4dp" />
+
+            <!-- Edit Comment EditText -->
+            <EditText
+                android:id="@+id/etEditComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Edit comment..."
+                android:inputType="textMultiLine"
+                android:maxLines="3"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Edit and Delete Buttons -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <ImageButton
+                android:id="@+id/btnEdit"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_edit_24"
+                android:contentDescription="@string/edit_button"
+                android:layout_marginEnd="8dp" />
+
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_delete_24"
+                android:contentDescription="@string/delete_button"
+                android:layout_marginEnd="8dp" />
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Save and Cancel Buttons for Edit Mode -->
+    <LinearLayout
+        android:id="@+id/editButtonsLayout"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/topLayout">
+
+        <Button
+            android:id="@+id/btnSave"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:visibility="gone"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnCancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/cancel" />
+    </LinearLayout>
+
+    <!-- Bottom Layout with Like and Dislike Buttons -->
     <LinearLayout
         android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/topLayout"
+        app:layout_constraintTop_toBottomOf="@+id/editButtonsLayout"
         android:padding="8dp">
-
 
         <ImageButton
             android:id="@+id/tvLike"
@@ -102,7 +167,6 @@
             android:src="@drawable/baseline_thumb_down_24"
             android:contentDescription="@string/dislike_button"
             android:layout_marginEnd="4dp" />
-
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

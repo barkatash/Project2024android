@@ -7,6 +7,7 @@
     android:background="@color/backgroundColor"
     android:textColor="@color/textColor">
 
+    <!-- Top layout -->
     <LinearLayout
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
@@ -14,6 +15,7 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Image view -->
     <ImageView
         android:id="@+id/ivPic"
         android:layout_width="match_parent"
@@ -22,6 +24,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottomLayout"
         app:layout_constraintTop_toBottomOf="@id/topLayout" />
 
+    <!-- Bottom layout -->
     <LinearLayout
         android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
@@ -30,9 +33,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivPic">
 
+        <!-- Left content layout -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:paddingLeft="15dp"
             android:paddingRight="15dp">
@@ -46,13 +51,14 @@
                 android:paddingTop="5dp"
                 android:text="@string/title"/>
 
-
+            <!-- Details layout -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingBottom="11dp">
 
+                <!-- Details text views -->
                 <TextView
                     android:id="@+id/tvAuthor"
                     android:layout_width="wrap_content"
@@ -95,6 +101,34 @@
                     android:layout_height="wrap_content"
                     android:text="@string/uploadDate"/>
             </LinearLayout>
+        </LinearLayout>
+
+        <!-- Right actions layout -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <!-- Edit button -->
+            <ImageButton
+                android:id="@+id/btnEditVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_edit_24"
+                android:contentDescription="@string/edit_button"
+                android:padding="12dp"
+                android:backgroundTint="@color/backgroundColor"/>
+
+            <!-- Delete button -->
+            <ImageButton
+                android:id="@+id/btnDeleteVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_delete_24"
+                android:contentDescription="@string/delete_button"
+                android:padding="12dp"
+                android:backgroundTint="@color/backgroundColor"/>
         </LinearLayout>
     </LinearLayout>
 
