@@ -52,8 +52,8 @@ public class LogInActivity extends AppCompatActivity {
             return;
         }
 
-        for (User user : SignInActivity.users) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+        for (User users : UsersManager.getInstance().getUsers()) {
+            if (users.getUsername().equals(username) && users.getPassword().equals(password)) {
                 Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
                 logInButton.postDelayed(new Runnable() {
                     @Override

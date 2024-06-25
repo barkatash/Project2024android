@@ -1,46 +1,46 @@
 package com.example.youtube.entities;
-
 public class User {
     private String username;
-    private String email;
+    private String userDisplayName;
     private String password;
     private String imageUri;
 
-    // Constructor, getters, setters, etc.
-
-    public User(String username, String email, String password, String imageUri) {
+    // Constructor
+    public User(String username, String userDisplayName, String password, String imageUri) {
         this.username = username;
-        this.email = email;
+        this.userDisplayName = userDisplayName;
         this.password = password;
         this.imageUri = imageUri;
     }
 
+    // Getters
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public String getUserDisplayName() {
+        return userDisplayName;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getImageUri() {
         return imageUri;
+    }
+
+    // Setters (optional, depending on your needs)
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setImageUri(String imageUri) {
