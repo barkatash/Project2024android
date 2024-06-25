@@ -151,7 +151,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
 
 
     private int getVideoId() {
-        // Get video ID from intent extras
         return getIntent().getIntExtra("videoId", -1);
     }
 

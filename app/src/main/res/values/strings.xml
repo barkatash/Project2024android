@@ -58,4 +58,7 @@
     <string name="content">Description</string>
     <string name="durationEdit">Duration</string>
     <string name="saveEdit">Save</string>
+    <string name="select_video">Select Video</string>
+    <string name="select_image">Select Image</string>
+    <string name="edit_video">Edit Video</string>
 </resources>
