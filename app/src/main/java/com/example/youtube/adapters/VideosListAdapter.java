@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.youtube.EditVideoActivity;
 import com.example.youtube.R;
 import com.example.youtube.VideoRepository;
 import com.example.youtube.WatchVideoActivity;
@@ -45,8 +46,10 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
 
     private final LayoutInflater mInflater;
     private List<Video> videos;
-
-    public VideosListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
+    private Context context;
+    public VideosListAdapter(Context context) { mInflater = LayoutInflater.from(context);
+        this.context = context;
+    }
     @Override
     public VideoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.video_layout, parent, false);
@@ -74,11 +77,13 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             });
 
 
-            // Handle edit button click
+
             holder.btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(context, EditVideoActivity.class);
+                    intent.putExtra("videoId", current.getId());
+                    context.startActivity(intent);
                 }
             });
 

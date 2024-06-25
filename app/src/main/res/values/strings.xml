@@ -54,4 +54,8 @@
     <string name="delete_button">delete</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="usernameEdit">Username</string>
+    <string name="content">Description</string>
+    <string name="durationEdit">Duration</string>
+    <string name="saveEdit">Save</string>
 </resources>
