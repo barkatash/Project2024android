@@ -34,4 +34,14 @@ public class CommentsManager {
     public void deleteComment(Comment comment) {
         comments.remove(comment);
     }
+
+    public List<Comment> getCommentsForVideo(int videoId) {
+        List<Comment> commentsForVideo = new ArrayList<>();
+        for (Comment comment : comments) {
+            if (comment.getVideoId() == videoId) {
+                commentsForVideo.add(comment);
+            }
+        }
+        return commentsForVideo;
+    }
 }

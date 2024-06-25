@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -15,16 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtube.adapters.CommentsListAdapter;
-import com.example.youtube.databinding.ActivityWatchVideoBinding;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.Video;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WatchVideoActivity extends AppCompatActivity {
+public class WatchVideoActivity extends AppCompatActivity implements CommentsListAdapter.CommentInteractionListener {
 
-    private ActivityWatchVideoBinding binding;
     private VideoView videoView;
     private CommentsListAdapter adapter;
     private List<Comment> comments;
@@ -37,13 +36,17 @@ public class WatchVideoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityWatchVideoBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_watch_video);
 
         initializeViews();
         initializeVideoPlayer();
         initializeCommentsList();
 
+        ImageButton btnGoBack = findViewById(R.id.btnGoBack);
+        btnGoBack.setOnClickListener(v -> finish());
+
+        ImageButton btnLike = findViewById(R.id.btnLike);
+        ImageButton btnUnlike = findViewById(R.id.btnUnlike);
         ImageButton btnAddComment = findViewById(R.id.btnAddComment);
         EditText etComment = findViewById(R.id.etComment);
         btnAddComment.setOnClickListener(new View.OnClickListener() {
@@ -53,64 +56,46 @@ public class WatchVideoActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(commentText)) {
                     Comment newComment = new Comment(getVideoId(), "@user", commentText, "now", 0, 0);
                     newComment.setId(filteredComments.size() + 1);
-                    filteredComments.add(0, newComment);  // Add the new comment at the beginning
+                    filteredComments.add(0, newComment);
                     CommentsManager.getInstance().addComment(newComment);
                     etComment.setText("");
-                    updateCommentsAmount();
                     adapter.setComments(filteredComments);
                 }
             }
         });
 
-        ImageButton btnGoBack = findViewById(R.id.btnGoBack);
-        btnGoBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        btnLike.setOnClickListener(v -> {
+            if (!isLiked) {
+                likeCount++;
+                isLiked = true;
 
-        ImageButton btnLike = findViewById(R.id.btnLike);
-        ImageButton btnUnlike = findViewById(R.id.btnUnlike);
-
-        btnLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isLiked) {
-                    likeCount++;
-                    isLiked = true;
-
-                    if (isUnliked) {
-                        unlikeCount--;
-                        isUnliked = false;
-                    }
-                } else {
-                    likeCount--;
-                    isLiked = false;
-                }
-
-                updateLikeDislikeUI();
-            }
-        });
-
-        btnUnlike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isUnliked) {
-                    unlikeCount++;
-                    isUnliked = true;
-
-                    if (isLiked) {
-                        likeCount--;
-                        isLiked = false;
-                    }
-                } else {
+                if (isUnliked) {
                     unlikeCount--;
                     isUnliked = false;
                 }
-
-                updateLikeDislikeUI();
+            } else {
+                likeCount--;
+                isLiked = false;
             }
+
+            updateLikeDislikeUI();
+        });
+
+        btnUnlike.setOnClickListener(v -> {
+            if (!isUnliked) {
+                unlikeCount++;
+                isUnliked = true;
+
+                if (isLiked) {
+                    likeCount--;
+                    isLiked = false;
+                }
+            } else {
+                unlikeCount--;
+                isUnliked = false;
+            }
+
+            updateLikeDislikeUI();
         });
 
         if (savedInstanceState != null) {
@@ -133,18 +118,25 @@ public class WatchVideoActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        // Initialize views and set click listeners
-        binding.btnAddComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle adding comment
-            }
-        });
+        TextView tvAuthor = findViewById(R.id.tvAuthor);
+        TextView tvContent = findViewById(R.id.tvContent);
+        TextView tvDuration = findViewById(R.id.tvDuration);
+        TextView tvViews = findViewById(R.id.tvViews);
+        TextView tvUploadDate = findViewById(R.id.tvUploadDate);
+
+        int videoId = getIntent().getIntExtra("videoId", -1);
+        Video video = VideoRepository.getVideoById(videoId);
+        if (video != null) {
+            tvAuthor.setText(video.getAuthor());
+            tvContent.setText(video.getContent());
+            tvDuration.setText(video.getDuration());
+            tvViews.setText(video.getViews());
+            tvUploadDate.setText(video.getUploadDate());
+        }
     }
 
     private void initializeVideoPlayer() {
-        // Initialize video player and set video details
-        videoView = binding.videoView;
+        videoView = findViewById(R.id.videoView);
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
 
@@ -154,51 +146,39 @@ public class WatchVideoActivity extends AppCompatActivity {
             String path = "android.resource://" + getPackageName() + "/" + video.getVideo();
             videoView.setVideoURI(Uri.parse(path));
             videoView.start();
-            updateVideoDetails(video);
         }
     }
 
-    private void initializeCommentsList() {
-        // Initialize comments list and adapter
-        RecyclerView lstComments = binding.lstComments;
-        adapter = new CommentsListAdapter(this);
-        lstComments.setAdapter(adapter);
-        lstComments.setLayoutManager(new LinearLayoutManager(this));
-
-        comments = CommentsManager.getInstance().getComments();
-        int videoId = getIntent().getIntExtra("videoId", -1);
-        filteredComments = new ArrayList<>();
-        for (Comment comment : comments) {
-            if (comment.getVideoId() == videoId) {
-                filteredComments.add(comment);
-            }
-        }
-        adapter.setComments(filteredComments);
-        updateCommentsAmount();
-    }
 
     private int getVideoId() {
         // Get video ID from intent extras
         return getIntent().getIntExtra("videoId", -1);
     }
 
-    private void updateVideoDetails(Video video) {
-        // Update video details UI
-        binding.tvAuthor.setText(video.getAuthor());
-        binding.tvContent.setText(video.getContent());
-        binding.tvDuration.setText(video.getDuration());
-        binding.tvViews.setText(video.getViews());
-        binding.tvUploadDate.setText(video.getUploadDate());
+    private void initializeCommentsList() {
+        RecyclerView recyclerView = findViewById(R.id.lstComments);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new CommentsListAdapter(this, this);
+        recyclerView.setAdapter(adapter);
+
+        int videoId = getIntent().getIntExtra("videoId", -1);
+        comments = CommentsManager.getInstance().getCommentsForVideo(videoId);
+        filteredComments = new ArrayList<>(comments);
+        adapter.setComments(filteredComments);
     }
 
-    private void updateCommentsAmount() {
-        // Update comments count UI
-        binding.amount.setText(String.valueOf(filteredComments.size()));
+    @Override
+    public void onDeleteComment(Comment comment) {
+        CommentsManager.getInstance().deleteComment(comment);
+        filteredComments.remove(comment);
+        adapter.setComments(filteredComments);
     }
 
     private void updateLikeDislikeUI() {
-        // Update like and dislike UI elements
-        binding.tvLikeCount.setText(String.valueOf(likeCount));
-        binding.tvUnlikeCount.setText(String.valueOf(unlikeCount));
+        TextView tvLikeCount = findViewById(R.id.tvLikeCount);
+        TextView tvUnlikeCount = findViewById(R.id.tvUnlikeCount);
+
+        tvLikeCount.setText(String.valueOf(likeCount));
+        tvUnlikeCount.setText(String.valueOf(unlikeCount));
     }
 }
