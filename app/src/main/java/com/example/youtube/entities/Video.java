@@ -10,9 +10,7 @@ public class Video {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String author;
-
     private int video;
-
     private String content;
     private int likes;
     private int pic;

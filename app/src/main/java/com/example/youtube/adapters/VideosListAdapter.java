@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtube.R;
+import com.example.youtube.VideoRepository;
 import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.entities.Video;
 
@@ -24,6 +26,9 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
         private final TextView tvDuration;
         private final TextView tvViews;
         private final TextView tvUploadDate;
+        private final ImageButton btnDelete;
+        private final ImageButton btnEdit;
+
 
         private VideoViewHolder(View itemView) {
             super(itemView);
@@ -33,6 +38,8 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             tvDuration = itemView.findViewById(R.id.tvDuration);
             tvViews = itemView.findViewById(R.id.tvViews);
             tvUploadDate = itemView.findViewById(R.id.tvUploadDate);
+            btnDelete = itemView.findViewById(R.id.btnDeleteVideo);
+            btnEdit = itemView.findViewById(R.id.btnEditVideo);
         }
     }
 
@@ -63,6 +70,24 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
                     Intent intent = new Intent(context, WatchVideoActivity.class);
                     intent.putExtra("videoId", current.getId());
                     context.startActivity(intent);
+                }
+            });
+
+
+            // Handle edit button click
+            holder.btnEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    VideoRepository.getInstance().deleteVideo(current.getId());
+                    videos.remove(current);
+                    notifyDataSetChanged();
                 }
             });
         }
