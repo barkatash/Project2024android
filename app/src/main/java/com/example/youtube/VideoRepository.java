@@ -73,8 +73,13 @@ public class VideoRepository {
     public void updateVideo(Video updatedVideo) {
         for (int i = 0; i < originalVideos.size(); i++) {
             if (originalVideos.get(i).getId() == updatedVideo.getId()) {
-
                 originalVideos.set(i, updatedVideo);
+                break;
+            }
+        }
+        for (int i = 0; i < filteredVideos.size(); i++) {
+            if (filteredVideos.get(i).getId() == updatedVideo.getId()) {
+                filteredVideos.set(i, updatedVideo);
                 break;
             }
         }

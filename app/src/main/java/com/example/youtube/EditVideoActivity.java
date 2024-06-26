@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -48,6 +49,9 @@ public class EditVideoActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
         videoImageView = findViewById(R.id.videoImage);
         videoViewUpload = findViewById(R.id.videoViewUpload);
+
+        MediaController mediaController = new MediaController(this);
+        videoViewUpload.setMediaController(mediaController);
 
         int videoId = getIntent().getIntExtra("videoId", -1);
         if (videoId != -1) {
@@ -101,6 +105,7 @@ public class EditVideoActivity extends AppCompatActivity {
             if (requestCode == REQUEST_VIDEO_FILE) {
                 currentVideo.setVideoFileUri(selectedFileUri);
                 videoViewUpload.setVideoURI(selectedFileUri);
+                videoViewUpload.start();
             } else if (requestCode == REQUEST_IMAGE_FILE) {
                 videoImageView.setImageURI(selectedFileUri);
                 currentVideo.setImageFileUri(selectedFileUri);
