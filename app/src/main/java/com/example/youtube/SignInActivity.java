@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -158,13 +159,6 @@ public class SignInActivity extends AppCompatActivity {
                 openGallery();
             }
         }
-    }
-
-    private void openImagePicker() {
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("image/*");
-
-        startActivityForResult(pickIntent, PICK_IMAGE_REQUEST);
     }
 
     @Override

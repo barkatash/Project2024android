@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private VideosListAdapter videoAdapter;
     private UsersListAdapter userAdapter;
-    private ImageButton youBtn;
+    private ImageView youBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
