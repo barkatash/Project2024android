@@ -77,6 +77,12 @@ public class VideoRepository {
                 break;
             }
         }
+        for (int i = 0; i < filteredVideos.size(); i++) {
+            if (filteredVideos.get(i).getId() == updatedVideo.getId()) {
+                filteredVideos.set(i, updatedVideo);
+                break;
+            }
+        }
         resetVideos();
     }
 
@@ -87,6 +93,6 @@ public class VideoRepository {
                 break;
             }
         }
-        resetVideos(); // Reset filteredVideos after delete
+        resetVideos();
     }
 }
