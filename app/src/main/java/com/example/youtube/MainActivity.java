@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.youtube.adapters.UsersListAdapter;
 import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.databinding.ActivityMainBinding;
@@ -23,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private VideosListAdapter videoAdapter;
     private UsersListAdapter userAdapter;
-    private ImageButton youBtn;
+    private ImageView youBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-        // Handle profile button (initial state)
         youBtn = binding.youBtn;
         updateProfileButtonState();
     }
@@ -111,8 +113,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setLoggedInState() {
-        binding.youBtnText.setText("log Out");
-        youBtn.setImageResource(UsersManager.getInstance().getLoggedInUser().getImageUri());  // Set profile image
+        binding.youBtnText.setText("log out");
+        Glide.with(this)
+                .load(UsersManager.getInstance().getLoggedInUser().getImageUri())
+                .transform(new CircleCrop())
+                .into(youBtn);
         youBtn.setOnClickListener(v -> {
             UsersManager.getInstance().logoutUser();
             setLoggedOutState();
@@ -121,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setLoggedOutState() {
         binding.youBtnText.setText("log In");
-        youBtn.setImageResource(R.drawable.baseline_account_circle_24); // Default profile icon
+        youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         youBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(i);

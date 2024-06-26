@@ -80,9 +80,50 @@
                 android:backgroundTint="@color/button"
                 android:textColor="@color/textColor"/>
 
-            <!-- Add more categories as needed -->
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/music"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/entertainment"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sports"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/news"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/learning"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/button"
+                android:textColor="@color/textColor"/>
+
+
         </LinearLayout>
     </HorizontalScrollView>
+
 
     <!-- SwipeRefreshLayout with RecyclerView -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -191,21 +232,24 @@
             android:gravity="center_horizontal|top"
             android:orientation="vertical">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/youBtn"
                 android:layout_width="70dp"
                 android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/aboutYou"
                 android:scaleType="centerInside"
-                app:srcCompat="@drawable/baseline_account_circle_24"/>
+                app:srcCompat="@drawable/baseline_account_circle_24"
+                android:background="@drawable/circle_background"
+                android:radius="50dp"
+                />
 
             <TextView
                 android:id="@+id/youBtnText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="log in"
-                android:textSize="15sp" />
+                android:text="@string/log_in"
+                android:textSize="15sp"
+                />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
