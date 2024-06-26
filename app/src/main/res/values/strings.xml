@@ -66,4 +66,5 @@
     <string name="share_via_whatsapp">Share via WhatsApp</string>
     <string name="share_via_instagram">Share via Instagram</string>
     <string name="share_via_facebook">Share via Facebook</string>
+    <string name="log_in">log in</string>
 </resources>

@@ -4,8 +4,20 @@
     package="com.example.youtube">
 
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" android:requestLegacyExternalStorage="true"
+        tools:ignore="SelectedPhotoAccess" />
+
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" android:requestLegacyExternalStorage="true" />
+
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" android:requestLegacyExternalStorage="true" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        android:requestLegacyExternalStorage="true" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" android:requestLegacyExternalStorage="true"
+        tools:ignore="ScopedStorage" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
@@ -34,7 +46,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
