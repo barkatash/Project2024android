@@ -1,5 +1,9 @@
 package com.example.youtube;
 
+import android.content.Context;
+import android.widget.ImageView;
+import android.widget.Toast;
+
 import com.example.youtube.entities.Comment;
 
 import java.util.ArrayList;
@@ -11,9 +15,9 @@ public class CommentsManager {
 
     private CommentsManager() {
         comments = new ArrayList<>();
-        comments.add(new Comment(1, "omer", "good song", "11 months ago", 30, 2));
-        comments.add(new Comment(4, "bar", "love this!", "3 months ago", 10, 0));
-        comments.add(new Comment(6, "yael", "amazing", "7 days ago", 4, 6));
+        comments.add(new Comment(1, UsersManager.getInstance().getUserByName("sagi"), "good song", "11 months ago", 30, 2));
+        comments.add(new Comment(4, UsersManager.getInstance().getUserByName("chen"), "love this!", "3 months ago", 10, 0));
+        comments.add(new Comment(6, UsersManager.getInstance().getUserByName("amit"), "amazing", "7 days ago", 4, 6));
     }
 
     public static synchronized CommentsManager getInstance() {

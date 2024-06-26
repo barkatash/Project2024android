@@ -1,25 +1,22 @@
 package com.example.youtube.entities;
 
-import com.example.youtube.R;
-
 public class User {
     private String username;
     private String userDisplayName;
     private String password;
-    private int imageUri = 0;
+    private String imageUrl = null; // URL of the profile image
 
-    // Constructor
-    public User(String username, String userDisplayName, String password, int imageUri) {
+    // Constructor with image URL
+    public User(String username, String userDisplayName, String password, String imageUrl) {
         this.username = username;
         this.userDisplayName = userDisplayName;
         this.password = password;
-        this.imageUri = imageUri;
+        this.imageUrl = imageUrl;
     }
     public User(String username, String userDisplayName, String password) {
         this.username = username;
         this.userDisplayName = userDisplayName;
         this.password = password;
-        this.imageUri = R.drawable.baseline_account_circle_24;
     }
 
     // Getters
@@ -35,8 +32,8 @@ public class User {
         return password;
     }
 
-    public int getImageUri() {
-        return imageUri;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     // Setters (optional, depending on your needs)
@@ -52,7 +49,7 @@ public class User {
         this.password = password;
     }
 
-    public void setImageUri(int imageUri) {
-        this.imageUri = imageUri;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

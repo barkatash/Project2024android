@@ -1,7 +1,9 @@
 package com.example.youtube;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -10,6 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.youtube.adapters.UsersListAdapter;
 import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.databinding.ActivityMainBinding;
@@ -110,17 +113,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     private void setLoggedInState() {
-        binding.youBtnText.setText("log Out");
-        youBtn.setImageResource(UsersManager.getInstance().getLoggedInUser().getImageUri());  // Set profile image
+        binding.youBtnText.setText("Log Out");
+        User loggedInUser = UsersManager.getInstance().getLoggedInUser();
+        if (loggedInUser != null) {
+            String imageUrl = loggedInUser.getImageUrl();
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                // Load image using Glide
+                Glide.with(this)
+                        .load(Uri.parse(imageUrl)) // Parse the string to URI if necessary
+                        .error(R.drawable.baseline_account_circle_24) // Error image if loading fails
+                        .into(youBtn);
+            } else {
+                youBtn.setImageResource(R.drawable.baseline_account_circle_24); // Default profile icon
+            }
+        }
         youBtn.setOnClickListener(v -> {
             UsersManager.getInstance().logoutUser();
             setLoggedOutState();
         });
     }
 
+
+
     private void setLoggedOutState() {
-        binding.youBtnText.setText("log In");
+        binding.youBtnText.setText("Log In");
         youBtn.setImageResource(R.drawable.baseline_account_circle_24); // Default profile icon
         youBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, LogInActivity.class);

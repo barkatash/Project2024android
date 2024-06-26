@@ -9,7 +9,7 @@ public class Comment {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private int videoId;
-    private String author;
+    private User author;
     private String description;
     private String uploadDate;
     private int likes;
@@ -18,7 +18,7 @@ public class Comment {
     private boolean unliked;
 
 
-    public Comment(int videoId, String author, String description, String uploadDate , int likes, int dislikes) {
+    public Comment(int videoId, User author, String description, String uploadDate , int likes, int dislikes) {
         this.author = author;
         this.videoId = videoId;
         this.description = description;
@@ -59,11 +59,7 @@ public class Comment {
         this.videoId = videoId;
     }
 
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
@@ -97,5 +93,8 @@ public class Comment {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
+    }
+    public User getUser() {
+        return author;
     }
 }

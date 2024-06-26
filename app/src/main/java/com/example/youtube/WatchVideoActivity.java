@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -67,9 +68,13 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!UsersManager.getInstance().isLoggedIn()) {
+                    Toast.makeText(WatchVideoActivity.this, "You need to be logged in to leave a comment.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String commentText = etComment.getText().toString().trim();
                 if (!TextUtils.isEmpty(commentText)) {
-                    Comment newComment = new Comment(getVideoId(), "@user", commentText, "now", 0, 0);
+                    Comment newComment = new Comment(getVideoId(), UsersManager.getInstance().getLoggedInUser(), commentText, "now", 0, 0);
                     newComment.setId(filteredComments.size() + 1);
                     filteredComments.add(0, newComment);
                     CommentsManager.getInstance().addComment(newComment);
@@ -200,6 +205,4 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         tvLikeCount.setText(String.valueOf(likeCount));
         tvUnlikeCount.setText(String.valueOf(unlikeCount));
     }
-
-
 }
