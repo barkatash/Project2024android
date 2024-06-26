@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private VideosListAdapter videoAdapter;
     private UsersListAdapter userAdapter;
+    private ImageButton youBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Setup Dark Mode toggle
         ImageButton btnToggleDark = binding.modeBtn;
         btnToggleDark.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 }
-                recreate();
+                recreate(); // Refresh activity to apply theme
             }
         });
 
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         List<Video> videos = videoRepository.getVideos();
         videoAdapter.setVideos(videos);
 
-
+        // Setup user list
         RecyclerView lstUsers = binding.lstUsers;
         userAdapter = new UsersListAdapter(this);
         lstUsers.setAdapter(userAdapter);
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         List<User> users = usersManager.getUsers();
         userAdapter.setUsers(users);
 
+        // Handle navigation buttons
         ImageButton searchBtn = binding.searchBtn;
         searchBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, SearchActivity.class);
@@ -77,24 +80,51 @@ public class MainActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-        ImageButton youBtn = binding.youBtn;
-        youBtn.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this, LogInActivity.class);
-            startActivity(i);
-        });
+        // Handle profile button (initial state)
+        youBtn = binding.youBtn;
+        updateProfileButtonState();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh the video list when returning from the search activity
+        // Refresh video list when returning from SearchActivity
         VideoRepository videoRepository = VideoRepository.getInstance();
         List<Video> videos = videoRepository.getVideos();
         videoAdapter.setVideos(videos);
 
-        // Refresh the user list in case there are new users
+        // Refresh user list in case there are new users
         UsersManager usersManager = UsersManager.getInstance();
         List<User> users = usersManager.getUsers();
         userAdapter.setUsers(users);
+
+        // Update profile button state
+        updateProfileButtonState();
+    }
+
+    private void updateProfileButtonState() {
+        if (UsersManager.getInstance().isLoggedIn()) {
+            setLoggedInState();
+        } else {
+            setLoggedOutState();
+        }
+    }
+
+    private void setLoggedInState() {
+        binding.youBtnText.setText("log Out");
+        youBtn.setImageResource(UsersManager.getInstance().getLoggedInUser().getImageUri());  // Set profile image
+        youBtn.setOnClickListener(v -> {
+            UsersManager.getInstance().logoutUser();
+            setLoggedOutState();
+        });
+    }
+
+    private void setLoggedOutState() {
+        binding.youBtnText.setText("log In");
+        youBtn.setImageResource(R.drawable.baseline_account_circle_24); // Default profile icon
+        youBtn.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, LogInActivity.class);
+            startActivity(i);
+        });
     }
 }

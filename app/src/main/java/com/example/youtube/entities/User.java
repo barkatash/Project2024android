@@ -1,16 +1,25 @@
 package com.example.youtube.entities;
+
+import com.example.youtube.R;
+
 public class User {
     private String username;
     private String userDisplayName;
     private String password;
-    private String imageUri;
+    private int imageUri = 0;
 
     // Constructor
-    public User(String username, String userDisplayName, String password, String imageUri) {
+    public User(String username, String userDisplayName, String password, int imageUri) {
         this.username = username;
         this.userDisplayName = userDisplayName;
         this.password = password;
         this.imageUri = imageUri;
+    }
+    public User(String username, String userDisplayName, String password) {
+        this.username = username;
+        this.userDisplayName = userDisplayName;
+        this.password = password;
+        this.imageUri = R.drawable.baseline_account_circle_24;
     }
 
     // Getters
@@ -26,7 +35,7 @@ public class User {
         return password;
     }
 
-    public String getImageUri() {
+    public int getImageUri() {
         return imageUri;
     }
 
@@ -43,7 +52,7 @@ public class User {
         this.password = password;
     }
 
-    public void setImageUri(String imageUri) {
+    public void setImageUri(int imageUri) {
         this.imageUri = imageUri;
     }
 }
