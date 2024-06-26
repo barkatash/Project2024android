@@ -62,4 +62,8 @@
     <string name="select_image">Select Image</string>
     <string name="edit_video">Edit Video</string>
     <string name="imageForVideo">imageforvideo</string>
+    <string name="share">Share</string>
+    <string name="share_via_whatsapp">Share via WhatsApp</string>
+    <string name="share_via_instagram">Share via Instagram</string>
+    <string name="share_via_facebook">Share via Facebook</string>
 </resources>

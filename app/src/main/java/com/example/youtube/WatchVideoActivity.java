@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.MediaController;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -33,10 +34,15 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private boolean isLiked = false;
     private boolean isUnliked = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch_video);
+
+        videoView = findViewById(R.id.videoView);
+        MediaController mediaController = new MediaController(this);
+        videoView.setMediaController(mediaController);
 
         initializeViews();
         initializeVideoPlayer();
@@ -49,6 +55,15 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         ImageButton btnUnlike = findViewById(R.id.btnUnlike);
         ImageButton btnAddComment = findViewById(R.id.btnAddComment);
         EditText etComment = findViewById(R.id.etComment);
+
+        ImageButton btnShare = findViewById(R.id.btnShare);
+        btnShare.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(this, btnShare);
+            popupMenu.getMenuInflater().inflate(R.menu.share_menu, popupMenu.getMenu());
+            popupMenu.show();
+        });
+
+
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +123,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         updateLikeDislikeUI();
     }
 
+
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -136,9 +153,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     }
 
     private void initializeVideoPlayer() {
-        videoView = findViewById(R.id.videoView);
-        MediaController mediaController = new MediaController(this);
-        videoView.setMediaController(mediaController);
 
         int videoId = getIntent().getIntExtra("videoId", -1);
         Video video = VideoRepository.getVideoById(videoId);
@@ -153,6 +167,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
             videoView.start();
         }
     }
+
 
 
     private int getVideoId() {
@@ -185,4 +200,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         tvLikeCount.setText(String.valueOf(likeCount));
         tvUnlikeCount.setText(String.valueOf(unlikeCount));
     }
+
+
 }
