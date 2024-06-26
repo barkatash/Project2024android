@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.youtube.adapters.UsersListAdapter;
 import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.databinding.ActivityMainBinding;
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 }
-                recreate(); // Refresh activity to apply theme
+                recreate();
             }
         });
 
@@ -83,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(i);
         });
 
-        // Handle profile button (initial state)
         youBtn = binding.youBtn;
         updateProfileButtonState();
     }
@@ -91,17 +93,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh video list when returning from SearchActivity
         VideoRepository videoRepository = VideoRepository.getInstance();
         List<Video> videos = videoRepository.getVideos();
         videoAdapter.setVideos(videos);
 
-        // Refresh user list in case there are new users
         UsersManager usersManager = UsersManager.getInstance();
         List<User> users = usersManager.getUsers();
         userAdapter.setUsers(users);
 
-        // Update profile button state
         updateProfileButtonState();
     }
 
@@ -112,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
             setLoggedOutState();
         }
     }
-
 
     private void setLoggedInState() {
         binding.youBtnText.setText("Log Out");
@@ -134,8 +132,6 @@ public class MainActivity extends AppCompatActivity {
             setLoggedOutState();
         });
     }
-
-
 
     private void setLoggedOutState() {
         binding.youBtnText.setText("Log In");

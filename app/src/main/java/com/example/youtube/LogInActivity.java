@@ -8,10 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youtube.databinding.ActivityLoginBinding;
-import com.example.youtube.entities.User;
 
 public class LogInActivity extends AppCompatActivity {
     private EditText usernameInput, passwordInput;
@@ -61,7 +61,7 @@ public class LogInActivity extends AppCompatActivity {
                 public void run() {
                     Intent intent = new Intent(LogInActivity.this, MainActivity.class);
                     startActivity(intent);
-                    finish(); // Optional: close LoginActivity so it's not in the back stack
+                    finish();
                 }
             }, 500);
             return;

@@ -4,7 +4,9 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -158,6 +160,13 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    private void openImagePicker() {
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        startActivityForResult(pickIntent, PICK_IMAGE_REQUEST);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -174,7 +183,6 @@ public class SignInActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void handleSignIn() {
         String username = usernameInput.getText().toString();
@@ -197,7 +205,6 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             return;
         }
-
         User newUser;
         if (imageUri != null) {
             newUser = new User(username, displayName, password, imageUri.toString());

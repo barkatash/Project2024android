@@ -1,5 +1,6 @@
 package com.example.youtube.entities;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 import androidx.room.Entity;
@@ -19,8 +20,27 @@ public class Video {
     private String duration;
     private String views;
 
+    private Bitmap thumbnailBitmap;
     private Uri videoFileUri;
     private Uri imageFileUri;
+    private Bitmap imageBitMap;
+    private String videoFilePath;
+
+    public String getVideoFilePath() {
+        return videoFilePath;
+    }
+
+    public void setVideoFilePath(String videoFilePath) {
+        this.videoFilePath = videoFilePath;
+    }
+
+    public Bitmap getImageBitMap() {
+        return imageBitMap;
+    }
+
+    public void setImageBitMap(Bitmap imageBitMap) {
+        this.imageBitMap = imageBitMap;
+    }
 
     public int getVideo() {
         return video;
@@ -123,5 +143,12 @@ public class Video {
 
     public void setImageFileUri(Uri imageFileUri) {
         this.imageFileUri = imageFileUri;
+    }
+    public Bitmap getThumbnailBitmap() {
+        return thumbnailBitmap;
+    }
+
+    public void setThumbnailBitmap(Bitmap thumbnailBitmap) {
+        this.thumbnailBitmap = thumbnailBitmap;
     }
 }

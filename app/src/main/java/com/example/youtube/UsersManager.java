@@ -1,8 +1,9 @@
 package com.example.youtube;
 
+import com.example.youtube.entities.User;
+
 import java.util.ArrayList;
 import java.util.List;
-import com.example.youtube.entities.User;
 
 public class UsersManager {
     private static UsersManager instance;
