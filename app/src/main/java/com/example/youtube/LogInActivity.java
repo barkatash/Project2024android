@@ -1,6 +1,7 @@
 package com.example.youtube;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,6 +17,7 @@ public class LogInActivity extends AppCompatActivity {
     private EditText usernameInput, passwordInput;
     private ActivityLoginBinding binding;
     private Button logInButton;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,7 @@ public class LogInActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
 
         usernameInput = findViewById(R.id.login_usernameInput);
         passwordInput = findViewById(R.id.login_passwordInput);
@@ -51,23 +54,19 @@ public class LogInActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        for (User users : UsersManager.getInstance().getUsers()) {
-            if (users.getUsername().equals(username) && users.getPassword().equals(password)) {
-                Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                logInButton.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish(); // Optional: close LoginActivity so it's not in the back stack
-                    }
-                }, 500);
-                return;
-            }
+        if (UsersManager.getInstance().loginUser(username, password)) {
+            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+            logInButton.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish(); // Optional: close LoginActivity so it's not in the back stack
+                }
+            }, 500);
+            return;
+        } else {
+            Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
         }
-
-        Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
     }
-
 }

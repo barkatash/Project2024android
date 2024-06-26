@@ -8,14 +8,14 @@ import com.example.youtube.entities.User;
 public class UsersManager {
     private static UsersManager instance;
     private static List<User> users;
-    private String loggedInUsername;
+    private User loggedInUser = null;
 
     private UsersManager() {
         // Initialize the user list (simulate database)
         users = new ArrayList<>();
-        users.add(new User( "sagi", "sasa", "123789456", "R.raw.user1"));
-        users.add(new User("chen", "che", "123123123", "R.raw.user2"));
-        users.add(new User("amit", "ami", "12121212", "R.raw.user3"));
+        users.add(new User( "sagi", "sasa", "123789456", R.raw.user1));
+        users.add(new User("chen", "che", "123123123", R.raw.user2));
+        users.add(new User("amit", "ami", "12121212", R.raw.user3));
     }
 
 
@@ -41,7 +41,7 @@ public class UsersManager {
     public boolean loginUser(String username, String password) {
         for (User user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                loggedInUsername = user.getUsername();
+                loggedInUser = user;
                 return true;
             }
         }
@@ -49,14 +49,14 @@ public class UsersManager {
     }
 
     public void logoutUser() {
-        loggedInUsername = null;
+        loggedInUser = null;
     }
 
     public boolean isLoggedIn() {
-        return loggedInUsername != null;
+        return loggedInUser != null;
     }
 
-    public String getLoggedInUserUsername() {
-        return loggedInUsername;
+    public User getLoggedInUser() {
+        return loggedInUser;
     }
 }
