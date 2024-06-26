@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -29,12 +28,11 @@ import java.io.IOException;
 public class SignInActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
-    private static final int CAMERA_REQUEST_CODE = 2;
 
     private EditText usernameInput, displayNameInput, passwordInput, verifyPasswordInput;
     private Button signInButton, uploadImageButton;
     private ImageView profileImageView;
-    private Uri imageUri;
+    private int imageUri = 0; // Storing drawable resource ID
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +77,6 @@ public class SignInActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openImagePicker();
             } else {
-                openImagePicker();
                 Toast.makeText(this, "Camera permission is required to upload profile picture", Toast.LENGTH_SHORT).show();
             }
         }
@@ -89,36 +86,26 @@ public class SignInActivity extends AppCompatActivity {
         Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickIntent.setType("image/*");
 
-        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        Intent chooserIntent = Intent.createChooser(pickIntent, "Select or take a new Picture");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
-
-        startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST);
+        startActivityForResult(pickIntent, PICK_IMAGE_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
-            if (data != null) {
-                if (data.getData() != null) {
-                    imageUri = data.getData();
-                    try {
-                        Bitmap bitmap;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), imageUri);
-                            bitmap = ImageDecoder.decodeBitmap(source);
-                        } else {
-                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                        }
-                        profileImageView.setImageBitmap(bitmap);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            if (data != null && data.getData() != null) {
+                imageUri = R.drawable.you; // Replace with your default profile image resource ID
+                try {
+                    Bitmap bitmap;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), data.getData());
+                        bitmap = ImageDecoder.decodeBitmap(source);
+                    } else {
+                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     }
-                } else if (data.getExtras() != null && data.getExtras().get("data") != null) {
-                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                     profileImageView.setImageBitmap(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -129,11 +116,6 @@ public class SignInActivity extends AppCompatActivity {
         String displayName = displayNameInput.getText().toString();
         String password = passwordInput.getText().toString();
         String verifyPassword = verifyPasswordInput.getText().toString();
-
-        if (imageUri == null) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(displayName) ||
                 TextUtils.isEmpty(password) || TextUtils.isEmpty(verifyPassword)) {
@@ -150,8 +132,12 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        User newUser = new User(username, displayName, password, imageUri != null ? imageUri.toString() : null);
+        User newUser;
+        if (imageUri != 0){
+            newUser = new User(username, displayName, password, imageUri);
+        } else {
+            newUser = new User(username, displayName, password);
+        }
         UsersManager.addUser(newUser);
 
         Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();

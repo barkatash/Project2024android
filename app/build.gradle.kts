@@ -36,7 +36,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -44,12 +43,18 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-// Room components
+
+    // Room components
     implementation("androidx.room:room-runtime:2.4.0")
     annotationProcessor("androidx.room:room-compiler:2.4.0")
+
     // SwipeRefreshLayout dependency
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
     // RecyclerView dependency
     implementation("androidx.recyclerview:recyclerview:1.2.1")
 
+    // Glide dependency for image loading
+    implementation("com.github.bumptech.glide:glide:4.13.2")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.13.2")
 }
