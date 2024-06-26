@@ -1,5 +1,7 @@
 package com.example.youtube.entities;
 
+import android.net.Uri;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -17,8 +19,8 @@ public class Video {
     private String duration;
     private String views;
 
-    private String videoFileUri;
-    private String imageFileUri;
+    private Uri videoFileUri;
+    private Uri imageFileUri;
 
     public int getVideo() {
         return video;
@@ -107,19 +109,19 @@ public class Video {
         this.likes = likes;
     }
 
-    public String getVideoFileUri() {
+    public Uri getVideoFileUri() {
         return videoFileUri;
     }
 
-    public void setVideoFileUri(String videoFileUri) {
+    public void setVideoFileUri(Uri videoFileUri) {
         this.videoFileUri = videoFileUri;
     }
 
-    public String getImageFileUri() {
+    public Uri getImageFileUri() {
         return imageFileUri;
     }
 
-    public void setImageFileUri(String imageFileUri) {
+    public void setImageFileUri(Uri imageFileUri) {
         this.imageFileUri = imageFileUri;
     }
 }

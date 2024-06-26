@@ -143,8 +143,13 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         int videoId = getIntent().getIntExtra("videoId", -1);
         Video video = VideoRepository.getVideoById(videoId);
         if (video != null) {
-            String path = "android.resource://" + getPackageName() + "/" + video.getVideo();
-            videoView.setVideoURI(Uri.parse(path));
+            if (video.getVideoFileUri() == null) {
+                String path = "android.resource://" + getPackageName() + "/" + video.getVideo();
+                videoView.setVideoURI(Uri.parse(path));
+            }
+            else  {
+                videoView.setVideoURI(video.getVideoFileUri());
+            }
             videoView.start();
         }
     }

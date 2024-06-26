@@ -62,7 +62,12 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             final Video current = videos.get(position);
             holder.tvAuthor.setText(current.getAuthor());
             holder.tvContent.setText(current.getContent());
-            holder.ivPic.setImageResource(current.getPic());
+            if (current.getImageFileUri() != null) {
+                holder.ivPic.setImageURI(current.getImageFileUri());
+            }
+            else {
+                holder.ivPic.setImageResource(current.getPic());
+            }
             holder.tvDuration.setText(current.getDuration());
             holder.tvViews.setText(current.getViews());
             holder.tvUploadDate.setText(current.getUploadDate());
