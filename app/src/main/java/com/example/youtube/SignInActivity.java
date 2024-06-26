@@ -32,7 +32,7 @@ public class SignInActivity extends AppCompatActivity {
     private EditText usernameInput, displayNameInput, passwordInput, verifyPasswordInput;
     private Button signInButton, uploadImageButton;
     private ImageView profileImageView;
-    private int imageUri = 0; // Storing drawable resource ID
+    private int imageUri = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

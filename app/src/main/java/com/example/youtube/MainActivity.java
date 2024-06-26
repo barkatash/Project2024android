@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 }
-                recreate(); // Refresh activity to apply theme
+                recreate();
             }
         });
 
@@ -90,17 +90,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh video list when returning from SearchActivity
         VideoRepository videoRepository = VideoRepository.getInstance();
         List<Video> videos = videoRepository.getVideos();
         videoAdapter.setVideos(videos);
 
-        // Refresh user list in case there are new users
         UsersManager usersManager = UsersManager.getInstance();
         List<User> users = usersManager.getUsers();
         userAdapter.setUsers(users);
 
-        // Update profile button state
         updateProfileButtonState();
     }
 

@@ -239,7 +239,6 @@
                 android:contentDescription="@string/aboutYou"
                 android:scaleType="centerInside"
                 app:srcCompat="@drawable/baseline_account_circle_24"
-                android:background="@drawable/circle_background"
                 android:radius="50dp"
                 />
 
