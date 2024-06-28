@@ -5,7 +5,6 @@ import com.example.youtube.entities.User;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class UsersManager {
     private static UsersManager instance;
     private static List<User> users;
@@ -14,11 +13,11 @@ public class UsersManager {
     private UsersManager() {
         // Initialize the user list (simulate database)
         users = new ArrayList<>();
-        users.add(new User( "sagi", "sasa", "123789456", R.raw.user1));
-        users.add(new User("chen", "che", "123123123", R.raw.user2));
-        users.add(new User("amit", "ami", "12121212", R.raw.user3));
+        // Example users with raw resource URIs
+        users.add(new User("sagi", "sasa", "123789456", "android.resource://com.example.youtube/" + R.raw.user1));
+        users.add(new User("chen", "che", "123123123", "android.resource://com.example.youtube/" + R.raw.user2));
+        users.add(new User("amit", "ami", "12121212", "android.resource://com.example.youtube/" + R.raw.user3));
     }
-
 
     public static synchronized UsersManager getInstance() {
         if (instance == null) {
@@ -59,5 +58,14 @@ public class UsersManager {
 
     public User getLoggedInUser() {
         return loggedInUser;
+    }
+
+    public User getUserByName(String username) {
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
     }
 }

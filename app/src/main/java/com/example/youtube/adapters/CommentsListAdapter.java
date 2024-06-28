@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.youtube.R;
 import com.example.youtube.entities.Comment;
 
@@ -44,6 +46,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
         private ImageButton btnDelete;
         private Button btnSave;
         private Button btnCancel;
+        private ImageView ivProfilePic;
 
         public CommentViewHolder(View itemView) {
             super(itemView);
@@ -58,6 +61,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             btnDelete = itemView.findViewById(R.id.btnDelete);
             btnSave = itemView.findViewById(R.id.btnSave);
             btnCancel = itemView.findViewById(R.id.btnCancel);
+            ivProfilePic = itemView.findViewById(R.id.ivProfilePic);
         }
     }
 
@@ -73,10 +77,21 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
         if (comments != null) {
             final Comment current = comments.get(position);
 
-            holder.tvUsername.setText(current.getAuthor());
+            holder.tvUsername.setText(current.getUser().getUsername());
             holder.tvDescription.setText(current.getDescription());
             holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
+
+            // Load profile image using Glide
+            String imageUrl = current.getUser().getImageUrl();
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                Glide.with(context)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.baseline_account_circle_24) // Placeholder image
+                        .into(holder.ivProfilePic);
+            } else {
+                holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24); // Default image
+            }
 
             holder.btnLike.setOnClickListener(v -> {
                 if (current.isLiked()) {
