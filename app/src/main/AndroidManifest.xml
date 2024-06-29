@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissions for camera and external storage access -->
-    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -33,7 +32,7 @@
         <activity android:name=".LogInActivity" />
         <activity android:name=".SignInActivity" />
 
-        <!-- FileProvider to grant URI permissions for camera -->
+        <activity android:name=".EditVideoActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

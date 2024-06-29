@@ -8,15 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtube.EditVideoActivity;
-import com.example.youtube.MainActivity;
 import com.example.youtube.R;
-import com.example.youtube.UsersManager;
 import com.example.youtube.VideoRepository;
 import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.entities.Video;
@@ -71,26 +68,18 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (UsersManager.getInstance().isLoggedIn()) {
-                        Intent intent = new Intent(context, EditVideoActivity.class);
-                        intent.putExtra("videoId", current.getId());
-                        context.startActivity(intent);
-                    } else {
-                        Toast.makeText(context ,"You need to be logged in to edit a video.", Toast.LENGTH_SHORT).show();
-                    }
+                    Intent intent = new Intent(context, EditVideoActivity.class);
+                    intent.putExtra("videoId", current.getId());
+                    context.startActivity(intent);
                 }
             });
 
             holder.btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (UsersManager.getInstance().isLoggedIn()) {
-                        VideoRepository.getInstance().deleteVideo(current.getId());
-                        videos.remove(current);
-                        notifyDataSetChanged();
-                    } else{
-                        Toast.makeText(context ,"You need to be logged in to delete a video.", Toast.LENGTH_SHORT).show();
-                    }
+                    VideoRepository.getInstance().deleteVideo(current.getId());
+                    videos.remove(current);
+                    notifyDataSetChanged();
                 }
             });
         }
