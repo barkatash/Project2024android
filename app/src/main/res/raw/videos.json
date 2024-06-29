@@ -1,0 +1,103 @@
+{
+  "videos": [
+    {
+      "author": "Osher Cohen Music",
+      "content": "אושר כהן - אהבה",
+      "duration": "3:27",
+      "views": "28M",
+      "uploadDate": "11 months ago",
+      "pic": "osher",
+      "video": "video1"
+    },
+    {
+      "author": "Aaron Jack",
+      "content": "Learn JAVASCRIPT in just 5 MINUTES",
+      "duration": "5:14",
+      "views": "1.5M",
+      "uploadDate": "4 years ago",
+      "pic": "js",
+      "video": "video2"
+    },
+    {
+      "author": "JustinBieber",
+      "content": "Justin Bieber - Baby",
+      "duration": "3:39",
+      "views": "3B",
+      "uploadDate": "14 years ago",
+      "pic": "baby",
+      "video": "video3"
+    },
+    {
+      "author": "EyalGolan",
+      "content": "אייל גולן - עם ישראל חי",
+      "duration": "3:34",
+      "views": "21M",
+      "uploadDate": "7 months ago",
+      "pic": "eyal",
+      "video": "video4"
+    },
+    {
+      "author": "Rihanna",
+      "content": "Rihanna - Diamonds",
+      "duration": "4:42",
+      "views": "11M",
+      "uploadDate": "11 years ago",
+      "pic": "diamonds",
+      "video": "video5"
+    },
+    {
+      "author": "Ed Sheeran",
+      "content": "Ed Sheeran - Perfect (Official Music Video)",
+      "duration": "4:39",
+      "views": "3.7B",
+      "uploadDate": "6 years ago",
+      "pic": "ed",
+      "video": "video6"
+    },
+    {
+      "author": "Eurovision Song Contest",
+      "content": "Eden Golan - Hurricane | Israel 🇮🇱 | Official Music Video | Eurovision 2024",
+      "duration": "3:06",
+      "views": "7.9M",
+      "uploadDate": "2 months ago",
+      "pic": "hurricane",
+      "video": "video4"
+    },
+    {
+      "author": "BuzzFeedVideo",
+      "content": "Americans Try Israeli Snacks",
+      "duration": "3:01",
+      "views": "5.8M",
+      "uploadDate": "9 years ago",
+      "pic": "images",
+      "video": "video3"
+    },
+    {
+      "author": "MaccabiHealthcare",
+      "content": "אדיר מילר מאלתר במוקד מכבי - מאושרת, מאושרת, מאושרת",
+      "duration": "2:28",
+      "views": "1.9M",
+      "uploadDate": "8 years ago",
+      "pic": "adir",
+      "video": "video3"
+    },
+    {
+      "author": "NBA",
+      "content": "NBA Impossible Moments",
+      "duration": "8:08",
+      "views": "2.7M",
+      "uploadDate": "9 months ago",
+      "pic": "nba",
+      "video": "video2"
+    },
+    {
+      "author": "NBATop10",
+      "content": "Stephen Curry Top 10 Plays of Career",
+      "duration": "4:12",
+      "views": "15K",
+      "uploadDate": "1 year ago",
+      "pic": "maxresdefault",
+      "video": "video1"
+    }
+  ]
+}

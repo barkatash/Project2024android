@@ -1,9 +1,7 @@
 package com.example.youtube;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -13,7 +11,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.youtube.adapters.UsersListAdapter;
@@ -52,17 +49,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Setup video list
+
         RecyclerView lstVideos = binding.lstVideos;
         videoAdapter = new VideosListAdapter(this);
         lstVideos.setAdapter(videoAdapter);
         lstVideos.setLayoutManager(new LinearLayoutManager(this));
 
-        VideoRepository videoRepository = VideoRepository.getInstance();
+        VideoRepository videoRepository = VideoRepository.getInstance(getApplicationContext());
         List<Video> videos = videoRepository.getVideos();
         videoAdapter.setVideos(videos);
 
-        // Setup user list
         RecyclerView lstUsers = binding.lstUsers;
         userAdapter = new UsersListAdapter(this);
         lstUsers.setAdapter(userAdapter);
@@ -72,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         List<User> users = usersManager.getUsers();
         userAdapter.setUsers(users);
 
-        // Handle navigation buttons
+
         ImageButton searchBtn = binding.searchBtn;
         searchBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, SearchActivity.class);
@@ -93,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        VideoRepository videoRepository = VideoRepository.getInstance();
+        VideoRepository videoRepository = VideoRepository.getInstance(getApplicationContext());
         List<Video> videos = videoRepository.getVideos();
         videoAdapter.setVideos(videos);
 
@@ -118,13 +114,13 @@ public class MainActivity extends AppCompatActivity {
         if (loggedInUser != null) {
             String imageUrl = loggedInUser.getImageUrl();
             if (imageUrl != null && !imageUrl.isEmpty()) {
-                // Load image using Glide
+
                 Glide.with(this)
-                        .load(Uri.parse(imageUrl)) // Parse the string to URI if necessary
-                        .error(R.drawable.baseline_account_circle_24) // Error image if loading fails
+                        .load(UsersManager.getInstance().getLoggedInUser().getImageUrl())
+                        .transform(new CircleCrop())
                         .into(youBtn);
             } else {
-                youBtn.setImageResource(R.drawable.baseline_account_circle_24); // Default profile icon
+                youBtn.setImageResource(R.drawable.baseline_account_circle_24);
             }
         }
         youBtn.setOnClickListener(v -> {
