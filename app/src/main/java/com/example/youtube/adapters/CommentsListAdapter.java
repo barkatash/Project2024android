@@ -15,7 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.youtube.R;
+import com.example.youtube.UsersManager;
 import com.example.youtube.entities.Comment;
 
 import java.util.List;
@@ -82,15 +84,15 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
 
-            // Load profile image using Glide
+
             String imageUrl = current.getUser().getImageUrl();
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Glide.with(context)
-                        .load(imageUrl)
-                        .placeholder(R.drawable.baseline_account_circle_24) // Placeholder image
+                        .load(UsersManager.getInstance().getLoggedInUser().getImageUrl())
+                        .transform(new CircleCrop())
                         .into(holder.ivProfilePic);
             } else {
-                holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24); // Default image
+                holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
             }
 
             holder.btnLike.setOnClickListener(v -> {
