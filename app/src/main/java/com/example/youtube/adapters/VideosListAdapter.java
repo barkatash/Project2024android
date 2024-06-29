@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtube.EditVideoActivity;
-import com.example.youtube.MainActivity;
 import com.example.youtube.R;
 import com.example.youtube.UsersManager;
 import com.example.youtube.VideoRepository;
@@ -85,7 +84,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     if (UsersManager.getInstance().isLoggedIn()) {
-                        VideoRepository.getInstance().deleteVideo(current.getId());
+                        VideoRepository.getInstance(context.getApplicationContext()).deleteVideo(current.getId());
                         videos.remove(current);
                         notifyDataSetChanged();
                     } else{

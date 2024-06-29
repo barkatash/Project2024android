@@ -11,12 +11,12 @@ public class UsersManager {
     private User loggedInUser = null;
 
     private UsersManager() {
-        // Initialize the user list (simulate database)
         users = new ArrayList<>();
-        // Example users with raw resource URIs
+
         users.add(new User("sagi", "sasa", "123789456", "android.resource://com.example.youtube/" + R.raw.user1));
         users.add(new User("chen", "che", "123123123", "android.resource://com.example.youtube/" + R.raw.user2));
         users.add(new User("amit", "ami", "12121212", "android.resource://com.example.youtube/" + R.raw.user3));
+        users.add(new User("bar", "bar", "12345678", "android.resource://com.example.youtube/" + R.raw.user3));
     }
 
     public static synchronized UsersManager getInstance() {

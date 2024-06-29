@@ -1,7 +1,17 @@
 package com.example.youtube;
 
+import android.content.Context;
+
 import com.example.youtube.entities.Video;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,43 +20,57 @@ public class VideoRepository {
     private static List<Video> originalVideos;
     private List<Video> filteredVideos;
 
-    private VideoRepository() {
-        originalVideos = new ArrayList<>();
-        filteredVideos = new ArrayList<>();
-
-        int idCounter = 0;
-        originalVideos.add(new Video("Osher Cohen Music", "אושר כהן - אהבה", "3:27", "28M", "11 months ago", R.drawable.osher, R.raw.video1));
-        originalVideos.add(new Video("Aaron Jack", "Learn JAVASCRIPT in just 5 MINUTES", "5:14", "1.5M", "4 years ago", R.drawable.js, R.raw.video2));
-        originalVideos.add(new Video("JustinBieber", "Justin Bieber - Baby", "3:39", "3B", "14 years ago", R.drawable.baby, R.raw.video3));
-        originalVideos.add(new Video("EyalGolan", "אייל גולן - עם ישראל חי", "3:34", "21M", "7 months ago", R.drawable.eyal, R.raw.video4));
-        originalVideos.add(new Video("Rihanna", "Rihanna - Diamonds", "4:42", "11M", "11 years ago", R.drawable.diamonds, R.raw.video5));
-        originalVideos.add(new Video("Ed Sheeran", "Ed Sheeran - Perfect (Official Music Video)", "4:39", "3.7B", "6 years ago", R.drawable.ed, R.raw.video6));
-        originalVideos.add(new Video("Eurovision Song Contest", "Eden Golan - Hurricane | Israel 🇮🇱 | Official Music Video | Eurovision 2024", "3:06", "7.9M", "2 months ago", R.drawable.hurricane, R.raw.video1));
-        originalVideos.add(new Video("BuzzFeedVideo", "Americans Try Israeli Snacks", "3:01", "5.8M", "9 years ago", R.drawable.images, R.raw.video2));
-        originalVideos.add(new Video("MaccabiHealthcare", "אדיר מילר מאלתר במוקד מכבי - מאושרת, מאושרת, מאושרת", "2:28", "1.9M", "8 years ago", R.drawable.adir, R.raw.video3));
-        originalVideos.add(new Video("NBA", "NBA Impossible Moments", "8:08", "2.7M", "9 months ago", R.drawable.nba, R.raw.video4));
-        originalVideos.add(new Video("NBATop10", "Stephen Curry Top 10 Plays of Career", "4:12", "15K", "1 year ago", R.drawable.maxresdefault, R.raw.video5));
-
-        for (Video video : originalVideos) {
-            video.setId(idCounter++);
-        }
-        filteredVideos.addAll(originalVideos);
+    private VideoRepository(Context context) {
+        originalVideos = loadVideosFromJson(context);
+        filteredVideos = new ArrayList<>(originalVideos);
     }
 
-    public static synchronized VideoRepository getInstance() {
+    public static synchronized VideoRepository getInstance(Context context) {
         if (instance == null) {
-            instance = new VideoRepository();
+            instance = new VideoRepository(context);
         }
         return instance;
     }
 
-    public static Video getVideoById(int videoId) {
-        for (Video video : originalVideos) {
-            if (video.getId() == videoId) {
-                return video;
+    private List<Video> loadVideosFromJson(Context context) {
+        List<Video> videos = new ArrayList<>();
+
+        try {
+            InputStream inputStream = context.getResources().openRawResource(R.raw.videos);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            StringBuilder json = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                json.append(line);
             }
+
+            JSONObject jsonObject = new JSONObject(json.toString());
+            JSONArray jsonVideos = jsonObject.getJSONArray("videos");
+
+            for (int i = 0; i < jsonVideos.length(); i++) {
+                JSONObject jsonVideo = jsonVideos.getJSONObject(i);
+                String author = jsonVideo.getString("author");
+                String content = jsonVideo.getString("content");
+                String duration = jsonVideo.getString("duration");
+                String views = jsonVideo.getString("views");
+                String uploadDate = jsonVideo.getString("uploadDate");
+                String pic = jsonVideo.getString("pic");
+                String videoName = jsonVideo.getString("video");
+                int picResourceId = context.getResources().getIdentifier(pic, "drawable", context.getPackageName());
+                int videoResourceId = context.getResources().getIdentifier(videoName, "raw", context.getPackageName());
+                int id = i + 1;
+                Video video = new Video(author, content, duration, views, uploadDate, picResourceId, videoResourceId);
+                video.setId(id);
+                videos.add(video);
+            }
+            bufferedReader.close();
+            inputStream.close();
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
         }
-        return null;
+
+        return videos;
     }
 
     public List<Video> getVideos() {
@@ -70,6 +94,7 @@ public class VideoRepository {
         filteredVideos.clear();
         filteredVideos.addAll(originalVideos);
     }
+
     public void updateVideo(Video updatedVideo) {
         for (int i = 0; i < originalVideos.size(); i++) {
             if (originalVideos.get(i).getId() == updatedVideo.getId()) {
@@ -84,6 +109,15 @@ public class VideoRepository {
             }
         }
         resetVideos();
+    }
+
+    public static Video getVideoById(int videoId) {
+        for (Video video : originalVideos) {
+            if (video.getId() == videoId) {
+                return video;
+            }
+        }
+        return null;
     }
 
     public void deleteVideo(int videoId) {

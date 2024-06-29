@@ -6,8 +6,6 @@ import android.net.Uri;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.youtube.R;
-
 @Entity
 public class Video {
     @PrimaryKey(autoGenerate = true)
@@ -61,9 +59,16 @@ public class Video {
         this.uploadDate = uploadDate;
         this.video = video;
     }
-    public Video() {
-        this.pic = R.drawable.osher;
-    }
+//    public Video(String author, String content, String duration , String views, String uploadDate) {
+//        this.author = author;
+//        this.content = content;
+//        this.duration = duration;
+//        this.views = views;
+//        this.uploadDate = uploadDate;
+//        this.pic = R.drawable.osher;
+//        this.video = R.raw.video1;
+//    }
+
 
     public String getDuration() {
         return duration;

@@ -99,7 +99,7 @@ public class EditVideoActivity extends AppCompatActivity {
                 currentVideo.setAuthor(etAuthor.getText().toString().trim());
                 currentVideo.setContent(etContent.getText().toString().trim());
                 currentVideo.setDuration(etDuration.getText().toString().trim());
-                VideoRepository.getInstance().updateVideo(currentVideo);
+                VideoRepository.getInstance(getApplicationContext()).updateVideo(currentVideo);
                 finish();
             }
         });
