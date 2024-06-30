@@ -200,7 +200,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private void updateLikeDislikeUI() {
         TextView tvLikeCount = findViewById(R.id.tvLikeCount);
         TextView tvUnlikeCount = findViewById(R.id.tvUnlikeCount);
-
         tvLikeCount.setText(String.valueOf(likeCount));
         tvUnlikeCount.setText(String.valueOf(unlikeCount));
     }
