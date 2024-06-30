@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.File;
+
 public class UploadActivity extends AppCompatActivity {
 
     private static final int SELECT_VIDEO_REQUEST_CODE = 100;
@@ -24,6 +26,12 @@ public class UploadActivity extends AppCompatActivity {
 
         Button buttonSelectVideo = findViewById(R.id.button_select_video);
         buttonSelectVideo.setOnClickListener(v -> selectVideo());
+        buttonSelectVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectVideo();
+            }
+        });
 
         Button buttonUploadVideo = findViewById(R.id.button_upload_video);
         buttonUploadVideo.setOnClickListener(v -> uploadVideo());
@@ -33,6 +41,7 @@ public class UploadActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
 
 
     private void selectVideo() {
