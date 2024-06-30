@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Youtube"
         tools:targetApi="31">
-
+        <activity
+            android:name=".UploadActivity"
+            android:exported="true" />
         <!-- Activities declaration -->
         <activity
             android:name=".SearchActivity"
@@ -25,13 +27,14 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".LogInActivity" />
         <activity android:name=".SignInActivity" />
-
         <activity android:name=".EditVideoActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -42,4 +45,5 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
+
 </manifest>
