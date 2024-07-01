@@ -69,4 +69,5 @@
     <string name="log_in">log in</string>
     <string name="upload_video">Upload Video</string>
     <string name="Upload">Upload</string>
+    <string name="signinUser">Sign In</string>
 </resources>
