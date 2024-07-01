@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -96,6 +97,10 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             }
 
             holder.btnLike.setOnClickListener(v -> {
+                if (!UsersManager.getInstance().isLoggedIn()) {
+                    Toast.makeText(context, "You need to be logged in to like a comment", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (current.isLiked()) {
                     current.setLiked(false);
                     current.setLikes(current.getLikes() - 1);
@@ -107,6 +112,10 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
 
             holder.btnUnlike.setOnClickListener(v -> {
+                if (!UsersManager.getInstance().isLoggedIn()) {
+                    Toast.makeText(context, "You need to be logged in to unlike a comment", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (current.isUnliked()) {
                     current.setUnliked(false);
                     current.setUnlikes(current.getUnlikes() - 1);

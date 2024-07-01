@@ -85,6 +85,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         });
 
         btnLike.setOnClickListener(v -> {
+            if (!UsersManager.getInstance().isLoggedIn()) {
+                Toast.makeText(WatchVideoActivity.this, "You need to be logged in to like a video", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (!isLiked) {
                 likeCount++;
                 isLiked = true;
@@ -102,6 +106,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         });
 
         btnUnlike.setOnClickListener(v -> {
+            if (!UsersManager.getInstance().isLoggedIn()) {
+                Toast.makeText(WatchVideoActivity.this, "You need to be logged in to unlike a video", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (!isUnliked) {
                 unlikeCount++;
                 isUnliked = true;
