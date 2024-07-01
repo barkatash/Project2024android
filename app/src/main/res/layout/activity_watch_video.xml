@@ -177,14 +177,6 @@
                 android:background="@null"
                 android:padding="12dp"/>
 
-            <TextView
-                android:id="@+id/tvUnlikeCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:layout_gravity="center_vertical"
-                android:paddingStart="8dp"/>
-
             <ImageButton
                 android:id="@+id/btnShare"
                 android:layout_width="wrap_content"

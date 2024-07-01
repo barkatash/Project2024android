@@ -156,8 +156,10 @@ public class EditVideoActivity extends AppCompatActivity {
 
     private void saveVideoToInternalStorage(Uri videoUri) {
         try {
+            int videoId = currentVideo.getId();
+            String videoFileName = "video_" + videoId + ".mp4";
             InputStream inputStream = getContentResolver().openInputStream(videoUri);
-            File videoFile = new File(getFilesDir(), "video.mp4");
+            File videoFile = new File(getFilesDir(), videoFileName);
             OutputStream outputStream = new FileOutputStream(videoFile);
 
             byte[] buffer = new byte[1024];
