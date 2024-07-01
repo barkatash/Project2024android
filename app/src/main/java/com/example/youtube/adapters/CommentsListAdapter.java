@@ -28,6 +28,8 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     private Context context;
     private List<Comment> comments;
     private CommentInteractionListener listener;
+    private boolean isLiked = false;
+    private boolean isUnliked = false;
 
     public interface CommentInteractionListener {
         void onDeleteComment(Comment comment);
@@ -79,11 +81,21 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         if (comments != null) {
             final Comment current = comments.get(position);
-
+            if (UsersManager.getInstance().getLoggedInUser() != null) {
+                isLiked = UsersManager.getInstance().getLoggedInUser().getLikedComments().contains(current.getId());
+                isUnliked = UsersManager.getInstance().getLoggedInUser().getUnLikedComments().contains(current.getId());
+            }
+//            if (!isLiked) {
+//                holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
+//            }
+//            if (!isUnliked) {
+//                holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
+//            }
             holder.tvUsername.setText(current.getUser().getUsername());
             holder.tvDescription.setText(current.getDescription());
             holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
+
 
             if (current.getUser().getImageUrl() != null) {
                 Glide.with(context)
@@ -99,12 +111,30 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                     Toast.makeText(context, "You need to be logged in to like a comment", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (current.isLiked()) {
-                    current.setLiked(false);
-                    current.setLikes(current.getLikes() - 1);
-                } else {
-                    current.setLiked(true);
+                if (!isLiked) {
                     current.setLikes(current.getLikes() + 1);
+                    holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_24);
+                    List<Integer> newLikedComments = UsersManager.getInstance().getLoggedInUser().getLikedComments();
+                    newLikedComments.add(current.getId());
+                    UsersManager.getInstance().getLoggedInUser().setLikedComments(newLikedComments);
+
+                    if (isUnliked) {
+                        holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
+                        isUnliked = false;
+                        List<Integer> newUnLikedComments = UsersManager.getInstance().getLoggedInUser().getUnLikedComments();
+                        int index = newUnLikedComments.indexOf(current.getId());
+                        newUnLikedComments.remove(index);
+                        UsersManager.getInstance().getLoggedInUser().setUnLikedComments(newUnLikedComments);
+                    }
+                }
+                else {
+                    current.setLikes(current.getLikes() - 1);
+                    isLiked = false;
+                    holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
+                    List<Integer> newLikedComments = UsersManager.getInstance().getLoggedInUser().getLikedComments();
+                    int index = newLikedComments.indexOf(current.getId());
+                    newLikedComments.remove(index);
+                    UsersManager.getInstance().getLoggedInUser().setLikedComments(newLikedComments);
                 }
                 notifyItemChanged(position);
             });
@@ -114,12 +144,29 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                     Toast.makeText(context, "You need to be logged in to unlike a comment", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (current.isUnliked()) {
-                    current.setUnliked(false);
-                    current.setUnlikes(current.getUnlikes() - 1);
+                if (!isUnliked) {
+                    holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_24);
+                    isUnliked = true;
+                    List<Integer> newUnlikedComments = UsersManager.getInstance().getLoggedInUser().getUnLikedComments();
+                    newUnlikedComments.add(current.getId());
+                    UsersManager.getInstance().getLoggedInUser().setUnLikedComments(newUnlikedComments);
+
+                    if (isLiked) {
+                        current.setLikes(current.getLikes() - 1);
+                        isLiked = false;
+                        holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
+                        List<Integer> newLikedComments = UsersManager.getInstance().getLoggedInUser().getLikedComments();
+                        int index = newLikedComments.indexOf(current.getId());
+                        newLikedComments.remove(index);
+                        UsersManager.getInstance().getLoggedInUser().setLikedComments(newLikedComments);
+                    }
                 } else {
-                    current.setUnliked(true);
-                    current.setUnlikes(current.getUnlikes() + 1);
+                    holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
+                    isUnliked = false;
+                    List<Integer> newUnlikedComments = UsersManager.getInstance().getLoggedInUser().getUnLikedComments();
+                    int index = newUnlikedComments.indexOf(current.getId());
+                    newUnlikedComments.remove(index);
+                    UsersManager.getInstance().getLoggedInUser().setUnLikedComments(newUnlikedComments);
                 }
                 notifyItemChanged(position);
             });
