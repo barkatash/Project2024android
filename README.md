@@ -21,7 +21,8 @@ All dependencies are included in the gradle build file:
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("com.google.code.gson:gson:2.8.8")
-
+    
+In addition, we also implemented the functionality of searching for videos in the search box as you can see and try :). 
 Regarding to our work process: this part was a little harder for us to implement mainly because of the time but we pretty much worked as the same way we did on the web part.
 
 ishay in miluam:
