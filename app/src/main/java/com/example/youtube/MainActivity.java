@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Setup Dark Mode toggle
         ImageButton btnToggleDark = binding.modeBtn;
         btnToggleDark.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +78,12 @@ public class MainActivity extends AppCompatActivity {
         homeBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, MainActivity.class);
             videoRepository.resetVideos();
+            startActivity(i);
+        });
+
+        ImageButton btnUploadVideo = binding.uploadBtn;
+        btnUploadVideo.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this, UploadActivity.class);
             startActivity(i);
         });
 

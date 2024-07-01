@@ -67,4 +67,6 @@
     <string name="share_via_instagram">Share via Instagram</string>
     <string name="share_via_facebook">Share via Facebook</string>
     <string name="log_in">log in</string>
+    <string name="upload_video">Upload Video</string>
+    <string name="Upload">Upload</string>
 </resources>

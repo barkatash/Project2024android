@@ -12,8 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.File;
-
 public class UploadActivity extends AppCompatActivity {
 
     private static final int SELECT_VIDEO_REQUEST_CODE = 100;
@@ -24,7 +22,8 @@ public class UploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-        Button buttonSelectVideo = findViewById(R.id.button_select_video);
+        Button buttonSelectVideo = findViewById(R.id.btnUploadVideo);
+        Button buttonCancel = findViewById(R.id.btnCancel);
         buttonSelectVideo.setOnClickListener(v -> selectVideo());
         buttonSelectVideo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,8 +31,14 @@ public class UploadActivity extends AppCompatActivity {
                 selectVideo();
             }
         });
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
-        Button buttonUploadVideo = findViewById(R.id.button_upload_video);
+        Button buttonUploadVideo = findViewById(R.id.btnSaveVideo);
         buttonUploadVideo.setOnClickListener(v -> uploadVideo());
     }
 
@@ -62,11 +67,7 @@ public class UploadActivity extends AppCompatActivity {
 
     private void uploadVideo() {
         if (selectedVideoUri != null) {
-            // Perform the video upload. This can be to a server or cloud storage service.
-            // This is a placeholder for the actual upload logic.
-            // For example, you can use Retrofit, OkHttp, or another networking library.
 
-            // Assuming upload is successful:
             Toast.makeText(this, "Video Uploaded Successfully", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Please select a video first", Toast.LENGTH_SHORT).show();
