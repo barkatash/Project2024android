@@ -21,7 +21,6 @@ import com.example.youtube.adapters.CommentsListAdapter;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.Video;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WatchVideoActivity extends AppCompatActivity implements CommentsListAdapter.CommentInteractionListener {
@@ -75,11 +74,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                 String commentText = etComment.getText().toString().trim();
                 if (!TextUtils.isEmpty(commentText)) {
                     Comment newComment = new Comment(getVideoId(), UsersManager.getInstance().getLoggedInUser(), commentText, "now", 0, 0);
-                    newComment.setId(filteredComments.size() + 1);
-                    filteredComments.add(0, newComment);
+                    newComment.setId(CommentsManager.getNextCommentId());
                     CommentsManager.getInstance().addComment(newComment);
                     etComment.setText("");
-                    adapter.setComments(filteredComments);
+                    initializeCommentsList();
                 }
             }
         });
@@ -193,8 +191,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         recyclerView.setAdapter(adapter);
 
         int videoId = getIntent().getIntExtra("videoId", -1);
-        comments = CommentsManager.getInstance().getCommentsForVideo(videoId);
-        filteredComments = new ArrayList<>(comments);
+        comments = CommentsManager.getInstance().getComments();
+        filteredComments = CommentsManager.getInstance().getCommentsForVideo(videoId);
         adapter.setComments(filteredComments);
     }
 

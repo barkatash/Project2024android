@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CommentsManager {
     private static CommentsManager instance;
-    private List<Comment> comments;
+    private static List<Comment> comments;
 
     private CommentsManager() {
         comments = new ArrayList<>();
@@ -22,6 +22,9 @@ public class CommentsManager {
 
     public List<Comment> getComments() {
         return comments;
+    }
+    public static int getNextCommentId() {
+        return comments.size() + 1;
     }
 
     public void addComment(Comment comment) {

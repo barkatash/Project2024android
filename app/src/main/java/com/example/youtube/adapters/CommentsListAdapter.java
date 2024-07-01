@@ -85,13 +85,11 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
 
-
-            String imageUrl = current.getUser().getImageUrl();
-            if (imageUrl != null && !imageUrl.isEmpty()) {
+            if (current.getUser().getImageUrl() != null) {
                 Glide.with(context)
-                        .load(UsersManager.getInstance().getLoggedInUser().getImageUrl())
-                        .transform(new CircleCrop())
-                        .into(holder.ivProfilePic);
+                            .load(current.getUser().getImageUrl())
+                            .transform(new CircleCrop())
+                            .into(holder.ivProfilePic);
             } else {
                 holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
             }
@@ -127,6 +125,10 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
 
             holder.btnEdit.setOnClickListener(v -> {
+                if (!UsersManager.getInstance().isLoggedIn()) {
+                    Toast.makeText(context, "You need to be logged in to edit a comment", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 holder.etEditComment.setVisibility(View.VISIBLE);
                 holder.etEditComment.setText(current.getDescription());
                 holder.tvDescription.setVisibility(View.GONE);
@@ -160,6 +162,10 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
 
             holder.btnDelete.setOnClickListener(v -> {
+                if (!UsersManager.getInstance().isLoggedIn()) {
+                    Toast.makeText(context, "You need to be logged in to delete a comment", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (listener != null) {
                     listener.onDeleteComment(current);
                 }

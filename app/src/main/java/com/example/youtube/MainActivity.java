@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setLoggedOutState() {
         binding.youBtnText.setText("Log In");
+        UsersManager.getInstance().setLoggedInUser(null);
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         youBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, LogInActivity.class);

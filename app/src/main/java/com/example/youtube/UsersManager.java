@@ -10,6 +10,10 @@ public class UsersManager {
     private static List<User> users;
     private User loggedInUser = null;
 
+    public void setLoggedInUser(User loggedInUser) {
+        this.loggedInUser = loggedInUser;
+    }
+
     private UsersManager() {
         users = new ArrayList<>();
 
