@@ -30,11 +30,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private List<Comment> comments;
     private List<Comment> filteredComments;
     private int likeCount = 0;
-    private int unlikeCount = 0;
     private boolean isLiked = false;
     private boolean isUnliked = false;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +40,11 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         videoView = findViewById(R.id.videoView);
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
+
+        if (UsersManager.getInstance().getLoggedInUser() != null) {
+            isLiked = UsersManager.getInstance().getLoggedInUser().getLikedVideos().contains(getVideoId());
+            isUnliked = UsersManager.getInstance().getLoggedInUser().getUnLikedVideos().contains(getVideoId());
+        }
 
         initializeViews();
         initializeVideoPlayer();
@@ -55,6 +57,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         ImageButton btnUnlike = findViewById(R.id.btnUnlike);
         ImageButton btnAddComment = findViewById(R.id.btnAddComment);
         EditText etComment = findViewById(R.id.etComment);
+        if (!isLiked) {
+            btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
+            btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
+        }
 
         ImageButton btnShare = findViewById(R.id.btnShare);
         btnShare.setOnClickListener(v -> {
@@ -89,17 +95,35 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
             }
             if (!isLiked) {
                 likeCount++;
+                int videoId = getIntent().getIntExtra("videoId", -1);
+                Video video = VideoRepository.getVideoById(videoId);
+                video.setLikes(likeCount);
                 isLiked = true;
+                btnLike.setImageResource(R.drawable.baseline_thumb_up_24);
+                List<Integer> newLikedVideos = UsersManager.getInstance().getLoggedInUser().getLikedVideos();
+                newLikedVideos.add(getVideoId());
+                UsersManager.getInstance().getLoggedInUser().setLikedVideos(newLikedVideos);
 
                 if (isUnliked) {
-                    unlikeCount--;
+                    btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
                     isUnliked = false;
+                    List<Integer> newUnLikedVideos = UsersManager.getInstance().getLoggedInUser().getUnLikedVideos();
+                    int index = newUnLikedVideos.indexOf(getVideoId());
+                    newUnLikedVideos.remove(index);
+                    UsersManager.getInstance().getLoggedInUser().setUnLikedVideos(newUnLikedVideos);
                 }
             } else {
                 likeCount--;
+                int videoId = getIntent().getIntExtra("videoId", -1);
+                Video video = VideoRepository.getVideoById(videoId);
+                video.setLikes(likeCount);
                 isLiked = false;
+                btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
+                List<Integer> newLikedVideos = UsersManager.getInstance().getLoggedInUser().getLikedVideos();
+                int index = newLikedVideos.indexOf(getVideoId());
+                newLikedVideos.remove(index);
+                UsersManager.getInstance().getLoggedInUser().setLikedVideos(newLikedVideos);
             }
-
             updateLikeDislikeUI();
         });
 
@@ -109,16 +133,31 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                 return;
             }
             if (!isUnliked) {
-                unlikeCount++;
+                btnUnlike.setImageResource(R.drawable.baseline_thumb_down_24);
                 isUnliked = true;
+                List<Integer> newUnlikedVideos = UsersManager.getInstance().getLoggedInUser().getUnLikedVideos();
+                newUnlikedVideos.add(getVideoId());
+                UsersManager.getInstance().getLoggedInUser().setUnLikedVideos(newUnlikedVideos);
 
                 if (isLiked) {
                     likeCount--;
+                    int videoId = getIntent().getIntExtra("videoId", -1);
+                    Video video = VideoRepository.getVideoById(videoId);
+                    video.setLikes(likeCount);
                     isLiked = false;
+                    btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
+                    List<Integer> newLikedVideos = UsersManager.getInstance().getLoggedInUser().getLikedVideos();
+                    int index = newLikedVideos.indexOf(getVideoId());
+                    newLikedVideos.remove(index);
+                    UsersManager.getInstance().getLoggedInUser().setLikedVideos(newLikedVideos);
                 }
             } else {
-                unlikeCount--;
+                btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
                 isUnliked = false;
+                List<Integer> newUnLikedVideos = UsersManager.getInstance().getLoggedInUser().getUnLikedVideos();
+                int index = newUnLikedVideos.indexOf(getVideoId());
+                newUnLikedVideos.remove(index);
+                UsersManager.getInstance().getLoggedInUser().setUnLikedVideos(newUnLikedVideos);
             }
 
             updateLikeDislikeUI();
@@ -126,7 +165,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
 
         if (savedInstanceState != null) {
             likeCount = savedInstanceState.getInt("likeCount", 0);
-            unlikeCount = savedInstanceState.getInt("unlikeCount", 0);
             isLiked = savedInstanceState.getBoolean("isLiked", false);
             isUnliked = savedInstanceState.getBoolean("isUnliked", false);
         }
@@ -140,7 +178,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("likeCount", likeCount);
-        outState.putInt("unlikeCount", unlikeCount);
         outState.putBoolean("isLiked", isLiked);
         outState.putBoolean("isUnliked", isUnliked);
     }
@@ -151,6 +188,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         TextView tvDuration = findViewById(R.id.tvDuration);
         TextView tvViews = findViewById(R.id.tvViews);
         TextView tvUploadDate = findViewById(R.id.tvUploadDate);
+        TextView tvLikeCount = findViewById(R.id.tvLikeCount);
 
         int videoId = getIntent().getIntExtra("videoId", -1);
         Video video = VideoRepository.getVideoById(videoId);
@@ -160,6 +198,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
             tvDuration.setText(video.getDuration());
             tvViews.setText(video.getViews());
             tvUploadDate.setText(video.getUploadDate());
+            likeCount = video.getLikes();
+            tvLikeCount.setText(String.valueOf(likeCount));
         }
     }
 
@@ -205,8 +245,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
 
     private void updateLikeDislikeUI() {
         TextView tvLikeCount = findViewById(R.id.tvLikeCount);
-        TextView tvUnlikeCount = findViewById(R.id.tvUnlikeCount);
         tvLikeCount.setText(String.valueOf(likeCount));
-        tvUnlikeCount.setText(String.valueOf(unlikeCount));
     }
 }
