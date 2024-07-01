@@ -7,7 +7,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.MediaController;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +23,10 @@ public class UploadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
+
+        VideoView videoUpload = findViewById(R.id.videoViewUpload);
+        MediaController mediaController = new MediaController(this);
+        videoUpload.setMediaController(mediaController);
 
         Button buttonSelectVideo = findViewById(R.id.btnUploadVideo);
         Button buttonCancel = findViewById(R.id.btnCancel);
@@ -68,7 +74,6 @@ public class UploadActivity extends AppCompatActivity {
     private void uploadVideo() {
         if (selectedVideoUri != null) {
 
-            Toast.makeText(this, "Video Uploaded Successfully", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Please select a video first", Toast.LENGTH_SHORT).show();
         }

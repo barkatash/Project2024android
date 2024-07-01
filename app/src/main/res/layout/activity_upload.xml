@@ -106,27 +106,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnUploadImage" />
 
-    <Button
-        android:id="@+id/btnSaveVideo"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Upload"
-        app:layout_constraintTop_toBottomOf="@id/videoUploadImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="7dp"
-        android:backgroundTint="#D3D3D3"
-        android:textColor="@color/black"/>
-    <Button
-        android:id="@+id/btnCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cancel"
-        app:layout_constraintTop_toBottomOf="@id/btnSaveVideo"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="7dp"
-        android:backgroundTint="#D3D3D3"
-        android:textColor="@color/black"/>
+        android:gravity="end"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="20dp">
+
+        <Button
+            android:id="@+id/btnSaveVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Upload"
+            app:layout_constraintTop_toBottomOf="@id/videoUploadImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="7dp"
+            android:backgroundTint="#D3D3D3"
+            android:textColor="@color/black"/>
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            app:layout_constraintTop_toBottomOf="@id/btnSaveVideo"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="7dp"
+            android:backgroundTint="#D3D3D3"
+            android:textColor="@color/black"/>
+        </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -83,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton btnUploadVideo = binding.uploadBtn;
         btnUploadVideo.setOnClickListener(v -> {
+            if (!UsersManager.getInstance().isLoggedIn()) {
+                Toast.makeText(MainActivity.this, "You need to be logged in to upload a video", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent i = new Intent(MainActivity.this, UploadActivity.class);
             startActivity(i);
         });
@@ -136,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setLoggedOutState() {
         binding.youBtnText.setText("Log In");
-        youBtn.setImageResource(R.drawable.baseline_account_circle_24); // Default profile icon
+        youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         youBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(i);
