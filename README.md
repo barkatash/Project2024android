@@ -8,6 +8,10 @@ project status part1: in process
 project status part2-server: didn't start yet.
 To run the app via Android Studio, open the project in Android Studio and click on the Run button.
 
+For your usage signed user: 
+username: bar 
+password: 12345678
+
 Dependencies:
 All dependencies are included in the gradle build file:
     // Room components
