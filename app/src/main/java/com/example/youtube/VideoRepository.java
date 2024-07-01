@@ -129,4 +129,12 @@ public class VideoRepository {
         }
         resetVideos();
     }
+    public void addVideo(Video newVideo) {
+        originalVideos.add(0, newVideo);
+        resetVideos();
+    }
+
+    public static int getNextVideoId() {
+        return originalVideos.size() + 1;
+    }
 }

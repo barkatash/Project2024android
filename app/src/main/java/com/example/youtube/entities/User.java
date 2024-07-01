@@ -4,9 +4,9 @@ public class User {
     private String username;
     private String userDisplayName;
     private String password;
-    private String imageUrl = null; // URL of the profile image
+    private String imageUrl = null;
 
-    // Constructor with image URL
+
     public User(String username, String userDisplayName, String password, String imageUrl) {
         this.username = username;
         this.userDisplayName = userDisplayName;
