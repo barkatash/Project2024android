@@ -22,14 +22,13 @@ import com.example.youtube.UsersManager;
 import com.example.youtube.entities.Comment;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapter.CommentViewHolder> {
 
     private Context context;
     private List<Comment> comments;
     private CommentInteractionListener listener;
-    private boolean isLiked = false;
-    private boolean isUnliked = false;
 
     public interface CommentInteractionListener {
         void onDeleteComment(Comment comment);
@@ -81,27 +80,30 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         if (comments != null) {
             final Comment current = comments.get(position);
+            AtomicBoolean isLiked = new AtomicBoolean(false);
+            AtomicBoolean isUnliked = new AtomicBoolean(false);
+
             if (UsersManager.getInstance().getLoggedInUser() != null) {
-                isLiked = UsersManager.getInstance().getLoggedInUser().getLikedComments().contains(current.getId());
-                isUnliked = UsersManager.getInstance().getLoggedInUser().getUnLikedComments().contains(current.getId());
+                isLiked.set(UsersManager.getInstance().getLoggedInUser().getLikedComments().contains(current.getId()));
+                isUnliked.set(UsersManager.getInstance().getLoggedInUser().getUnLikedComments().contains(current.getId()));
+            } else {
+                isUnliked.set(false);
+                isLiked.set(false);
             }
-//            if (!isLiked) {
-//                holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-//            }
-//            if (!isUnliked) {
-//                holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-//            }
+
+            holder.btnLike.setImageResource(isLiked.get() ? R.drawable.baseline_thumb_up_24 : R.drawable.baseline_thumb_up_off_alt_24);
+            holder.btnUnlike.setImageResource(isUnliked.get() ? R.drawable.baseline_thumb_down_24 : R.drawable.baseline_thumb_down_off_alt_24);
+
             holder.tvUsername.setText(current.getUser().getUsername());
             holder.tvDescription.setText(current.getDescription());
             holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
 
-
             if (current.getUser().getImageUrl() != null) {
                 Glide.with(context)
-                            .load(current.getUser().getImageUrl())
-                            .transform(new CircleCrop())
-                            .into(holder.ivProfilePic);
+                        .load(current.getUser().getImageUrl())
+                        .transform(new CircleCrop())
+                        .into(holder.ivProfilePic);
             } else {
                 holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
             }
@@ -111,30 +113,22 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                     Toast.makeText(context, "You need to be logged in to like a comment", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!isLiked) {
+                if (!isLiked.get()) {
                     current.setLikes(current.getLikes() + 1);
                     holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_24);
-                    List<Integer> newLikedComments = UsersManager.getInstance().getLoggedInUser().getLikedComments();
-                    newLikedComments.add(current.getId());
-                    UsersManager.getInstance().getLoggedInUser().setLikedComments(newLikedComments);
+                    UsersManager.getInstance().getLoggedInUser().getLikedComments().add(current.getId());
+                    isLiked.set(true);
 
-                    if (isUnliked) {
+                    if (isUnliked.get()) {
+                        isUnliked.set(false);
                         holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-                        isUnliked = false;
-                        List<Integer> newUnLikedComments = UsersManager.getInstance().getLoggedInUser().getUnLikedComments();
-                        int index = newUnLikedComments.indexOf(current.getId());
-                        newUnLikedComments.remove(index);
-                        UsersManager.getInstance().getLoggedInUser().setUnLikedComments(newUnLikedComments);
+                        UsersManager.getInstance().getLoggedInUser().getUnLikedComments().remove(Integer.valueOf(current.getId()));
                     }
-                }
-                else {
+                } else {
+                    isLiked.set(false);
                     current.setLikes(current.getLikes() - 1);
-                    isLiked = false;
                     holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                    List<Integer> newLikedComments = UsersManager.getInstance().getLoggedInUser().getLikedComments();
-                    int index = newLikedComments.indexOf(current.getId());
-                    newLikedComments.remove(index);
-                    UsersManager.getInstance().getLoggedInUser().setLikedComments(newLikedComments);
+                    UsersManager.getInstance().getLoggedInUser().getLikedComments().remove(Integer.valueOf(current.getId()));
                 }
                 notifyItemChanged(position);
             });
@@ -144,29 +138,20 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                     Toast.makeText(context, "You need to be logged in to unlike a comment", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (!isUnliked) {
+                if (!isUnliked.get()) {
+                    isUnliked.set(true);
                     holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_24);
-                    isUnliked = true;
-                    List<Integer> newUnlikedComments = UsersManager.getInstance().getLoggedInUser().getUnLikedComments();
-                    newUnlikedComments.add(current.getId());
-                    UsersManager.getInstance().getLoggedInUser().setUnLikedComments(newUnlikedComments);
+                    UsersManager.getInstance().getLoggedInUser().getUnLikedComments().add(current.getId());
 
-                    if (isLiked) {
+                    if (isLiked.get()) {
+                        isLiked.set(false);
                         current.setLikes(current.getLikes() - 1);
-                        isLiked = false;
                         holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                        List<Integer> newLikedComments = UsersManager.getInstance().getLoggedInUser().getLikedComments();
-                        int index = newLikedComments.indexOf(current.getId());
-                        newLikedComments.remove(index);
-                        UsersManager.getInstance().getLoggedInUser().setLikedComments(newLikedComments);
+                        UsersManager.getInstance().getLoggedInUser().getLikedComments().remove(Integer.valueOf(current.getId()));
                     }
                 } else {
                     holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-                    isUnliked = false;
-                    List<Integer> newUnlikedComments = UsersManager.getInstance().getLoggedInUser().getUnLikedComments();
-                    int index = newUnlikedComments.indexOf(current.getId());
-                    newUnlikedComments.remove(index);
-                    UsersManager.getInstance().getLoggedInUser().setUnLikedComments(newUnlikedComments);
+                    UsersManager.getInstance().getLoggedInUser().getUnLikedComments().remove(Integer.valueOf(current.getId()));
                 }
                 notifyItemChanged(position);
             });
