@@ -9,6 +9,9 @@ public class User {
     private String password;
     private String imageUrl = null;
     private List<Integer> likedVideos = new ArrayList<>();
+
+    public User() {}
+
     private List<Integer> unLikedVideos = new ArrayList<>();
     private List<Integer> likedComments = new ArrayList<>();
     private List<Integer> unLikedComments = new ArrayList<>();
