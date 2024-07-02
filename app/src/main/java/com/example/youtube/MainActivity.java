@@ -121,16 +121,13 @@ public class MainActivity extends AppCompatActivity {
     private void setLoggedInState() {
         binding.youBtnText.setText("Log Out");
         User loggedInUser = UsersManager.getInstance().getLoggedInUser();
+        youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         if (loggedInUser != null) {
-            String imageUrl = loggedInUser.getImageUrl();
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-
+             if (loggedInUser.getImageUrl() != null && !loggedInUser.getImageUrl().isEmpty()) {
                 Glide.with(this)
                         .load(UsersManager.getInstance().getLoggedInUser().getImageUrl())
                         .transform(new CircleCrop())
                         .into(youBtn);
-            } else {
-                youBtn.setImageResource(R.drawable.baseline_account_circle_24);
             }
         }
         youBtn.setOnClickListener(v -> {

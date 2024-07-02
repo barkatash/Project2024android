@@ -98,14 +98,13 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             holder.tvDescription.setText(current.getDescription());
             holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
+            holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
 
-            if (current.getUser().getImageUrl() != null) {
+             if (current.getUser().getImageUrl() != null && !current.getUser().getImageUrl().isEmpty()) {
                 Glide.with(context)
                         .load(current.getUser().getImageUrl())
                         .transform(new CircleCrop())
                         .into(holder.ivProfilePic);
-            } else {
-                holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
             }
 
             holder.btnLike.setOnClickListener(v -> {
