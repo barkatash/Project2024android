@@ -94,7 +94,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             holder.btnLike.setImageResource(isLiked.get() ? R.drawable.baseline_thumb_up_24 : R.drawable.baseline_thumb_up_off_alt_24);
             holder.btnUnlike.setImageResource(isUnliked.get() ? R.drawable.baseline_thumb_down_24 : R.drawable.baseline_thumb_down_off_alt_24);
 
-            holder.tvUsername.setText(current.getUser().getUsername());
+            holder.tvUsername.setText(current.getUser().getUserDisplayName());
             holder.tvDescription.setText(current.getDescription());
             holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
