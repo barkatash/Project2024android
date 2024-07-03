@@ -7,6 +7,9 @@ part1 will be on the main branch.
 part2 with server will be on the main-server branch.
 project status part1: finish.
 project status part2-server: didn't start yet.
+link to server github: https://github.com/barkatash/project2024-server
+
+part1 - client - main branch
 To run the app via Android Studio, open the project in Android Studio and click on the Run button.
 
 For your usage signed user: 
