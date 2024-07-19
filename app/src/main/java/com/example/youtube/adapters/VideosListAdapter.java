@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.youtube.EditVideoActivity;
 import com.example.youtube.R;
 import com.example.youtube.UsersManager;
-import com.example.youtube.VideoRepository;
+import com.example.youtube.repositories.VideoRepository;
 import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.entities.Video;
 
@@ -27,6 +27,8 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
     private final LayoutInflater mInflater;
     private List<Video> videos;
     private Context context;
+
+    VideoRepository videoRepository = new VideoRepository();
 
     public VideosListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
@@ -44,18 +46,18 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
     public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
         if (videos != null) {
             final Video current = videos.get(position);
-            holder.tvAuthor.setText(current.getAuthor());
-            holder.tvContent.setText(current.getContent());
+            holder.tvAuthor.setText(current.getUploader());
+            holder.tvContent.setText(current.getTitle());
 
-            if (current.getImageBitMap() != null) {
-                holder.ivPic.setImageBitmap(current.getImageBitMap());
-            }
-            else {
-                holder.ivPic.setImageResource(current.getPic());
-            }
+//            if (current.getImageBitMap() != null) {
+//                holder.ivPic.setImageBitmap(current.getImageBitMap());
+//            }
+//            else {
+//                holder.ivPic.setImageResource(current.getImage());
+//            }
 
             holder.tvDuration.setText(current.getDuration());
-            holder.tvViews.setText(current.getViews());
+            holder.tvViews.setText(current.getVisits());
             holder.tvUploadDate.setText(current.getUploadDate());
 
             holder.ivPic.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +86,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     if (UsersManager.getInstance().isLoggedIn()) {
-                        VideoRepository.getInstance(context.getApplicationContext()).deleteVideo(current.getId());
+                        videoRepository.deleteVideo(current.getId());
                         videos.remove(current);
                         notifyDataSetChanged();
                     } else{

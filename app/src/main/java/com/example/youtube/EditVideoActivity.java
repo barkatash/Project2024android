@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.VideoRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,14 +55,14 @@ public class EditVideoActivity extends AppCompatActivity {
         videoImageView = findViewById(R.id.videoImage);
         videoViewUpload = findViewById(R.id.videoViewUpload);
 
-        int videoId = getIntent().getIntExtra("videoId", -1);
+        String videoId = getIntent().getStringExtra("videoId");
         currentVideo = VideoRepository.getVideoById(videoId);
 
         MediaController mediaController = new MediaController(this);
         videoViewUpload.setMediaController(mediaController);
 
         if (currentVideo != null) {
-            String videoFile = currentVideo.getVideoFilePath();
+            String videoFile = currentVideo.getVideo();
             if (videoFile != null) {
                 videoViewUpload.setVideoPath(videoFile);
             } else {
@@ -71,10 +72,10 @@ public class EditVideoActivity extends AppCompatActivity {
             videoViewUpload.start();
         }
 
-        if (videoId != -1) {
+        if (videoId != null) {
             if (currentVideo != null) {
-                etAuthor.setText(currentVideo.getAuthor());
-                etContent.setText(currentVideo.getContent());
+                etAuthor.setText(currentVideo.getUploader());
+                etContent.setText(currentVideo.getTitle());
                 etDuration.setText(currentVideo.getDuration());
             }
         }
@@ -96,10 +97,10 @@ public class EditVideoActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentVideo.setAuthor(etAuthor.getText().toString().trim());
-                currentVideo.setContent(etContent.getText().toString().trim());
+                currentVideo.setUploader(etAuthor.getText().toString().trim());
+                currentVideo.setTitle(etContent.getText().toString().trim());
                 currentVideo.setDuration(etDuration.getText().toString().trim());
-                VideoRepository.getInstance(getApplicationContext()).updateVideo(currentVideo);
+                //VideoRepository.getInstance(getApplicationContext()).updateVideo(currentVideo);
                 finish();
             }
         });
@@ -136,7 +137,6 @@ public class EditVideoActivity extends AppCompatActivity {
                         bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     }
                     videoImageView.setImageBitmap(bitmap);
-                    currentVideo.setImageBitMap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -148,15 +148,13 @@ public class EditVideoActivity extends AppCompatActivity {
                 saveVideoToInternalStorage(videoUri);
                 videoViewUpload.setVideoURI(videoUri);
                 videoViewUpload.start();
-
-                currentVideo.setVideoFileUri(videoUri);
             }
         }
     }
 
     private void saveVideoToInternalStorage(Uri videoUri) {
         try {
-            int videoId = currentVideo.getId();
+            String videoId = currentVideo.getId();
             String videoFileName = "video_" + videoId + ".mp4";
             InputStream inputStream = getContentResolver().openInputStream(videoUri);
             File videoFile = new File(getFilesDir(), videoFileName);
@@ -169,7 +167,6 @@ public class EditVideoActivity extends AppCompatActivity {
             }
             outputStream.close();
             inputStream.close();
-            currentVideo.setVideoFilePath(videoFile.getAbsolutePath());
 
         } catch (IOException e) {
             e.printStackTrace();

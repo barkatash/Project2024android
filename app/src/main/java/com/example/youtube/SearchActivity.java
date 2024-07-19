@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youtube.databinding.ActivitySearchBinding;
+import com.example.youtube.repositories.VideoRepository;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -31,8 +32,8 @@ public class SearchActivity extends AppCompatActivity {
         EditText searchEditText = binding.searchEditText;
         String query = searchEditText.getText().toString().trim();
 
-        VideoRepository videoRepository = VideoRepository.getInstance(getApplicationContext());
-        videoRepository.searchVideos(query);
+        VideoRepository videoRepository = new VideoRepository();
+//        videoRepository.searchVideos(query);
         finish();
     }
 }

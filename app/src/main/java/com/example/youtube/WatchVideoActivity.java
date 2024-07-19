@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.youtube.adapters.CommentsListAdapter;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
 
@@ -182,13 +183,13 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         TextView tvUploadDate = findViewById(R.id.tvUploadDate);
         TextView tvLikeCount = findViewById(R.id.tvLikeCount);
 
-        int videoId = getIntent().getIntExtra("videoId", -1);
+        String videoId = getIntent().getStringExtra("videoId");
         Video video = VideoRepository.getVideoById(videoId);
         if (video != null) {
-            tvAuthor.setText(video.getAuthor());
-            tvContent.setText(video.getContent());
+            tvAuthor.setText(video.getUploader());
+            tvContent.setText(video.getTitle());
             tvDuration.setText(video.getDuration());
-            tvViews.setText(video.getViews());
+            tvViews.setText(video.getVisits());
             tvUploadDate.setText(video.getUploadDate());
             likeCount = video.getLikes();
             tvLikeCount.setText(String.valueOf(likeCount));
@@ -196,18 +197,18 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     }
 
     private void initializeVideoPlayer() {
-        int videoId = getIntent().getIntExtra("videoId", -1);
+        String videoId = getIntent().getStringExtra("videoId");
         Video video = VideoRepository.getVideoById(videoId);
         if (video != null) {
-            String videoFile = video.getVideoFilePath();
-            if (videoFile != null) {
-                videoView.setVideoPath(videoFile);
-                videoView.start();
-            } else {
+//            String videoFile = video.getVideoFilePath();
+//            if (videoFile != null) {
+//                videoView.setVideoPath(videoFile);
+//                videoView.start();
+//            } else {
                 String path = "android.resource://" + getPackageName() + "/" + video.getVideo();
                 videoView.setVideoURI(Uri.parse(path));
                 videoView.start();
-            }
+//            }
         }
     }
 
@@ -236,7 +237,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     }
 
     private void updateLikeDislikeUI() {
-        int videoId = getIntent().getIntExtra("videoId", -1);
+        String videoId = getIntent().getStringExtra("videoId");
         Video video = VideoRepository.getVideoById(videoId);
         video.setLikes(likeCount);
         TextView tvLikeCount = findViewById(R.id.tvLikeCount);

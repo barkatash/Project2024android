@@ -1,65 +1,44 @@
 package com.example.youtube.entities;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
-
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
 public class Video {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-    private String author;
-    private int video;
-    private String content;
+//    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
+    @NonNull
+    private String id;
+    private String uploader;
+    private String video;
+    private String title;
     private int likes;
-    private int pic;
+    private String image;
     private String duration;
-    private String views;
+    private String visits;
 
-    private Bitmap thumbnailBitmap;
-    private Uri videoFileUri;
-    private Uri imageFileUri;
-    private Bitmap imageBitMap;
-    private String videoFilePath;
 
     public Video() {
-
     }
 
-    public String getVideoFilePath() {
-        return videoFilePath;
-    }
 
-    public void setVideoFilePath(String videoFilePath) {
-        this.videoFilePath = videoFilePath;
-    }
-
-    public Bitmap getImageBitMap() {
-        return imageBitMap;
-    }
-
-    public void setImageBitMap(Bitmap imageBitMap) {
-        this.imageBitMap = imageBitMap;
-    }
-
-    public int getVideo() {
+    public String getVideo() {
         return video;
     }
 
-    public void setVideo(int video) {
+    public void setVideo(String video) {
         this.video = video;
     }
 
     private String uploadDate;
 
-    public Video(String author, String content, String duration , String views, String uploadDate, int pic, int video) {
-        this.author = author;
-        this.content = content;
-        this.pic = pic;
+    public Video(String uploader, String title, String duration , String visits, String uploadDate, String image, String video) {
+        this.uploader = uploader;
+        this.title = title;
+        this.image = image;
         this.duration = duration;
-        this.views = views;
+        this.visits = visits;
         this.uploadDate = uploadDate;
         this.video = video;
     }
@@ -72,12 +51,12 @@ public class Video {
         this.duration = duration;
     }
 
-    public String getViews() {
-        return views;
+    public String getVisits() {
+        return visits;
     }
 
-    public void setViews(String views) {
-        this.views = views;
+    public void setVisits(String visits) {
+        this.visits = visits;
     }
 
     public String getUploadDate() {
@@ -88,36 +67,36 @@ public class Video {
         this.uploadDate = uploadDate;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getUploader() {
+        return uploader;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setUploader(String uploader) {
+        this.uploader = uploader;
     }
 
-    public String getContent() {
-        return content;
+    public String getTitle() {
+        return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public int getPic() {
-        return pic;
+    public String getImage() {
+        return image;
     }
 
-    public void setPic(int pic) {
-        this.pic = pic;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public int getLikes() {
@@ -128,26 +107,4 @@ public class Video {
         this.likes = likes;
     }
 
-    public Uri getVideoFileUri() {
-        return videoFileUri;
-    }
-
-    public void setVideoFileUri(Uri videoFileUri) {
-        this.videoFileUri = videoFileUri;
-    }
-
-    public Uri getImageFileUri() {
-        return imageFileUri;
-    }
-
-    public void setImageFileUri(Uri imageFileUri) {
-        this.imageFileUri = imageFileUri;
-    }
-    public Bitmap getThumbnailBitmap() {
-        return thumbnailBitmap;
-    }
-
-    public void setThumbnailBitmap(Bitmap thumbnailBitmap) {
-        this.thumbnailBitmap = thumbnailBitmap;
-    }
 }

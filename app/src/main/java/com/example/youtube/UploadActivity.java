@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.VideoRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,13 +39,14 @@ public class UploadActivity extends AppCompatActivity {
     private ImageView videoUploadImageView;
     private final Video newVideo = new Video();
     String duration = "2:00";
+    VideoRepository videoRepository = new VideoRepository();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-        newVideo.setId(VideoRepository.getNextVideoId());
+
         videoUpload = findViewById(R.id.videoViewUpload);
         MediaController mediaController = new MediaController(this);
         videoUpload.setMediaController(mediaController);
@@ -89,7 +91,6 @@ public class UploadActivity extends AppCompatActivity {
                         bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                     }
                     videoUploadImageView.setImageBitmap(bitmap);
-                    newVideo.setImageBitMap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -101,20 +102,20 @@ public class UploadActivity extends AppCompatActivity {
                 saveVideoToInternalStorage(videoUri);
                 videoUpload.setVideoURI(videoUri);
                 videoUpload.start();
-                newVideo.setVideoFileUri(videoUri);
+//                newVideo.setVideoFileUri(videoUri);
             }
         }
     }
 
     private void uploadVideo() {
-        if (newVideo.getVideoFileUri() != null) {
+        if (newVideo != null) {
             User loggedInUser = UsersManager.getInstance().getLoggedInUser();
-            newVideo.setAuthor(loggedInUser.getUserDisplayName());
-            newVideo.setContent(newContent.getText().toString().trim());
+            newVideo.setUploader(loggedInUser.getUserDisplayName());
+            newVideo.setTitle(newContent.getText().toString().trim());
             newVideo.setDuration(duration);
-            newVideo.setViews("0 views");
+            newVideo.setVisits("0 views");
             newVideo.setUploadDate("now");
-            VideoRepository.getInstance(getApplicationContext()).addVideo(newVideo);
+            videoRepository.addVideo(newVideo);
             Toast.makeText(this, "Video Uploaded Successfully", Toast.LENGTH_SHORT).show();
             goToMainActivity(null);
         } else {
@@ -123,7 +124,7 @@ public class UploadActivity extends AppCompatActivity {
     }
     private void saveVideoToInternalStorage(Uri videoUri) {
         try {
-            int videoId = newVideo.getId();
+            String videoId = newVideo.getId();
             String videoFileName = "video_" + videoId + ".mp4";
             InputStream inputStream = getContentResolver().openInputStream(videoUri);
             File videoFile = new File(getFilesDir(), videoFileName);
@@ -137,7 +138,7 @@ public class UploadActivity extends AppCompatActivity {
             outputStream.close();
             inputStream.close();
             duration = getVideoDuration(videoUri);
-            newVideo.setVideoFilePath(videoFile.getAbsolutePath());
+//            newVideo.setVideoFilePath(videoFile.getAbsolutePath());
 
         } catch (IOException e) {
             e.printStackTrace();

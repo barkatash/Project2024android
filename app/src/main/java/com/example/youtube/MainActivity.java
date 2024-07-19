@@ -1,5 +1,6 @@
 package com.example.youtube;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +20,8 @@ import com.example.youtube.adapters.UsersListAdapter;
 import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.databinding.ActivityMainBinding;
 import com.example.youtube.entities.User;
-import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.VideoRepository;
+import com.example.youtube.viewmodels.VideosViewModel;
 
 import java.util.List;
 
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private UsersListAdapter userAdapter;
     private ImageView youBtn;
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,12 +56,19 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView lstVideos = binding.lstVideos;
         videoAdapter = new VideosListAdapter(this);
+
+        VideosViewModel viewModel = new ViewModelProvider(this).get(VideosViewModel.class);
+        viewModel.getVideos().observe(this, videos -> {
+            videoAdapter.setVideos(videos);
+            //videoAdapter.notifyDataSetChanged();
+        });
+
         lstVideos.setAdapter(videoAdapter);
         lstVideos.setLayoutManager(new LinearLayoutManager(this));
 
-        VideoRepository videoRepository = VideoRepository.getInstance(getApplicationContext());
-        List<Video> videos = videoRepository.getVideos();
-        videoAdapter.setVideos(videos);
+        VideoRepository videoRepository = new VideoRepository();
+        //List<Video> videos = videoRepository.getVideos();
+        //videoAdapter.setVideos(videos);
 
         RecyclerView lstUsers = binding.lstUsers;
         userAdapter = new UsersListAdapter(this);
@@ -78,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton homeBtn = binding.homeBtn;
         homeBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, MainActivity.class);
-            videoRepository.resetVideos();
+            //videoRepository.resetVideos();
             startActivity(i);
         });
 
@@ -99,9 +110,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        VideoRepository videoRepository = VideoRepository.getInstance(getApplicationContext());
-        List<Video> videos = videoRepository.getVideos();
-        videoAdapter.setVideos(videos);
+        //VideoRepository videoRepository = VideoRepository.getInstance(getApplicationContext());
+        //List<Video> videos = videoRepository.getVideos();
+        //videoAdapter.setVideos(videos);
 
         UsersManager usersManager = UsersManager.getInstance();
         List<User> users = usersManager.getUsers();
