@@ -18,7 +18,6 @@ public class VideoRepository {
         videoListData = new VideoListData();
         api = new VideoAPI(videoListData, dao);
         api.getAllVideos(videoListData);
-
     }
     class VideoListData extends MutableLiveData<List<Video>>
     {
@@ -41,11 +40,6 @@ public class VideoRepository {
     }
 
     public static Video getVideoById(String videoId) {
-//        for (Video video : originalVideos) {
-//            if (video.getId() == videoId) {
-//                return video;
-//            }
-//        }
         return null;
     }
     public void resetVideos() {

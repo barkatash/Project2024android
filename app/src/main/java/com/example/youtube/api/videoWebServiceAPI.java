@@ -13,7 +13,7 @@ import retrofit2.http.Path;
 
 public interface videoWebServiceAPI {
 
-    @GET("videos/all")
+    @GET("videos")
     Call<List<Video>> getVideos();
     @POST("users/{id}/videos")
     Call<Void> addVideo (@Body Video video);

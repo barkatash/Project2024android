@@ -13,12 +13,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.youtube.EditVideoActivity;
 import com.example.youtube.R;
 import com.example.youtube.UsersManager;
-import com.example.youtube.repositories.VideoRepository;
 import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
 
@@ -48,18 +49,14 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             final Video current = videos.get(position);
             holder.tvAuthor.setText(current.getUploader());
             holder.tvContent.setText(current.getTitle());
-
-//            if (current.getImageBitMap() != null) {
-//                holder.ivPic.setImageBitmap(current.getImageBitMap());
-//            }
-//            else {
-//                holder.ivPic.setImageResource(current.getImage());
-//            }
-
             holder.tvDuration.setText(current.getDuration());
             holder.tvViews.setText(current.getVisits());
             holder.tvUploadDate.setText(current.getUploadDate());
 
+            String imageUrl = "http://10.0.2.2:8080/" + current.getImage();
+            Glide.with(holder.ivPic.getContext())
+                    .load(imageUrl)
+                    .into(holder.ivPic);
             holder.ivPic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

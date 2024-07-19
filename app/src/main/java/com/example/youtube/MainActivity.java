@@ -3,6 +3,7 @@ package com.example.youtube;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -20,7 +21,6 @@ import com.example.youtube.adapters.UsersListAdapter;
 import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.databinding.ActivityMainBinding;
 import com.example.youtube.entities.User;
-import com.example.youtube.repositories.VideoRepository;
 import com.example.youtube.viewmodels.VideosViewModel;
 
 import java.util.List;
@@ -60,15 +60,12 @@ public class MainActivity extends AppCompatActivity {
         VideosViewModel viewModel = new ViewModelProvider(this).get(VideosViewModel.class);
         viewModel.getVideos().observe(this, videos -> {
             videoAdapter.setVideos(videos);
-            //videoAdapter.notifyDataSetChanged();
+            // Optionally log the videos to debug
+            Log.d("MainActivity", "Videos: " + videos);
         });
 
         lstVideos.setAdapter(videoAdapter);
         lstVideos.setLayoutManager(new LinearLayoutManager(this));
-
-        VideoRepository videoRepository = new VideoRepository();
-        //List<Video> videos = videoRepository.getVideos();
-        //videoAdapter.setVideos(videos);
 
         RecyclerView lstUsers = binding.lstUsers;
         userAdapter = new UsersListAdapter(this);
@@ -78,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         UsersManager usersManager = UsersManager.getInstance();
         List<User> users = usersManager.getUsers();
         userAdapter.setUsers(users);
-
 
         ImageButton searchBtn = binding.searchBtn;
         searchBtn.setOnClickListener(v -> {
