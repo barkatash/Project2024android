@@ -4,10 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -27,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.example.youtube.entities.User;
+import com.example.youtube.repositories.UserRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -205,7 +203,7 @@ public class SignInActivity extends AppCompatActivity {
         } else {
             newUser = new User(username, displayName, password);
         }
-        UsersManager.addUser(newUser);
+        UserRepository.addUser(newUser);
 
         Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(SignInActivity.this, LogInActivity.class));

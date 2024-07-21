@@ -5,6 +5,8 @@ import android.net.Uri;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 @Entity
 public class Video {
@@ -17,6 +19,7 @@ public class Video {
     private int pic;
     private String duration;
     private String views;
+    private String uploadDate;
 
     private Bitmap thumbnailBitmap;
     private Uri videoFileUri;
@@ -51,8 +54,6 @@ public class Video {
     public void setVideo(int video) {
         this.video = video;
     }
-
-    private String uploadDate;
 
     public Video(String author, String content, String duration , String views, String uploadDate, int pic, int video) {
         this.author = author;

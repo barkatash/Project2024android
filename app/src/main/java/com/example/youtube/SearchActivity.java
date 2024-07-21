@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youtube.databinding.ActivitySearchBinding;
+import com.example.youtube.repositories.VideoRepository;
 
 public class SearchActivity extends AppCompatActivity {
 

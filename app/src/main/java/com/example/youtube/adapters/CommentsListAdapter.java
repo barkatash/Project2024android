@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.youtube.R;
-import com.example.youtube.UsersManager;
+import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.entities.Comment;
 
 import java.util.List;
@@ -29,6 +29,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     private Context context;
     private List<Comment> comments;
     private CommentInteractionListener listener;
+    private UserRepository userRepository; // Added repository field
 
     public interface CommentInteractionListener {
         void onDeleteComment(Comment comment);
@@ -37,6 +38,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     public CommentsListAdapter(Context context, CommentInteractionListener listener) {
         this.context = context;
         this.listener = listener;
+        this.userRepository = UserRepository.getInstance(context.getApplicationContext()); // Initialized repository
     }
 
     public class CommentViewHolder extends RecyclerView.ViewHolder {
@@ -83,9 +85,9 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             AtomicBoolean isLiked = new AtomicBoolean(false);
             AtomicBoolean isUnliked = new AtomicBoolean(false);
 
-            if (UsersManager.getInstance().getLoggedInUser() != null) {
-                isLiked.set(UsersManager.getInstance().getLoggedInUser().getLikedComments().contains(current.getId()));
-                isUnliked.set(UsersManager.getInstance().getLoggedInUser().getUnLikedComments().contains(current.getId()));
+            if (userRepository.getLoggedInUser().getValue() != null) {
+                isLiked.set(userRepository.getLoggedInUser().getValue().getLikedVideos().contains(current.getVideo()));
+                isUnliked.set(userRepository.getLoggedInUser().getValue().getUnLikedVideos().contains(current.getVideo()));
             } else {
                 isUnliked.set(false);
                 isLiked.set(false);
@@ -109,55 +111,55 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             }
 
             holder.btnLike.setOnClickListener(v -> {
-                if (!UsersManager.getInstance().isLoggedIn()) {
+                if (userRepository.getLoggedInUser().getValue() == null) {
                     Toast.makeText(context, "You need to be logged in to like a comment", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!isLiked.get()) {
                     current.setLikes(current.getLikes() + 1);
                     holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_24);
-                    UsersManager.getInstance().getLoggedInUser().getLikedComments().add(current.getId());
+                    userRepository.getLoggedInUser().getValue().addLikedVideo(current.getVideo());
                     isLiked.set(true);
 
                     if (isUnliked.get()) {
                         isUnliked.set(false);
                         holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-                        UsersManager.getInstance().getLoggedInUser().getUnLikedComments().remove(Integer.valueOf(current.getId()));
+                        userRepository.getLoggedInUser().getValue().getUnLikedVideos().remove(current.getVideo());
                     }
                 } else {
                     isLiked.set(false);
                     current.setLikes(current.getLikes() - 1);
                     holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                    UsersManager.getInstance().getLoggedInUser().getLikedComments().remove(Integer.valueOf(current.getId()));
+                    userRepository.getLoggedInUser().getValue().getLikedVideos().remove(current.getVideo());
                 }
                 notifyItemChanged(position);
             });
 
             holder.btnUnlike.setOnClickListener(v -> {
-                if (!UsersManager.getInstance().isLoggedIn()) {
+                if (userRepository.getLoggedInUser().getValue() == null) {
                     Toast.makeText(context, "You need to be logged in to unlike a comment", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!isUnliked.get()) {
                     isUnliked.set(true);
                     holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_24);
-                    UsersManager.getInstance().getLoggedInUser().getUnLikedComments().add(current.getId());
+                    userRepository.getLoggedInUser().getValue().getUnLikedVideos().add(current.getVideo());
 
                     if (isLiked.get()) {
                         isLiked.set(false);
                         current.setLikes(current.getLikes() - 1);
                         holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                        UsersManager.getInstance().getLoggedInUser().getLikedComments().remove(Integer.valueOf(current.getId()));
+                        userRepository.getLoggedInUser().getValue().getLikedVideos().remove(Integer.valueOf(current.getId()));
                     }
                 } else {
                     holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-                    UsersManager.getInstance().getLoggedInUser().getUnLikedComments().remove(Integer.valueOf(current.getId()));
+                    userRepository.getLoggedInUser().getValue().getUnLikedVideos().remove(Integer.valueOf(current.getId()));
                 }
                 notifyItemChanged(position);
             });
 
             holder.btnEdit.setOnClickListener(v -> {
-                if (!UsersManager.getInstance().isLoggedIn()) {
+                if (userRepository.getLoggedInUser().getValue() == null) {
                     Toast.makeText(context, "You need to be logged in to edit a comment", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -194,7 +196,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
 
             holder.btnDelete.setOnClickListener(v -> {
-                if (!UsersManager.getInstance().isLoggedIn()) {
+                if (userRepository.getLoggedInUser().getValue() == null) {
                     Toast.makeText(context, "You need to be logged in to delete a comment", Toast.LENGTH_SHORT).show();
                     return;
                 }

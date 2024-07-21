@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youtube.databinding.ActivityLoginBinding;
+import com.example.youtube.repositories.UserRepository;
 
 public class LogInActivity extends AppCompatActivity {
     private EditText usernameInput, passwordInput;
@@ -54,7 +55,7 @@ public class LogInActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (UsersManager.getInstance().loginUser(username, password)) {
+        if (UserRepository.getInstance().loginUser(username, password)) {
             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
             logInButton.postDelayed(new Runnable() {
                 @Override

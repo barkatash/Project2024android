@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtube.EditVideoActivity;
 import com.example.youtube.R;
-import com.example.youtube.UsersManager;
-import com.example.youtube.VideoRepository;
+import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.repositories.VideoRepository;
 import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.entities.Video;
 
@@ -27,10 +27,14 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
     private final LayoutInflater mInflater;
     private List<Video> videos;
     private Context context;
+    private UserRepository userRepository; // Added repository field
+    private VideoRepository videoRepository; // Added repository field
 
     public VideosListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
+        this.userRepository = UserRepository.getInstance(context.getApplicationContext()); // Initialized repository
+        this.videoRepository = VideoRepository.getInstance(context.getApplicationContext()); // Initialized repository
     }
 
     @NonNull
@@ -49,8 +53,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
 
             if (current.getImageBitMap() != null) {
                 holder.ivPic.setImageBitmap(current.getImageBitMap());
-            }
-            else {
+            } else {
                 holder.ivPic.setImageResource(current.getPic());
             }
 
@@ -58,38 +61,29 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.tvViews.setText(current.getViews());
             holder.tvUploadDate.setText(current.getUploadDate());
 
-            holder.ivPic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, WatchVideoActivity.class);
+            holder.ivPic.setOnClickListener(v -> {
+                Intent intent = new Intent(context, WatchVideoActivity.class);
+                intent.putExtra("videoId", current.getId());
+                context.startActivity(intent);
+            });
+
+            holder.btnEdit.setOnClickListener(v -> {
+                if (userRepository.getLoggedInUser().getValue() != null) {
+                    Intent intent = new Intent(context, EditVideoActivity.class);
                     intent.putExtra("videoId", current.getId());
                     context.startActivity(intent);
+                } else {
+                    Toast.makeText(context, "You need to be logged in to edit a video.", Toast.LENGTH_SHORT).show();
                 }
             });
 
-            holder.btnEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (UsersManager.getInstance().isLoggedIn()) {
-                        Intent intent = new Intent(context, EditVideoActivity.class);
-                        intent.putExtra("videoId", current.getId());
-                        context.startActivity(intent);
-                    } else {
-                        Toast.makeText(context ,"You need to be logged in to edit a video.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-            holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (UsersManager.getInstance().isLoggedIn()) {
-                        VideoRepository.getInstance(context.getApplicationContext()).deleteVideo(current.getId());
-                        videos.remove(current);
-                        notifyDataSetChanged();
-                    } else{
-                        Toast.makeText(context ,"You need to be logged in to delete a video.", Toast.LENGTH_SHORT).show();
-                    }
+            holder.btnDelete.setOnClickListener(v -> {
+                if (userRepository.getLoggedInUser().getValue() != null) {
+                    videoRepository.delete(current);
+                    videos.remove(current);
+                    notifyDataSetChanged();
+                } else {
+                    Toast.makeText(context, "You need to be logged in to delete a video.", Toast.LENGTH_SHORT).show();
                 }
             });
         }

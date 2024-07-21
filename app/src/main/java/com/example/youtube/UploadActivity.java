@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.repositories.VideoRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -108,7 +110,7 @@ public class UploadActivity extends AppCompatActivity {
 
     private void uploadVideo() {
         if (newVideo.getVideoFileUri() != null) {
-            User loggedInUser = UsersManager.getInstance().getLoggedInUser();
+            User loggedInUser = UserRepository.getInstance().getLoggedInUser();
             newVideo.setAuthor(loggedInUser.getUserDisplayName());
             newVideo.setContent(newContent.getText().toString().trim());
             newVideo.setDuration(duration);
