@@ -1,11 +1,8 @@
 package com.example.youtube.entities;
 
-
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
 
 @Entity(foreignKeys = @ForeignKey(entity = User.class,
         parentColumns = "id",
@@ -14,26 +11,28 @@ import androidx.room.ForeignKey;
 public class Comment {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private Video video;
-    private User author; // Foreign key to User
+    private Integer videoId;
+    private Integer authorId;
     private String description;
     private String uploadDate;
     private int likes;
     private int dislikes;
 
-    // Constructor, Getters, and Setters
-    public Comment(Video video, User author, String description, String uploadDate, int likes, int dislikes) {
-        this.video = video;
-        this.author = author;
+    // No-argument constructor
+    public Comment() {
+    }
+
+    // Constructor with all fields
+    public Comment(Integer videoId, Integer authorId, String description, String uploadDate, int likes, int dislikes) {
+        this.videoId = videoId;
+        this.authorId = authorId;
         this.description = description;
         this.uploadDate = uploadDate;
         this.likes = likes;
         this.dislikes = dislikes;
     }
 
-    public int getUnlikes() { return dislikes; }
-
-    public void setUnlikes(int unlikes) { this.dislikes = unlikes; }
+    // Getters and Setters
 
     public int getId() {
         return id;
@@ -43,16 +42,20 @@ public class Comment {
         this.id = id;
     }
 
-    public Video getVideo() {
-        return video;
+    public Integer getVideoId() {
+        return videoId;
     }
 
-    public void setVideoId(Video videoId) {
-        this.video = videoId;
+    public void setVideoId(Integer videoId) {
+        this.videoId = videoId;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public Integer getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
     }
 
     public String getDescription() {
@@ -85,8 +88,5 @@ public class Comment {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
-    }
-    public User getUser() {
-        return author;
     }
 }

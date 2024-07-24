@@ -1,5 +1,9 @@
 package com.example.youtube.remoteRepositories;
 
+import android.content.Context;
+
+import com.example.youtube.R;
+import com.example.youtube.UnsafeOkHttpClient;
 import com.example.youtube.apiService.VideoApiService;
 import com.example.youtube.entities.Video;
 
@@ -13,11 +17,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class VideoRemoteRepository {
     private VideoApiService apiService;
 
-    public VideoRemoteRepository() {
+    public VideoRemoteRepository(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://your-backend-url.com/")
+                .baseUrl(context.getString(R.string.BaseUrl))
+                .client(UnsafeOkHttpClient.getUnsafeOkHttpClient()) // Use the unsafe client
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         apiService = retrofit.create(VideoApiService.class);
     }
 

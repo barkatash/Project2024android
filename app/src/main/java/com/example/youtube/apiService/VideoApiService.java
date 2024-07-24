@@ -10,6 +10,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface VideoApiService {
     @GET("videos")
@@ -17,6 +18,9 @@ public interface VideoApiService {
 
     @GET("videos/{id}")
     Call<Video> getVideoById(@Path("id") int id);
+
+    @GET("videos/search")
+    Call<List<Video>> searchVideos(@Query("query") String query);
 
     @POST("videos")
     Call<Video> addVideo(@Body Video video);

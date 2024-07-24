@@ -1,68 +1,56 @@
 package com.example.youtube.entities;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import com.example.youtube.Converters;
+
+import java.util.List;
 
 @Entity
+@TypeConverters(Converters.class)
 public class Video {
+
     @PrimaryKey(autoGenerate = true)
-    private int id;
-    private String author;
-    private int video;
-    private String content;
-    private int likes;
-    private int pic;
-    private String duration;
-    private String views;
-    private String uploadDate;
-
-    private Bitmap thumbnailBitmap;
-    private Uri videoFileUri;
-    private Uri imageFileUri;
-    private Bitmap imageBitMap;
+    private int videoId;
+    private String imageFilePath;
     private String videoFilePath;
+    private String title;
+    private String author;
+    private String duration;
+    private int views;
+    private String uploadDate;
+    private String description;
+    private int likes;
 
-    public Video() {
+    @TypeConverters(Converters.class)
+    private List<Integer> categoryId;
 
+    // Getters and Setters
+
+    public int getVideoId() {
+        return videoId;
     }
 
-    public String getVideoFilePath() {
-        return videoFilePath;
+    public void setVideoId(int videoId) {
+        this.videoId = videoId;
     }
 
-    public void setVideoFilePath(String videoFilePath) {
-        this.videoFilePath = videoFilePath;
+    public String getAuthor() {
+        return author;
     }
 
-    public Bitmap getImageBitMap() {
-        return imageBitMap;
-    }
-
-    public void setImageBitMap(Bitmap imageBitMap) {
-        this.imageBitMap = imageBitMap;
-    }
-
-    public int getVideo() {
-        return video;
-    }
-
-    public void setVideo(int video) {
-        this.video = video;
-    }
-
-    public Video(String author, String content, String duration , String views, String uploadDate, int pic, int video) {
+    public void setAuthor(String author) {
         this.author = author;
-        this.content = content;
-        this.pic = pic;
-        this.duration = duration;
-        this.views = views;
-        this.uploadDate = uploadDate;
-        this.video = video;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public String getDuration() {
@@ -73,11 +61,11 @@ public class Video {
         this.duration = duration;
     }
 
-    public String getViews() {
+    public int getViews() {
         return views;
     }
 
-    public void setViews(String views) {
+    public void setViews(int views) {
         this.views = views;
     }
 
@@ -89,66 +77,43 @@ public class Video {
         this.uploadDate = uploadDate;
     }
 
-    public int getId() {
-        return id;
+    public String getVideoFilePath() {
+        return videoFilePath;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setVideoFilePath(String videoFilePath) {
+        this.videoFilePath = videoFilePath;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getImageFilePath() {
+        return imageFilePath;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setImageFilePath(String imageFilePath) {
+        this.imageFilePath = imageFilePath;
     }
 
-    public String getContent() {
-        return content;
+    public String getTitle() {
+        return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public int getPic() {
-        return pic;
+    public String getDescription() {
+        return description;
     }
 
-    public void setPic(int pic) {
-        this.pic = pic;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public int getLikes() {
-        return likes;
+    public List<Integer> getCategoryId() {
+        return categoryId;
     }
 
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
-    public Uri getVideoFileUri() {
-        return videoFileUri;
-    }
-
-    public void setVideoFileUri(Uri videoFileUri) {
-        this.videoFileUri = videoFileUri;
-    }
-
-    public Uri getImageFileUri() {
-        return imageFileUri;
-    }
-
-    public void setImageFileUri(Uri imageFileUri) {
-        this.imageFileUri = imageFileUri;
-    }
-    public Bitmap getThumbnailBitmap() {
-        return thumbnailBitmap;
-    }
-
-    public void setThumbnailBitmap(Bitmap thumbnailBitmap) {
-        this.thumbnailBitmap = thumbnailBitmap;
+    public void setCategoryId(List<Integer> categoryId) {
+        this.categoryId = categoryId;
     }
 }

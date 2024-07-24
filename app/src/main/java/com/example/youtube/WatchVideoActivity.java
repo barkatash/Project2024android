@@ -14,8 +14,9 @@ import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +27,8 @@ import com.example.youtube.repositories.CommentRepository;
 import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,8 +36,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
 
     private VideoView videoView;
     private CommentsListAdapter adapter;
-    private MutableLiveData<List<Comment>> comments;
-    private MutableLiveData<List<Comment>> filteredComments;
+    private LiveData<List<Comment>> filteredComments;
     private int likeCount = 0;
     private boolean isLiked = false;
     private boolean isUnliked = false;
@@ -60,10 +62,9 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         int videoId = getVideoId();
         Video video = videoRepository.getVideoById(videoId);
 
-        if (video != null && userRepository.getLoggedInUser().getValue() != null) {
-            List<Video> likedVideos = userRepository.getLoggedInUser().getValue().getLikedVideos();
-            isLiked = likedVideos.contains(video);
-            isUnliked = userRepository.getLoggedInUser().getValue().getUnLikedVideos().contains(video);
+        if (video != null && userRepository.getLoggedInUser() != null) {
+            isLiked = userRepository.getLoggedInUser().getLikedVideoIds().contains(video.getVideoId());
+            isUnliked = userRepository.getLoggedInUser().getUnLikedVideoIds().contains(video.getVideoId());
         }
 
         initializeViews();
@@ -93,22 +94,20 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         });
 
         btnAddComment.setOnClickListener(v -> {
-            if (userRepository.getLoggedInUser().getValue() == null) {
+            if (userRepository.getLoggedInUser() == null) {
                 Toast.makeText(WatchVideoActivity.this, "You need to be logged in to leave a comment.", Toast.LENGTH_SHORT).show();
                 return;
             }
             String commentText = etComment.getText().toString().trim();
             if (!TextUtils.isEmpty(commentText)) {
-                Comment newComment = new Comment(video, userRepository.getLoggedInUser().getValue(), commentText, "now", 0, 0);
-                newComment.setId(commentRepository.getNextCommentId());
-                commentRepository.insert(newComment);
+                Comment newComment = new Comment(video.getVideoId(), userRepository.getLoggedInUser().getId(), commentText, new Date().toString(), 0, 0);
+                commentRepository.addComment(newComment);
                 etComment.setText("");
-                initializeCommentsList();
             }
         });
 
         btnLike.setOnClickListener(v -> {
-            if (userRepository.getLoggedInUser().getValue() == null) {
+            if (userRepository.getLoggedInUser() == null) {
                 Toast.makeText(WatchVideoActivity.this, "You need to be logged in to like a video", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -116,54 +115,54 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                 likeCount++;
                 isLiked = true;
                 btnLike.setImageResource(R.drawable.baseline_thumb_up_24);
-                List<Video> newLikedVideos = userRepository.getLoggedInUser().getValue().getLikedVideos();
-                newLikedVideos.add(video);
-                userRepository.getLoggedInUser().getValue().setLikedVideos(newLikedVideos);
+                List<Integer> newLikedVideos = userRepository.getLoggedInUser().getLikedVideoIds();
+                newLikedVideos.add(video.getVideoId());
+                userRepository.getLoggedInUser().setLikedVideoIds(newLikedVideos);
 
                 if (isUnliked) {
                     btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
                     isUnliked = false;
-                    List<Video> newUnLikedVideos = userRepository.getLoggedInUser().getValue().getUnLikedVideos();
-                    newUnLikedVideos.remove(video);
-                    userRepository.getLoggedInUser().getValue().setUnLikedVideos(newUnLikedVideos);
+                    List<Integer> newUnLikedVideos = userRepository.getLoggedInUser().getUnLikedVideoIds();
+                    newUnLikedVideos.remove(video.getVideoId());
+                    userRepository.getLoggedInUser().setUnLikedVideoIds(newUnLikedVideos);
                 }
             } else {
                 likeCount--;
                 isLiked = false;
                 btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                List<Video> newLikedVideos = userRepository.getLoggedInUser().getValue().getLikedVideos();
-                newLikedVideos.remove(video);
-                userRepository.getLoggedInUser().getValue().setLikedVideos(newLikedVideos);
+                List<Integer> newLikedVideos = userRepository.getLoggedInUser().getLikedVideoIds();
+                newLikedVideos.remove(video.getVideoId());
+                userRepository.getLoggedInUser().setLikedVideoIds(newLikedVideos);
             }
             updateLikeDislikeUI();
         });
 
         btnUnlike.setOnClickListener(v -> {
-            if (userRepository.getLoggedInUser().getValue() == null) {
+            if (userRepository.getLoggedInUser() == null) {
                 Toast.makeText(WatchVideoActivity.this, "You need to be logged in to unlike a video", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (!isUnliked) {
                 btnUnlike.setImageResource(R.drawable.baseline_thumb_down_24);
                 isUnliked = true;
-                List<Video> newUnlikedVideos = userRepository.getLoggedInUser().getValue().getUnLikedVideos();
-                newUnlikedVideos.add(video);
-                userRepository.getLoggedInUser().getValue().setUnLikedVideos(newUnlikedVideos);
+                List<Integer> newUnlikedVideos = userRepository.getLoggedInUser().getUnLikedVideoIds();
+                newUnlikedVideos.add(video.getVideoId());
+                userRepository.getLoggedInUser().setUnLikedVideoIds(newUnlikedVideos);
 
                 if (isLiked) {
                     likeCount--;
                     isLiked = false;
                     btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                    List<Video> newLikedVideos = userRepository.getLoggedInUser().getValue().getLikedVideos();
-                    newLikedVideos.remove(video);
-                    userRepository.getLoggedInUser().getValue().setLikedVideos(newLikedVideos);
+                    List<Integer> newLikedVideos = userRepository.getLoggedInUser().getLikedVideoIds();
+                    newLikedVideos.remove(video.getVideoId());
+                    userRepository.getLoggedInUser().setLikedVideoIds(newLikedVideos);
                 }
             } else {
                 btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
                 isUnliked = false;
-                List<Video> newUnLikedVideos = userRepository.getLoggedInUser().getValue().getUnLikedVideos();
-                newUnLikedVideos.remove(video);
-                userRepository.getLoggedInUser().getValue().setUnLikedVideos(newUnLikedVideos);
+                List<Integer> newUnLikedVideos = userRepository.getLoggedInUser().getUnLikedVideoIds();
+                newUnLikedVideos.remove(video.getVideoId());
+                userRepository.getLoggedInUser().setUnLikedVideoIds(newUnLikedVideos);
             }
             updateLikeDislikeUI();
         });
@@ -197,10 +196,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         Video video = videoRepository.getVideoById(videoId);
         if (video != null) {
             tvAuthor.setText(video.getAuthor());
-            tvContent.setText(video.getContent());
+            tvContent.setText(video.getDescription());
             tvDuration.setText(video.getDuration());
             tvViews.setText(video.getViews());
-            tvUploadDate.setText(video.getUploadDate());
+            tvUploadDate.setText(video.getUploadDate().toString()); // Convert Date to String
             likeCount = video.getLikes();
             tvLikeCount.setText(String.valueOf(likeCount));
         }
@@ -215,7 +214,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                 videoView.setVideoPath(videoFile);
                 videoView.start();
             } else {
-                String path = "android.resource://" + getPackageName() + "/" + video.getVideo();
+                String path = "android.resource://" + getPackageName() + "/" + video.getVideoFilePath();
                 videoView.setVideoURI(Uri.parse(path));
                 videoView.start();
             }
@@ -233,16 +232,26 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         recyclerView.setAdapter(adapter);
 
         int videoId = getVideoId();
-        comments = commentRepository.getAllComments();
-        filteredComments = commentRepository.getCommentsForVideo(videoId);
-        adapter.setComments(filteredComments.getValue());
+        commentRepository.fetchCommentsForVideo(videoId);
+        filteredComments = commentRepository.getAllComments();
+        filteredComments.observe(this, new Observer<List<Comment>>() {
+            @Override
+            public void onChanged(List<Comment> comments) {
+                // Filter comments for the current video
+                List<Comment> videoComments = new ArrayList<>();
+                for (Comment comment : comments) {
+                    if (comment.getVideoId() == videoId) {
+                        videoComments.add(comment);
+                    }
+                }
+                adapter.setComments(videoComments);
+            }
+        });
     }
 
     @Override
     public void onDeleteComment(Comment comment) {
-        commentRepository.delete(comment);
-        Objects.requireNonNull(filteredComments.getValue()).remove(comment);
-        adapter.setComments(filteredComments.getValue());
+        commentRepository.deleteComment(comment.getId());
     }
 
     private void updateLikeDislikeUI() {

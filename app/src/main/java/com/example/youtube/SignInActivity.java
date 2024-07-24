@@ -197,13 +197,14 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             return;
         }
+
         User newUser;
         if (imageUri != null) {
             newUser = new User(username, displayName, password, imageUri.toString());
         } else {
             newUser = new User(username, displayName, password);
         }
-        UserRepository.addUser(newUser);
+        UserRepository.insert(newUser);
 
         Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(SignInActivity.this, LogInActivity.class));

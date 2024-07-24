@@ -20,10 +20,10 @@ import java.util.List;
 
 public class UserRepository {
     private static UserRepository instance;
-    private UserDao userDao;
-    private UserApiService apiService;
-    private MutableLiveData<List<User>> allUsers;
-    private MutableLiveData<User> loggedInUser = new MutableLiveData<>();
+    private static UserDao userDao;
+    private static UserApiService apiService;
+    private LiveData<List<User>> allUsers;
+    private User loggedInUser = null;
 
     private UserRepository(Context context) {
         AppDB db = AppDB.getInstance(context);
@@ -45,15 +45,19 @@ public class UserRepository {
         return instance;
     }
 
-    public MutableLiveData<List<User>> getAllUsers() {
+    public static LiveData<User> getUserById(int id) {
+        return userDao.getUserById(id);
+    }
+
+    public LiveData<List<User>> getAllUsers() {
         return allUsers;
     }
 
-    public MutableLiveData<User> getLoggedInUser() {
+    public User getLoggedInUser() {
         return loggedInUser;
     }
 
-    public void insert(User user) {
+    public static void insert(User user) {
         new Thread(() -> userDao.insert(user)).start();
         apiService.addUser(user).enqueue(new Callback<User>() {
             @Override
@@ -77,11 +81,11 @@ public class UserRepository {
     }
 
     public void loginUser(String username, String password) {
-        apiService.loginUser(username, password).enqueue(new Callback<User>() {
+        apiService.loginUser(new User(username, password)).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    loggedInUser.postValue(response.body());
+                    loggedInUser = response.body();
                 }
             }
 
@@ -93,6 +97,6 @@ public class UserRepository {
     }
 
     public void logoutUser() {
-        loggedInUser.postValue(null);
+        loggedInUser = null;
     }
 }

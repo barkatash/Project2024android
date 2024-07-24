@@ -1,6 +1,9 @@
 package com.example.youtube.entities;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.ColumnInfo;
+import androidx.room.Ignore;
 
 import java.util.List;
 
@@ -8,15 +11,38 @@ import java.util.List;
 public class User {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private List<Video> likedVideo;
-    private List<Video> unLikedVideo;
+
+    @ColumnInfo(name = "liked_video_ids")
+    private List<Integer> likedVideoIds;
+
+    @ColumnInfo(name = "unliked_video_ids")
+    private List<Integer> unLikedVideoIds;
 
     private String username;
     private String userDisplayName;
     private String password;
     private String imageUrl;
 
-    // Constructor, Getters, and Setters
+    // Constructor for Room
+    public User(int id, String username, String userDisplayName, String password, String imageUrl, List<Integer> likedVideoIds, List<Integer> unLikedVideoIds) {
+        this.id = id;
+        this.username = username;
+        this.userDisplayName = userDisplayName;
+        this.password = password;
+        this.imageUrl = imageUrl;
+        this.likedVideoIds = likedVideoIds;
+        this.unLikedVideoIds = unLikedVideoIds;
+    }
+
+    // Constructor for login purpose
+    @Ignore
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    // Full constructor
+    @Ignore
     public User(String username, String userDisplayName, String password, String imageUrl) {
         this.username = username;
         this.userDisplayName = userDisplayName;
@@ -24,6 +50,15 @@ public class User {
         this.imageUrl = imageUrl;
     }
 
+    @Ignore
+    public User(String username, String userDisplayName, String password) {
+        this.username = username;
+        this.userDisplayName = userDisplayName;
+        this.password = password;
+        this.imageUrl = null;
+    }
+
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -63,23 +98,20 @@ public class User {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-    public void addLikedVideo(Video video) {
-        likedVideo.add(video);
-    }
-    public List<Video> getLikedVideos() {
-        return likedVideo;
-    }
-    public void addUnLikedVideo(Video video) {
-        unLikedVideo.add(video);
-    }
-    public List<Video> getUnLikedVideos() {
-        return unLikedVideo;
+
+    public List<Integer> getLikedVideoIds() {
+        return likedVideoIds;
     }
 
-    public void setLikedVideos(List<Video> newLikedVideos) {
-        likedVideo = newLikedVideos;
+    public void setLikedVideoIds(List<Integer> likedVideoIds) {
+        this.likedVideoIds = likedVideoIds;
     }
-    public void setUnLikedVideos(List<Video> newUnLikedVideos) {
-        unLikedVideo = newUnLikedVideos;
+
+    public List<Integer> getUnLikedVideoIds() {
+        return unLikedVideoIds;
+    }
+
+    public void setUnLikedVideoIds(List<Integer> unLikedVideoIds) {
+        this.unLikedVideoIds = unLikedVideoIds;
     }
 }

@@ -7,33 +7,36 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.youtube.databinding.ActivitySearchBinding;
 import com.example.youtube.repositories.VideoRepository;
 
 public class SearchActivity extends AppCompatActivity {
 
-    private ActivitySearchBinding binding;
+    private EditText searchEditText;
+    private ImageButton searchBtn;
+    private ImageView backArrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        binding = ActivitySearchBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
-        ImageView backArrow = binding.goBack;
+        // Initialize views using findViewById
+        searchEditText = findViewById(R.id.searchEditText);
+        searchBtn = findViewById(R.id.searchBtn);
+        backArrow = findViewById(R.id.goBack);
+
         backArrow.setOnClickListener(v -> finish());
 
-        ImageButton searchBtn = binding.searchBtn;
         searchBtn.setOnClickListener(v -> performSearch());
     }
 
     private void performSearch() {
-        EditText searchEditText = binding.searchEditText;
+        EditText searchEditText = findViewById(R.id.searchEditText);
         String query = searchEditText.getText().toString().trim();
 
         VideoRepository videoRepository = VideoRepository.getInstance(getApplicationContext());
         videoRepository.searchVideos(query);
         finish();
     }
+
 }

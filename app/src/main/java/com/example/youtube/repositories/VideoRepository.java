@@ -1,6 +1,7 @@
 package com.example.youtube.repositories;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -24,7 +25,7 @@ public class VideoRepository {
     private static VideoRepository instance;
     private VideoDao videoDao;
     private VideoApiService apiService;
-    private MutableLiveData<List<Video>> allVideos;
+    private static LiveData<List<Video>> allVideos;
     private Map<Integer, Video> videoMap;
 
     private VideoRepository(Context context) {
@@ -49,7 +50,7 @@ public class VideoRepository {
         return instance;
     }
 
-    public MutableLiveData<List<Video>> getAllVideos() {
+    public LiveData<List<Video>> getAllVideos() {
         return allVideos;
     }
 
@@ -60,7 +61,7 @@ public class VideoRepository {
     public void insert(Video video) {
         new Thread(() -> {
             videoDao.insert(video);
-            videoMap.put(video.getId(), video);
+            videoMap.put(video.getVideoId(), video);
         }).start();
         apiService.addVideo(video).enqueue(new Callback<Video>() {
             @Override
@@ -78,7 +79,7 @@ public class VideoRepository {
     public void update(Video video) {
         new Thread(() -> {
             videoDao.update(video);
-            videoMap.put(video.getId(), video);
+            videoMap.put(video.getVideoId(), video);
         }).start();
         apiService.addVideo(video).enqueue(new Callback<Video>() {
             @Override
@@ -96,9 +97,9 @@ public class VideoRepository {
     public void delete(Video video) {
         new Thread(() -> {
             videoDao.delete(video);
-            videoMap.remove(video.getId());
+            videoMap.remove(video.getVideoId());
         }).start();
-        apiService.deleteVideo(video.getId()).enqueue(new Callback<Void>() {
+        apiService.deleteVideo(video.getVideoId()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 // Handle response
@@ -110,12 +111,49 @@ public class VideoRepository {
             }
         });
     }
+    public void searchVideos(String query) {
+        apiService.searchVideos(query).enqueue(new Callback<List<Video>>() {
+            @Override
+            public void onResponse(Call<List<Video>> call, Response<List<Video>> response) {
+                if (response.isSuccessful()) {
+                    List<Video> videos = response.body();
+                    // Update local database or LiveData with search results
+                    if (videos != null) {
+                        new Thread(() -> {
+                            videoDao.insertAll(videos); // Assuming insertAll() is defined in VideoDao
+                        }).start();
+                        // You might also want to update videoMap or other relevant data structures
+                    }
+                } else {
+                    Log.e("VideoRepository", "Failed to search videos: " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Video>> call, Throwable t) {
+                Log.e("VideoRepository", "Error searching videos", t);
+            }
+        });
+    }
+    public static int getNextVideoId() {
+        int maxId = 0;
+        List<Video> videos = allVideos.getValue();
+        if (videos != null) {
+            for (Video video : videos) {
+                if (video.getVideoId() > maxId) {
+                    maxId = video.getVideoId();
+                }
+            }
+        }
+        return maxId + 1;
+    }
+
 
     private void initializeVideoMap() {
         allVideos.observeForever(videos -> {
             videoMap.clear();
             for (Video video : videos) {
-                videoMap.put(video.getId(), video);
+                videoMap.put(video.getVideoId(), video);
             }
         });
     }

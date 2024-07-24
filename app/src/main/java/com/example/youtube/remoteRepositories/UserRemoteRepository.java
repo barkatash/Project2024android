@@ -1,7 +1,11 @@
 package com.example.youtube.remoteRepositories;
 
+import android.content.Context;
+import com.example.youtube.R;
 import com.example.youtube.apiService.UserApiService;
 import com.example.youtube.entities.User;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -9,14 +13,19 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserRemoteRepository {
-    private UserApiService apiService;
+    private final UserApiService apiService;
 
-    public UserRemoteRepository() {
+    public UserRemoteRepository(Context context) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://your-backend-url.com/")
+                .baseUrl(context.getString(R.string.BaseUrl))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         apiService = retrofit.create(UserApiService.class);
+    }
+
+    public void getAllUsers(Callback<List<User>> callback) {
+        Call<List<User>> call = apiService.getUsers();
+        call.enqueue(callback);
     }
 
     public void getUserById(int id, Callback<User> callback) {
@@ -35,7 +44,7 @@ public class UserRemoteRepository {
     }
 
     public void loginUser(User credentials, Callback<User> callback) {
-        Call<User> call = apiService.loginUser(credentials.getUsername(), credentials.getPassword());
+        Call<User> call = apiService.loginUser(credentials);
         call.enqueue(callback);
     }
 }
