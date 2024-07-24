@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private UsersListAdapter userAdapter;
     private ImageView youBtn;
 
+
     @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

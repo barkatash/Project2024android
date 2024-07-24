@@ -39,8 +39,8 @@ public class VideoRepository {
         return videoListData;
     }
 
-    public static Video getVideoById(String videoId) {
-        return null;
+    public LiveData<Video> getVideoById(String videoId) {
+        return api.getVideoById(videoId);
     }
     public void resetVideos() {
         api.getAllVideos(videoListData);

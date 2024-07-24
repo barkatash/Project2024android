@@ -8,19 +8,19 @@ public class User {
     private String userDisplayName;
     private String password;
     private String imageUrl = null;
-    private List<Integer> likedVideos = new ArrayList<>();
+    private List<String> likedVideos = new ArrayList<>();
 
     public User() {}
 
-    private List<Integer> unLikedVideos = new ArrayList<>();
+    private List<String> unLikedVideos = new ArrayList<>();
     private List<Integer> likedComments = new ArrayList<>();
     private List<Integer> unLikedComments = new ArrayList<>();
 
-    public List<Integer> getUnLikedVideos() {
+    public List<String> getUnLikedVideos() {
         return unLikedVideos;
     }
 
-    public void setUnLikedVideos(List<Integer> unLikedVideos) {
+    public void setUnLikedVideos(List<String> unLikedVideos) {
         this.unLikedVideos = unLikedVideos;
     }
 
@@ -40,11 +40,11 @@ public class User {
         this.unLikedComments = unLikedComments;
     }
 
-    public List<Integer> getLikedVideos() {
+    public List<String> getLikedVideos() {
         return likedVideos;
     }
 
-    public void setLikedVideos(List<Integer> likedVideos) {
+    public void setLikedVideos(List<String> likedVideos) {
         this.likedVideos = likedVideos;
     }
 

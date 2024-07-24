@@ -4,11 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity
 public class Video {
-//    @PrimaryKey(autoGenerate = true)
     @PrimaryKey
     @NonNull
+    @SerializedName("_id")
     private String id;
     private String uploader;
     private String video;
@@ -33,7 +35,8 @@ public class Video {
 
     private String uploadDate;
 
-    public Video(String uploader, String title, String duration , String visits, String uploadDate, String image, String video) {
+    public Video(String id, String uploader, String title, String duration , String visits, String uploadDate, String image, String video) {
+        this.id = id;
         this.uploader = uploader;
         this.title = title;
         this.image = image;

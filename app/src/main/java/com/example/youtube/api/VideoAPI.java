@@ -89,6 +89,29 @@ public class VideoAPI {
         });
     }
 
+    public MutableLiveData<Video> getVideoById(String videoId) {
+        MutableLiveData<Video> videoLiveData = new MutableLiveData<>();
 
+        Call<Video> call = webServiceAPI.getVideoById(videoId);
+        call.enqueue(new Callback<Video>() {
+            @Override
+            public void onResponse(Call<Video> call, Response<Video> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    videoLiveData.setValue(response.body());
+                } else {
+                    Log.e("VideoAPI", "Failed to fetch video: " + response.message());
+                    videoLiveData.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Video> call, Throwable t) {
+                Log.e("VideoAPI", "Error fetching video: " + t.getMessage());
+                videoLiveData.setValue(null);
+            }
+        });
+
+        return videoLiveData;
+    }
 
 }

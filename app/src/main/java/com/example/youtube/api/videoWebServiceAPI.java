@@ -16,7 +16,10 @@ public interface videoWebServiceAPI {
     @GET("videos")
     Call<List<Video>> getVideos();
     @POST("users/{id}/videos")
-    Call<Void> addVideo (@Body Video video);
+    Call<Void> addVideo(@Body Video video);
     @DELETE("users/{id}/videos/{pid}")
-    Call<Void> deleteVideo (@Path("id") String id);
+    Call<Void> deleteVideo(@Path("id") String id);
+
+    @GET("videos/{id}")
+    Call<Video> getVideoById(@Path("id") String id);
 }

@@ -16,6 +16,7 @@ import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 
 import com.example.youtube.entities.Video;
 import com.example.youtube.repositories.VideoRepository;
@@ -36,7 +37,7 @@ public class EditVideoActivity extends AppCompatActivity {
     private Button btnSelectVideo;
     private Button btnSelectImage;
     private Button btnSave;
-
+    VideoRepository videoRepository = new VideoRepository();
     private VideoView videoViewUpload;
     private Video currentVideo;
     private ImageView videoImageView;
@@ -56,7 +57,14 @@ public class EditVideoActivity extends AppCompatActivity {
         videoViewUpload = findViewById(R.id.videoViewUpload);
 
         String videoId = getIntent().getStringExtra("videoId");
-        currentVideo = VideoRepository.getVideoById(videoId);
+        LiveData<Video> videoLiveData;
+        videoLiveData = videoRepository.getVideoById(videoId);
+        videoLiveData.observe(this, cur -> {
+            if (cur != null) {
+                currentVideo = cur; // Save the video data
+            } else {
+            }
+        });
 
         MediaController mediaController = new MediaController(this);
         videoViewUpload.setMediaController(mediaController);

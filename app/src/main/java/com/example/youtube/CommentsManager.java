@@ -35,7 +35,7 @@ public class CommentsManager {
         comments.remove(comment);
     }
 
-    public List<Comment> getCommentsForVideo(int videoId) {
+    public List<Comment> getCommentsForVideo(String videoId) {
         List<Comment> commentsForVideo = new ArrayList<>();
         for (Comment comment : comments) {
             if (comment.getVideoId() == videoId) {
