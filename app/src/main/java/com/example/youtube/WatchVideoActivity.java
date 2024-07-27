@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.youtube.adapters.CommentsListAdapter;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
@@ -44,11 +45,13 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         videoView = findViewById(R.id.videoView);
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
-
+        /*
         if (UsersManager.getInstance().getLoggedInUser() != null) {
             isLiked = UsersManager.getInstance().getLoggedInUser().getLikedVideos().contains(getVideoId());
             isUnliked = UsersManager.getInstance().getLoggedInUser().getUnLikedVideos().contains(getVideoId());
         }
+
+         */
 
         initializeViews();
         initializeCommentsList();
@@ -74,11 +77,12 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
             popupMenu.show();
         });
 
-
+/*
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!UsersManager.getInstance().isLoggedIn()) {
+
+                if (!UserRepository.getInstance().isLoggedIn()) {
                     Toast.makeText(WatchVideoActivity.this, "You need to be logged in to leave a comment.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -90,6 +94,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                     etComment.setText("");
                     initializeCommentsList();
                 }
+
             }
         });
 
@@ -124,9 +129,11 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                 UsersManager.getInstance().getLoggedInUser().setLikedVideos(newLikedVideos);
             }
             updateLikeDislikeUI();
+
         });
 
         btnUnlike.setOnClickListener(v -> {
+            /*
             if (!UsersManager.getInstance().isLoggedIn()) {
                 Toast.makeText(WatchVideoActivity.this, "You need to be logged in to unlike a video", Toast.LENGTH_SHORT).show();
                 return;
@@ -165,6 +172,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         }
 
         updateLikeDislikeUI();
+
+             */
     }
 
 

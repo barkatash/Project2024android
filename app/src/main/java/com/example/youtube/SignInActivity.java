@@ -204,7 +204,7 @@ public class SignInActivity extends AppCompatActivity {
         } else {
             newUser = new User(username, displayName, password);
         }
-        UserRepository.insert(newUser);
+        UserRepository.getInstance(this).addUser(newUser);
 
         Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(SignInActivity.this, LogInActivity.class));

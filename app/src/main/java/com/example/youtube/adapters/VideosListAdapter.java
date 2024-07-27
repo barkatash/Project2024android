@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.youtube.EditVideoActivity;
 import com.example.youtube.R;
-import com.example.youtube.UsersManager;
+import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.entities.Video;
 import com.example.youtube.repositories.VideoRepository;
@@ -72,7 +72,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (UsersManager.getInstance().isLoggedIn()) {
+                    if (UserRepository.getInstance(context).isUserLoggedIn()) {
                         Intent intent = new Intent(context, EditVideoActivity.class);
                         intent.putExtra("videoId", current.getId());
                         context.startActivity(intent);
@@ -85,7 +85,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (UsersManager.getInstance().isLoggedIn()) {
+                    if (UserRepository.getInstance(context).isUserLoggedIn()) {
                         videoRepository.deleteVideo(current.getId());
                         videos.remove(current);
                         notifyDataSetChanged();

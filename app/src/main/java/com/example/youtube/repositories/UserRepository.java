@@ -5,98 +5,96 @@ import android.content.Context;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.youtube.AppDB;
-import com.example.youtube.apiService.UserApiService;
+import com.example.youtube.api.UserAPI;
 import com.example.youtube.dao.UserDao;
+import com.example.youtube.AppDB;
 import com.example.youtube.entities.User;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
+import java.util.LinkedList;
 import java.util.List;
 
 public class UserRepository {
-    private static UserRepository instance;
-    private static UserDao userDao;
-    private static UserApiService apiService;
-    private LiveData<List<User>> allUsers;
+    private static volatile UserRepository INSTANCE;
+    private UserDao userDao;
+    private UserListData userListData;
+    private UserAPI apiService;
     private User loggedInUser = null;
 
-    private UserRepository(Context context) {
-        AppDB db = AppDB.getInstance(context);
-        userDao = db.userDao();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://your-backend-url.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        apiService = retrofit.create(UserApiService.class);
-
-        allUsers = userDao.index();
+    public UserRepository() {
+        userListData = new UserListData();
+        apiService = new UserAPI(userListData, userDao);
+        apiService.getAllUsers(userListData);
     }
 
-    public static synchronized UserRepository getInstance(Context context) {
-        if (instance == null) {
-            instance = new UserRepository(context.getApplicationContext());
+    public static UserRepository getInstance(Context context) {
+        if (INSTANCE == null) {
+            synchronized (UserRepository.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new UserRepository();
+                }
+            }
         }
-        return instance;
+        return INSTANCE;
     }
 
-    public static LiveData<User> getUserById(int id) {
-        return userDao.getUserById(id);
+    class UserListData extends MutableLiveData<List<User>> {
+        public UserListData() {
+            super();
+            setValue(new LinkedList<User>());
+        }
+
+        @Override
+        protected void onActive() {
+            super.onActive();
+        }
     }
 
     public LiveData<List<User>> getAllUsers() {
-        return allUsers;
+        return userListData;
+    }
+
+    public LiveData<User> getUserById(String userId) {
+        return apiService.getUserById(userId);
+    }
+
+    public void resetUsers() {
+        apiService.getAllUsers(userListData);
     }
 
     public User getLoggedInUser() {
         return loggedInUser;
     }
 
-    public static void insert(User user) {
-        new Thread(() -> userDao.insert(user)).start();
-        apiService.addUser(user).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                // Handle response
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // Handle failure
-            }
-        });
+    public void addUser(User newUser) {
+        apiService.addUser(newUser);
     }
 
-    public void update(User user) {
-        new Thread(() -> userDao.update(user)).start();
+    public void delete(String userId) {
+        apiService.deleteUser(userId);
+        resetUsers();
     }
 
-    public void delete(User user) {
-        new Thread(() -> userDao.delete(user)).start();
-    }
-
-    public void loginUser(String username, String password) {
-        apiService.loginUser(new User(username, password)).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    loggedInUser = response.body();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // Handle failure
-            }
-        });
+    public void loginUser(User user) {
+        this.loggedInUser = user;
     }
 
     public void logoutUser() {
         loggedInUser = null;
+    }
+
+    public boolean isUserLoggedIn() {
+        return loggedInUser != null;
+    }
+
+    public User checkUserCredentials(String username, String password) {
+        List<User> users = userListData.getValue();
+        if (users != null) {
+            for (User user : users) {
+                if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                    return user;
+                }
+            }
+        }
+        return null;
     }
 }

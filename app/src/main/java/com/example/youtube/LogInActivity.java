@@ -51,7 +51,7 @@ public class LogInActivity extends AppCompatActivity {
             Intent i = new Intent(LogInActivity.this, SignInActivity.class);
             startActivity(i);
         });
-
+/*
         // Observe the loggedInUser LiveData
         userViewModel.getLoggedInUser().observe(this, new Observer<User>() {
             @Override
@@ -64,6 +64,8 @@ public class LogInActivity extends AppCompatActivity {
                 }
             }
         });
+
+ */
     }
 
     private void handleLogIn() {
@@ -74,8 +76,22 @@ public class LogInActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        userViewModel.loginUser(username, password);
+        User loggedInUser = userViewModel.checkUserCredentials(username, password);
+        if (loggedInUser != null) {
+            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+            userViewModel.setLoggedInUser(loggedInUser);
+            logInButton.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }, 500);
+            return;
+        } else {
+            Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void navigateToMainActivity() {

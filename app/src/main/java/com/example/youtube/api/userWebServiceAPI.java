@@ -1,4 +1,4 @@
-package com.example.youtube.apiService;
+package com.example.youtube.api;
 
 import com.example.youtube.entities.User;
 
@@ -11,19 +11,16 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-public interface UserApiService {
+public interface userWebServiceAPI {
     @GET("users")
     Call<List<User>> getUsers();
 
     @GET("users/{id}")
-    Call<User> getUserById(@Path("id") int id);
+    Call<User> getUserById(@Path("id") String id);
 
     @POST("users")
-    Call<User> addUser(@Body User user);
+    Call<Void> addUser(@Body User user);
 
     @DELETE("users/{id}")
-    Call<Void> deleteUser(@Path("id") int id);
-
-    @POST("users/login")
-    Call<User> loginUser(@Body User credentials);
+    Call<Void> deleteUser(@Path("id") String id);
 }
