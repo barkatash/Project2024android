@@ -1,56 +1,49 @@
 package com.example.youtube.entities;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 
-import com.example.youtube.Converters;
-
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
 @Entity
-@TypeConverters(Converters.class)
 public class Video {
-
-    @PrimaryKey(autoGenerate = true)
-    private int videoId;
-    private String imageFilePath;
-    private String videoFilePath;
+    @PrimaryKey
+    @NonNull
+    @SerializedName("_id")
+    private String id;
+    private String uploader;
+    private String video;
     private String title;
-    private String author;
-    private String duration;
-    private int views;
-    private String uploadDate;
-    private String description;
     private int likes;
+    private String image;
+    private String duration;
+    private String visits;
 
-    @TypeConverters(Converters.class)
-    private List<Integer> categoryId;
 
-    // Getters and Setters
-
-    public int getVideoId() {
-        return videoId;
+    public Video() {
     }
 
-    public void setVideoId(int videoId) {
-        this.videoId = videoId;
+
+    public String getVideo() {
+        return video;
     }
 
-    public String getAuthor() {
-        return author;
+    public void setVideo(String video) {
+        this.video = video;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+    private String uploadDate;
 
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
+    public Video(String id, String uploader, String title, String duration , String visits, String uploadDate, String image, String video) {
+        this.id = id;
+        this.uploader = uploader;
+        this.title = title;
+        this.image = image;
+        this.duration = duration;
+        this.visits = visits;
+        this.uploadDate = uploadDate;
+        this.video = video;
     }
 
     public String getDuration() {
@@ -61,12 +54,12 @@ public class Video {
         this.duration = duration;
     }
 
-    public int getViews() {
-        return views;
+    public String getVisits() {
+        return visits;
     }
 
-    public void setViews(int views) {
-        this.views = views;
+    public void setVisits(String visits) {
+        this.visits = visits;
     }
 
     public String getUploadDate() {
@@ -77,20 +70,20 @@ public class Video {
         this.uploadDate = uploadDate;
     }
 
-    public String getVideoFilePath() {
-        return videoFilePath;
+    public String getId() {
+        return id;
     }
 
-    public void setVideoFilePath(String videoFilePath) {
-        this.videoFilePath = videoFilePath;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getImageFilePath() {
-        return imageFilePath;
+    public String getUploader() {
+        return uploader;
     }
 
-    public void setImageFilePath(String imageFilePath) {
-        this.imageFilePath = imageFilePath;
+    public void setUploader(String uploader) {
+        this.uploader = uploader;
     }
 
     public String getTitle() {
@@ -101,19 +94,20 @@ public class Video {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getImage() {
+        return image;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public List<Integer> getCategoryId() {
-        return categoryId;
+    public int getLikes() {
+        return likes;
     }
 
-    public void setCategoryId(List<Integer> categoryId) {
-        this.categoryId = categoryId;
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
+
 }

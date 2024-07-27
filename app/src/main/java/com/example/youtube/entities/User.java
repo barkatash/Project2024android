@@ -1,117 +1,96 @@
 package com.example.youtube.entities;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-import androidx.room.ColumnInfo;
-import androidx.room.Ignore;
-
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 public class User {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-
-    @ColumnInfo(name = "liked_video_ids")
-    private List<Integer> likedVideoIds;
-
-    @ColumnInfo(name = "unliked_video_ids")
-    private List<Integer> unLikedVideoIds;
-
     private String username;
     private String userDisplayName;
     private String password;
-    private String imageUrl;
+    private String imageUrl = null;
+    private List<String> likedVideos = new ArrayList<>();
 
-    // Constructor for Room
-    public User(int id, String username, String userDisplayName, String password, String imageUrl, List<Integer> likedVideoIds, List<Integer> unLikedVideoIds) {
-        this.id = id;
-        this.username = username;
-        this.userDisplayName = userDisplayName;
-        this.password = password;
-        this.imageUrl = imageUrl;
-        this.likedVideoIds = likedVideoIds;
-        this.unLikedVideoIds = unLikedVideoIds;
+    public User() {}
+
+    private List<String> unLikedVideos = new ArrayList<>();
+    private List<Integer> likedComments = new ArrayList<>();
+    private List<Integer> unLikedComments = new ArrayList<>();
+
+    public List<String> getUnLikedVideos() {
+        return unLikedVideos;
     }
 
-    // Constructor for login purpose
-    @Ignore
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public void setUnLikedVideos(List<String> unLikedVideos) {
+        this.unLikedVideos = unLikedVideos;
     }
 
-    // Full constructor
-    @Ignore
+    public List<Integer> getLikedComments() {
+        return likedComments;
+    }
+
+    public void setLikedComments(List<Integer> likedComments) {
+        this.likedComments = likedComments;
+    }
+
+    public List<Integer> getUnLikedComments() {
+        return unLikedComments;
+    }
+
+    public void setUnLikedComments(List<Integer> unLikedComments) {
+        this.unLikedComments = unLikedComments;
+    }
+
+    public List<String> getLikedVideos() {
+        return likedVideos;
+    }
+
+    public void setLikedVideos(List<String> likedVideos) {
+        this.likedVideos = likedVideos;
+    }
+
     public User(String username, String userDisplayName, String password, String imageUrl) {
         this.username = username;
         this.userDisplayName = userDisplayName;
         this.password = password;
         this.imageUrl = imageUrl;
     }
-
-    @Ignore
     public User(String username, String userDisplayName, String password) {
         this.username = username;
         this.userDisplayName = userDisplayName;
         this.password = password;
-        this.imageUrl = null;
     }
 
-    // Getters and Setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    // Getters
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getUserDisplayName() {
         return userDisplayName;
     }
 
-    public void setUserDisplayName(String userDisplayName) {
-        this.userDisplayName = userDisplayName;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getImageUrl() {
         return imageUrl;
     }
 
+    // Setters (optional, depending on your needs)
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public List<Integer> getLikedVideoIds() {
-        return likedVideoIds;
-    }
-
-    public void setLikedVideoIds(List<Integer> likedVideoIds) {
-        this.likedVideoIds = likedVideoIds;
-    }
-
-    public List<Integer> getUnLikedVideoIds() {
-        return unLikedVideoIds;
-    }
-
-    public void setUnLikedVideoIds(List<Integer> unLikedVideoIds) {
-        this.unLikedVideoIds = unLikedVideoIds;
     }
 }
