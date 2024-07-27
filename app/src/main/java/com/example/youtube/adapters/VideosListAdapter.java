@@ -2,6 +2,8 @@ package com.example.youtube.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +17,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtube.EditVideoActivity;
 import com.example.youtube.R;
-import com.example.youtube.UsersManager;
-import com.example.youtube.VideoRepository;
 import com.example.youtube.WatchVideoActivity;
+import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.repositories.VideoRepository;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.VideoViewHolder> {
 
     private final LayoutInflater mInflater;
     private List<Video> videos;
-    private Context context;
+    private final Context context;
+    private final UserRepository userRepository;
+    private final VideoRepository videoRepository;
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
 
     public VideosListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
+        this.userRepository = UserRepository.getInstance(context.getApplicationContext());
+        this.videoRepository = VideoRepository.getInstance(context.getApplicationContext());
     }
 
     @NonNull
@@ -45,51 +56,57 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
         if (videos != null) {
             final Video current = videos.get(position);
             holder.tvAuthor.setText(current.getAuthor());
-            holder.tvContent.setText(current.getContent());
+            holder.tvTitle.setText(current.getTitle());
 
-            if (current.getImageBitMap() != null) {
-                holder.ivPic.setImageBitmap(current.getImageBitMap());
-            }
-            else {
-                holder.ivPic.setImageResource(current.getPic());
+            // Load image from file path
+            if (current.getImageFilePath() != null && !current.getImageFilePath().isEmpty()) {
+                File imgFile = new File(current.getImageFilePath());
+                if (imgFile.exists()) {
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    holder.ivPic.setImageBitmap(myBitmap);
+                } else {
+                    holder.ivPic.setImageResource(R.drawable.baseline_account_circle_24); // Set a default image if file does not exist
+                }
+            } else {
+                holder.ivPic.setImageResource(R.drawable.baseline_account_circle_24); // Set a default image if no file path is provided
             }
 
             holder.tvDuration.setText(current.getDuration());
-            holder.tvViews.setText(current.getViews());
-            holder.tvUploadDate.setText(current.getUploadDate());
+            holder.tvViews.setText(String.valueOf(current.getViews()));
 
-            holder.ivPic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, WatchVideoActivity.class);
-                    intent.putExtra("videoId", current.getId());
+            // Set the upload date
+            if (current.getUploadDate() != null) {
+                holder.tvUploadDate.setText(current.getUploadDate());
+            } else {
+                holder.tvUploadDate.setText("Unknown Date");
+            }
+
+            holder.ivPic.setOnClickListener(v -> {
+                Intent intent = new Intent(context, WatchVideoActivity.class);
+                intent.putExtra("videoId", current.getVideoId());
+                context.startActivity(intent);
+            });
+
+            holder.btnEdit.setOnClickListener(v -> {
+                User user = userRepository.getLoggedInUser();
+                if (user != null) {
+                    Intent intent = new Intent(context, EditVideoActivity.class);
+                    intent.putExtra("videoId", current.getVideoId());
                     context.startActivity(intent);
+                } else {
+                    Toast.makeText(context, "You need to be logged in to edit a video.", Toast.LENGTH_SHORT).show();
                 }
             });
 
-            holder.btnEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (UsersManager.getInstance().isLoggedIn()) {
-                        Intent intent = new Intent(context, EditVideoActivity.class);
-                        intent.putExtra("videoId", current.getId());
-                        context.startActivity(intent);
-                    } else {
-                        Toast.makeText(context ,"You need to be logged in to edit a video.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-            holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (UsersManager.getInstance().isLoggedIn()) {
-                        VideoRepository.getInstance(context.getApplicationContext()).deleteVideo(current.getId());
-                        videos.remove(current);
-                        notifyDataSetChanged();
-                    } else{
-                        Toast.makeText(context ,"You need to be logged in to delete a video.", Toast.LENGTH_SHORT).show();
-                    }
+            holder.btnDelete.setOnClickListener(v -> {
+                User user = userRepository.getLoggedInUser();
+                if (user != null) {
+                    videoRepository.delete(current);
+                    videos.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, videos.size());
+                } else {
+                    Toast.makeText(context, "You need to be logged in to delete a video.", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -107,7 +124,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
 
     public static class VideoViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvAuthor;
-        private final TextView tvContent;
+        private final TextView tvTitle;
         private final ImageView ivPic;
         private final TextView tvDuration;
         private final TextView tvViews;
@@ -118,7 +135,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
         public VideoViewHolder(View itemView) {
             super(itemView);
             tvAuthor = itemView.findViewById(R.id.tvAuthor);
-            tvContent = itemView.findViewById(R.id.tvContent);
+            tvTitle = itemView.findViewById(R.id.tvContent);
             ivPic = itemView.findViewById(R.id.ivPic);
             tvDuration = itemView.findViewById(R.id.tvDuration);
             tvViews = itemView.findViewById(R.id.tvViews);

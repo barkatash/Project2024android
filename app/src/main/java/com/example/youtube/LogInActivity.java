@@ -10,27 +10,34 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.youtube.databinding.ActivityLoginBinding;
+import com.example.youtube.entities.User;
+import com.example.youtube.viewModels.UserViewModel;
 
 public class LogInActivity extends AppCompatActivity {
     private EditText usernameInput, passwordInput;
     private ActivityLoginBinding binding;
     private Button logInButton;
     private SharedPreferences sharedPreferences;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
 
-        usernameInput = findViewById(R.id.login_usernameInput);
-        passwordInput = findViewById(R.id.login_passwordInput);
-        logInButton = findViewById(R.id.login_logInButton);
+        usernameInput = binding.loginUsernameInput;
+        passwordInput = binding.loginPasswordInput;
+        logInButton = binding.loginLogInButton;
+
+        // Initialize UserViewModel
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +51,19 @@ public class LogInActivity extends AppCompatActivity {
             Intent i = new Intent(LogInActivity.this, SignInActivity.class);
             startActivity(i);
         });
+
+        // Observe the loggedInUser LiveData
+        userViewModel.getLoggedInUser().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if (user != null) {
+                    Toast.makeText(LogInActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                    navigateToMainActivity();
+                } else {
+                    Toast.makeText(LogInActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void handleLogIn() {
@@ -54,19 +74,18 @@ public class LogInActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (UsersManager.getInstance().loginUser(username, password)) {
-            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-            logInButton.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }, 500);
-            return;
-        } else {
-            Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
-        }
+
+        userViewModel.loginUser(username, password);
+    }
+
+    private void navigateToMainActivity() {
+        logInButton.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }, 500);
     }
 }

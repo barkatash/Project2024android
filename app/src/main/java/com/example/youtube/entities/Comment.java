@@ -1,35 +1,38 @@
 package com.example.youtube.entities;
 
-
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(foreignKeys = @ForeignKey(entity = User.class,
+        parentColumns = "id",
+        childColumns = "authorId",
+        onDelete = ForeignKey.CASCADE))
 public class Comment {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private int videoId;
-    private User author;
+    private Integer videoId;
+    private Integer authorId;
     private String description;
     private String uploadDate;
     private int likes;
     private int dislikes;
 
+    // No-argument constructor
+    public Comment() {
+    }
 
-
-    public Comment(int videoId, User author, String description, String uploadDate , int likes, int dislikes) {
-        this.author = author;
+    // Constructor with all fields
+    public Comment(Integer videoId, Integer authorId, String description, String uploadDate, int likes, int dislikes) {
         this.videoId = videoId;
+        this.authorId = authorId;
         this.description = description;
-        this.likes = likes;
         this.uploadDate = uploadDate;
+        this.likes = likes;
         this.dislikes = dislikes;
     }
 
-
-    public int getUnlikes() { return dislikes; }
-
-    public void setUnlikes(int unlikes) { this.dislikes = unlikes; }
+    // Getters and Setters
 
     public int getId() {
         return id;
@@ -39,16 +42,20 @@ public class Comment {
         this.id = id;
     }
 
-    public int getVideoId() {
+    public Integer getVideoId() {
         return videoId;
     }
 
-    public void setVideoId(int videoId) {
+    public void setVideoId(Integer videoId) {
         this.videoId = videoId;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public Integer getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
     }
 
     public String getDescription() {
@@ -81,8 +88,5 @@ public class Comment {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
-    }
-    public User getUser() {
-        return author;
     }
 }
