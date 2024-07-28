@@ -2,6 +2,7 @@ package com.example.youtube.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +12,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.youtube.R;
 import com.example.youtube.entities.Comment;
+import com.example.youtube.entities.User;
 import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.viewModels.UserViewModel;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -99,17 +106,18 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             holder.tvDescription.setText(current.getDescription());
             holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
-            /*
-            if (current.getUser().getImageUrl() != null) {
-                Glide.with(context)
-                        .load(current.getUser().getImageUrl())
-                        .transform(new CircleCrop())
-                        .into(holder.ivProfilePic);
-            } else {
-                holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
-            }
-
-             */
+            userRepository.getAllUsers().observe((LifecycleOwner) context, new Observer<List<User>>() {
+                @Override
+                public void onChanged(List<User> users) {
+                    User foundUser = userRepository.getUserByUsername(current.getUsername());
+                    if (foundUser != null) {
+                        Glide.with(context)
+                                .load(foundUser.getImageUrl()).transform(new CircleCrop()).into(holder.ivProfilePic);
+                    } else {
+                        holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
+                    }
+                }
+            });
 
             holder.btnLike.setOnClickListener(v -> {
                 if (userRepository.getLoggedInUser() == null) {

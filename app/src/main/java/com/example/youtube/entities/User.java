@@ -18,6 +18,7 @@ public class User {
     private List<String> videoIdListUnliked = new ArrayList<>();
     private List <String> commentIdListLiked = new ArrayList<>();
     private List <String> commentIdListUnliked = new ArrayList<>();
+    private String token;
 
     public User() {}
 
@@ -55,6 +56,13 @@ public class User {
 
     public void setLikedVideos(List<String> likedVideos) {
         this.likedVideos = likedVideos;
+    }
+
+    public String getToken() {
+        return token;
+    }
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public User(String username, String displayName, String password, String imageUrl) {

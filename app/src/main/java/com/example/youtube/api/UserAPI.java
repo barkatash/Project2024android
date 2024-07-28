@@ -11,13 +11,16 @@ import com.example.youtube.dao.UserDao;
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import com.example.youtube.UserLogin;
 
 public class UserAPI {
     private MutableLiveData<List<User>> userListData;
@@ -33,7 +36,27 @@ public class UserAPI {
                 .addConverterFactory(GsonConverterFactory.create()).build();
         webServiceAPI = retrofit.create(userWebServiceAPI.class);
     }
+    public void login(String username, String password, MutableLiveData<User> userLiveData) {
+        UserLogin credentials = new UserLogin(username, password);
+        Call<User> call = webServiceAPI.login(credentials);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    userLiveData.setValue(response.body());
+                } else {
+                    Log.e("UserAPI", "Failed to login: " + response.message());
+                    userLiveData.setValue(null);
+                }
+            }
 
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e("UserAPI", "Error logging in: " + t.getMessage());
+                userLiveData.setValue(null);
+            }
+        });
+    }
     public void getAllUsers(MutableLiveData<List<User>> users) {
         Call<List<User>> call = webServiceAPI.getUsers();
         call.enqueue(new Callback<List<User>>() {

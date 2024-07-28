@@ -1,6 +1,7 @@
 package com.example.youtube.repositories;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -12,13 +13,14 @@ import com.example.youtube.entities.User;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserRepository {
     private static volatile UserRepository INSTANCE;
     private UserDao userDao;
     private UserListData userListData;
     private UserAPI apiService;
-    private User loggedInUser = null;
+    private MutableLiveData<User> loggedInUser = new MutableLiveData<>();
 
     public UserRepository() {
         userListData = new UserListData();
@@ -57,11 +59,23 @@ public class UserRepository {
         return apiService.getUserById(userId);
     }
 
+    public User getUserByUsername(String username) {
+        List<User> userList = userListData.getValue();
+        if (userList != null) {
+            for (User user : userList) {
+                if (user.getUsername().equals(username)) {
+                    return user;
+                }
+            }
+        }
+        return null;
+    }
+
     public void resetUsers() {
         apiService.getAllUsers(userListData);
     }
 
-    public User getLoggedInUser() {
+    public MutableLiveData<User> getLoggedInUser() {
         return loggedInUser;
     }
 
@@ -74,27 +88,19 @@ public class UserRepository {
         resetUsers();
     }
 
-    public void loginUser(User user) {
+    public void loginUser(MutableLiveData<User> user) {
         this.loggedInUser = user;
     }
 
     public void logoutUser() {
-        loggedInUser = null;
+        loggedInUser = new MutableLiveData<>();
     }
 
     public boolean isUserLoggedIn() {
         return loggedInUser != null;
     }
 
-    public User checkUserCredentials(String username, String password) {
-        List<User> users = userListData.getValue();
-        if (users != null) {
-            for (User user : users) {
-                if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-                    return user;
-                }
-            }
-        }
-        return null;
+    public void checkUserCredentials(String username, String password) {
+        apiService.login(username, password, this.loggedInUser);
     }
 }

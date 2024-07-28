@@ -110,7 +110,7 @@ public class UploadActivity extends AppCompatActivity {
 
     private void uploadVideo() {
         if (newVideo != null) {
-            User loggedInUser = UserRepository.getInstance(this).getLoggedInUser();
+            User loggedInUser = UserRepository.getInstance(this).getLoggedInUser().getValue();
             newVideo.setUploader(loggedInUser.getDisplayName());
             newVideo.setTitle(newContent.getText().toString().trim());
             newVideo.setDuration(duration);
