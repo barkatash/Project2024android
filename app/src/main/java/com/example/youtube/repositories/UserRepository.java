@@ -1,102 +1,77 @@
 package com.example.youtube.repositories;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.youtube.AppDB;
-import com.example.youtube.apiService.UserApiService;
+import com.example.youtube.api.UserAPI;
 import com.example.youtube.dao.UserDao;
 import com.example.youtube.entities.User;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
+import java.util.LinkedList;
 import java.util.List;
 
 public class UserRepository {
-    private static UserRepository instance;
-    private static UserDao userDao;
-    private static UserApiService apiService;
-    private LiveData<List<User>> allUsers;
-    private User loggedInUser = null;
+    private static final String SHARED_PREFS_NAME = "user_prefs";
+    private static final String KEY_USER_TOKEN = "user_token";
 
-    private UserRepository(Context context) {
-        AppDB db = AppDB.getInstance(context);
-        userDao = db.userDao();
+    private UserDao dao;
+    private UserListData userListData;
+    private UserAPI api;
+    private SharedPreferences sharedPreferences;
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://your-backend-url.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        apiService = retrofit.create(UserApiService.class);
-
-        allUsers = userDao.index();
+    public UserRepository(Context context) {
+        userListData = new UserListData();
+        sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
+        String token = getUserToken();
+        api = new UserAPI(userListData, dao, token);
+        api.getAllUsers(userListData);
     }
 
-    public static synchronized UserRepository getInstance(Context context) {
-        if (instance == null) {
-            instance = new UserRepository(context.getApplicationContext());
+    class UserListData extends MutableLiveData<List<User>> {
+        public UserListData() {
+            super();
+            setValue(new LinkedList<User>());
         }
-        return instance;
-    }
 
-    public static LiveData<User> getUserById(int id) {
-        return userDao.getUserById(id);
+        @Override
+        protected void onActive() {
+            super.onActive();
+            // Load data from the database if needed
+        }
     }
 
     public LiveData<List<User>> getAllUsers() {
-        return allUsers;
+        return userListData;
     }
 
-    public User getLoggedInUser() {
-        return loggedInUser;
+    public LiveData<User> getUserById(String username) {
+        return api.getUserByUsername(username);
     }
 
-    public static void insert(User user) {
-        new Thread(() -> userDao.insert(user)).start();
-        apiService.addUser(user).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                // Handle response
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // Handle failure
-            }
-        });
+    public void resetUsers() {
+        api.getAllUsers(userListData);
     }
 
-    public void update(User user) {
-        new Thread(() -> userDao.update(user)).start();
+    public void deleteUser(String username) {
+        api.deleteUser(username);
+        resetUsers();
     }
 
-    public void delete(User user) {
-        new Thread(() -> userDao.delete(user)).start();
+    public void addUser(User newUser) {
+        api.addUser(newUser);
+        resetUsers();
     }
 
-    public void loginUser(String username, String password) {
-        apiService.loginUser(new User(username, password)).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    loggedInUser = response.body();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // Handle failure
-            }
-        });
+    public void saveUserToken(String token) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_USER_TOKEN, token);
+        editor.apply();
     }
 
-    public void logoutUser() {
-        loggedInUser = null;
+    public String getUserToken() {
+        return sharedPreferences.getString(KEY_USER_TOKEN, null);
     }
 }

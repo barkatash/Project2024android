@@ -10,34 +10,33 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
+import com.example.youtube.api.UserAPI;
 import com.example.youtube.databinding.ActivityLoginBinding;
 import com.example.youtube.entities.User;
-import com.example.youtube.viewModels.UserViewModel;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LogInActivity extends AppCompatActivity {
     private EditText usernameInput, passwordInput;
     private ActivityLoginBinding binding;
     private Button logInButton;
     private SharedPreferences sharedPreferences;
-    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
 
-        usernameInput = binding.loginUsernameInput;
-        passwordInput = binding.loginPasswordInput;
-        logInButton = binding.loginLogInButton;
-
-        // Initialize UserViewModel
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        usernameInput = findViewById(R.id.login_usernameInput);
+        passwordInput = findViewById(R.id.login_passwordInput);
+        logInButton = findViewById(R.id.login_logInButton);
 
         logInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,19 +50,6 @@ public class LogInActivity extends AppCompatActivity {
             Intent i = new Intent(LogInActivity.this, SignInActivity.class);
             startActivity(i);
         });
-
-        // Observe the loggedInUser LiveData
-        userViewModel.getLoggedInUser().observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                if (user != null) {
-                    Toast.makeText(LogInActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                    navigateToMainActivity();
-                } else {
-                    Toast.makeText(LogInActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     private void handleLogIn() {
@@ -75,17 +61,40 @@ public class LogInActivity extends AppCompatActivity {
             return;
         }
 
-        userViewModel.loginUser(username, password);
-    }
 
-    private void navigateToMainActivity() {
-        logInButton.postDelayed(new Runnable() {
+        UserAPI userAPI = new UserAPI();
+
+        userAPI.authenticateUser(username, password, new Callback<User>() {
             @Override
-            public void run() {
-                Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    User loggedInUser = response.body();
+                    String token = response.headers().get("Authorization"); // Extract token from response headers
+
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("username", loggedInUser.getUsername());
+                    editor.putString("authToken", token);
+                    editor.apply();
+
+                    UsersManager.getInstance().setLoggedInUser(loggedInUser);
+
+                    Toast.makeText(LogInActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                    logInButton.postDelayed(() -> {
+                        Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }, 500);
+                } else {
+
+                    Toast.makeText(LogInActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                }
             }
-        }, 500);
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+                Toast.makeText(LogInActivity.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

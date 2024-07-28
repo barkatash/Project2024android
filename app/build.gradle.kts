@@ -1,5 +1,6 @@
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
@@ -29,10 +30,9 @@ android {
             )
         }
     }
-
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
 
@@ -51,13 +51,13 @@ dependencies {
 
     // SwipeRefreshLayout dependency
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.google.code.gson:gson:2.9.0")
-    implementation("org.mongodb:mongodb-driver-sync:4.7.0")
 
     // RecyclerView dependency
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
+    implementation("com.google.code.gson:gson:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.5.0")
 }
