@@ -12,12 +12,14 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface commentWebServiceAPI {
+    @GET("comments")
+    Call<List<Comment>> getComments();
     @GET("comments/video/{videoId}")
-    Call<List<Comment>> getCommentsForVideo(@Path("videoId") int videoId);
+    Call<List<Comment>> getCommentsForVideo(@Path("videoId") String videoId);
 
     @POST("comments")
-    Call<Comment> addComment(@Body Comment comment);
+    Call<Void> addComment(@Body Comment comment);
 
     @DELETE("comments/{id}")
-    Call<Void> deleteComment(@Path("id") int id);
+    Call<Void> deleteComment(@Path("id") String id);
 }

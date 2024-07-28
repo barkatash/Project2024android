@@ -79,15 +79,14 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
-        /*
         if (comments != null) {
             final Comment current = comments.get(position);
             AtomicBoolean isLiked = new AtomicBoolean(false);
             AtomicBoolean isUnliked = new AtomicBoolean(false);
 
             if (userRepository.getLoggedInUser() != null) {
-                isLiked.set(userRepository.getLoggedInUser().getLikedVideoIds().contains(current.getVideoId()));
-                isUnliked.set(userRepository.getLoggedInUser().getUnLikedVideoIds().contains(current.getVideoId()));
+                //isLiked.set(userRepository.getLoggedInUser().getLikedVideoIds().contains(current.getVideoId()));
+                //isUnliked.set(userRepository.getLoggedInUser().getUnLikedVideoIds().contains(current.getVideoId()));
             } else {
                 isUnliked.set(false);
                 isLiked.set(false);
@@ -96,19 +95,21 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             holder.btnLike.setImageResource(isLiked.get() ? R.drawable.baseline_thumb_up_24 : R.drawable.baseline_thumb_up_off_alt_24);
             holder.btnUnlike.setImageResource(isUnliked.get() ? R.drawable.baseline_thumb_down_24 : R.drawable.baseline_thumb_down_off_alt_24);
 
-            holder.tvUsername.setText(UserRepository.getUserById(current.getAuthorId()).getValue().getUsername());
+            holder.tvUsername.setText(current.getUsername());
             holder.tvDescription.setText(current.getDescription());
             holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
-
-            if (UserRepository.getUserById(current.getAuthorId()).getValue().getImageUrl() != null) {
+            /*
+            if (current.getUser().getImageUrl() != null) {
                 Glide.with(context)
-                        .load(UserRepository.getUserById(current.getAuthorId()).getValue().getImageUrl())
+                        .load(current.getUser().getImageUrl())
                         .transform(new CircleCrop())
                         .into(holder.ivProfilePic);
             } else {
                 holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
             }
+
+             */
 
             holder.btnLike.setOnClickListener(v -> {
                 if (userRepository.getLoggedInUser() == null) {
@@ -118,19 +119,19 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                 if (!isLiked.get()) {
                     current.setLikes(current.getLikes() + 1);
                     holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_24);
-                    userRepository.getLoggedInUser().getLikedVideoIds().add(current.getVideoId());
+                    //userRepository.getLoggedInUser().getLikedVideoIds().add(current.getVideoId());
                     isLiked.set(true);
 
                     if (isUnliked.get()) {
                         isUnliked.set(false);
                         holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-                        userRepository.getLoggedInUser().getUnLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
+                        //userRepository.getLoggedInUser().getUnLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
                     }
                 } else {
                     isLiked.set(false);
                     current.setLikes(current.getLikes() - 1);
                     holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                    userRepository.getLoggedInUser().getLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
+                    //userRepository.getLoggedInUser().getLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
                 }
                 notifyItemChanged(position);
             });
@@ -143,18 +144,18 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                 if (!isUnliked.get()) {
                     isUnliked.set(true);
                     holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_24);
-                    userRepository.getLoggedInUser().getUnLikedVideoIds().add(current.getVideoId());
+                    //userRepository.getLoggedInUser().getUnLikedVideoIds().add(current.getVideoId());
 
                     if (isLiked.get()) {
                         isLiked.set(false);
                         current.setLikes(current.getLikes() - 1);
                         holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                        userRepository.getLoggedInUser().getLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
+                        //userRepository.getLoggedInUser().getLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
                     }
                 } else {
                     isUnliked.set(false);
                     holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-                    userRepository.getLoggedInUser().getUnLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
+                    //userRepository.getLoggedInUser().getUnLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
                 }
                 notifyItemChanged(position);
             });
@@ -206,7 +207,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                 }
             });
         }
-        */
     }
 
     @Override

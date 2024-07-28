@@ -23,19 +23,24 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CommentRepository {
-    private static CommentRepository instance;
+    private static volatile CommentRepository instance;
     private CommentDao commentDao;
     private CommentListData commentListData;
     private CommentAPI apiService;
 
-    private CommentRepository(Context context) {
+    private CommentRepository() {
         commentListData = new CommentListData();
         apiService = new CommentAPI(commentListData, commentDao);
+        apiService.getAllComments(commentListData);
     }
 
     public static synchronized CommentRepository getInstance(Context context) {
         if (instance == null) {
-            instance = new CommentRepository(context);
+            synchronized (CommentRepository.class) {
+                if (instance == null) {
+                    instance = new CommentRepository();
+                }
+            }
         }
         return instance;
     }
@@ -53,69 +58,16 @@ public class CommentRepository {
     public LiveData<List<Comment>> getAllComments() {
         return commentListData;
     }
-/*
-    public void fetchCommentsForVideo(int videoId) {
-        remoteRepository.getCommentsForVideo(videoId, new Callback<List<Comment>>() {
-            @Override
-            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
-                if (response.isSuccessful()) {
-                    List<Comment> comments = response.body();
-                    if (comments != null) {
-                        Executors.newSingleThreadExecutor().execute(() -> {
-                            commentDao.insert(comments.toArray(new Comment[0]));
-                        });
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<Comment>> call, Throwable t) {
-                // Handle failure
-            }
-        });
+    public LiveData<List<Comment>> fetchCommentsForVideo(String videoId) {
+        return apiService.getCommentsForVideo(videoId);
     }
 
     public void addComment(Comment comment) {
-        remoteRepository.addComment(comment, new Callback<Comment>() {
-            @Override
-            public void onResponse(Call<Comment> call, Response<Comment> response) {
-                if (response.isSuccessful()) {
-                    Comment newComment = response.body();
-                    if (newComment != null) {
-                        Executors.newSingleThreadExecutor().execute(() -> {
-                            commentDao.insert(newComment);
-                        });
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Comment> call, Throwable t) {
-                // Handle failure
-            }
-        });
+        apiService.addComment(comment);
     }
 
-    public void deleteComment(int id) {
-        remoteRepository.deleteComment(id, new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        Comment comment = commentDao.get(id).getValue();
-                        if (comment != null) {
-                            commentDao.delete(comment);
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                // Handle failure
-            }
-        });
+    public void deleteComment(String id) {
+        apiService.deleteComment(id);
     }
-
- */
 }

@@ -2,6 +2,7 @@ package com.example.youtube;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -14,7 +15,9 @@ import android.widget.VideoView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,14 +26,15 @@ import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.Video;
 import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
+import com.example.youtube.viewModels.CommentViewModel;
 
 import java.util.List;
 
 public class WatchVideoActivity extends AppCompatActivity implements CommentsListAdapter.CommentInteractionListener {
 
     private VideoView videoView;
-    private CommentsListAdapter adapter;
-    private List<Comment> comments;
+    private CommentsListAdapter commentAdapter;
+    private MutableLiveData<List<Comment>> comments;
     VideoRepository videoRepository = new VideoRepository();
     private List<Comment> filteredComments;
     private int likeCount = 0;
@@ -230,22 +234,25 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     }
 
     private void initializeCommentsList() {
-        RecyclerView recyclerView = findViewById(R.id.lstComments);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new CommentsListAdapter(this, this);
-        recyclerView.setAdapter(adapter);
+        RecyclerView lstComments = findViewById(R.id.lstComments);
+        commentAdapter = new CommentsListAdapter(this, this);
 
-        String videoId = getIntent().getStringExtra("videoId");
-        comments = CommentsManager.getInstance().getComments();
-        filteredComments = CommentsManager.getInstance().getCommentsForVideo(videoId);
-        adapter.setComments(filteredComments);
+        CommentViewModel viewModel = new ViewModelProvider(this).get(CommentViewModel.class);
+        viewModel.loadComments(this.getVideoId()).observe(this, comments -> {
+            commentAdapter.setComments(comments);
+            Log.d("WatchVideoActivity", "Comments: " + comments);
+        });
+
+        lstComments.setAdapter(commentAdapter);
+        lstComments.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     @Override
     public void onDeleteComment(Comment comment) {
         CommentsManager.getInstance().deleteComment(comment);
         filteredComments.remove(comment);
-        adapter.setComments(filteredComments);
+        commentAdapter.setComments(filteredComments);
     }
 
     private void updateLikeDislikeUI() {
