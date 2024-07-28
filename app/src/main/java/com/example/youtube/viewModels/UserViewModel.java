@@ -1,108 +1,55 @@
 package com.example.youtube.viewModels;
 
-import android.app.Application;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.youtube.entities.User;
-import com.example.youtube.remoteRepositories.UserRemoteRepository;
+import com.example.youtube.repositories.UserRepository;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+public class UserViewModel extends ViewModel {
 
-public class UserViewModel extends AndroidViewModel {
-    private final UserRemoteRepository userRepository;
-    private final MutableLiveData<List<User>> usersLiveData;
-    private final MutableLiveData<User> loggedInUser;
+    private LiveData<List<User>> users;
+    private UserRepository userRepository;
+    private User loggedInUser;
 
-    public UserViewModel(@NonNull Application application) {
-        super(application);
-        userRepository = new UserRemoteRepository(application.getApplicationContext());
-        usersLiveData = new MutableLiveData<>();
-        loggedInUser = new MutableLiveData<>();
-        loadUsers();
+    public UserViewModel() {
+        this.userRepository = UserRepository.getInstance(null); // Pass context if needed
+        this.users = this.userRepository.getAllUsers();
+        this.loggedInUser = this.userRepository.getLoggedInUser();
     }
 
-    private void loadUsers() {
-        userRepository.getAllUsers(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    usersLiveData.setValue(response.body());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                // Handle failure
-            }
-        });
+    public LiveData<List<User>> getUsers() {
+        return users;
     }
 
-    public LiveData<List<User>> getAllUsers() {
-        return usersLiveData;
+    public void setUsers(LiveData<List<User>> users) {
+        this.users = users;
     }
 
-    public LiveData<User> getLoggedInUser() {
+    public User getLoggedInUser() {
         return loggedInUser;
     }
 
-    public void loginUser(String username, String password) {
-        User credentials = new User(username, password);
-        userRepository.loginUser(credentials, new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) {
-                    loggedInUser.setValue(response.body());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // Handle failure
-            }
-        });
+    public void setLoggedInUser(User loggedInUser) {
+        this.loggedInUser = loggedInUser;
+        this.userRepository.loginUser(loggedInUser);
     }
 
-    public void logoutUser() {
-        loggedInUser.setValue(null); // Clear the logged-in user
+    public boolean isLogin() {
+        return userRepository.isUserLoggedIn();
     }
 
-    public void addUser(User user) {
-        userRepository.addUser(user, new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) {
-                    loadUsers(); // Reload users after adding a new one
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                // Handle failure
-            }
-        });
+    public UserRepository getUserRepository() {
+        return userRepository;
     }
 
-    public void deleteUser(int userId) {
-        userRepository.deleteUser(userId, new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    loadUsers(); // Reload users after deleting one
-                }
-            }
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                // Handle failure
-            }
-        });
+    public User checkUserCredentials(String username, String password) {
+        return userRepository.checkUserCredentials(username, password);
     }
 }

@@ -8,7 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.youtube.entities.Comment;
-import com.example.youtube.remoteRepositories.CommentRemoteRepository;
+import com.example.youtube.api.CommentAPI;
 
 import java.util.List;
 
@@ -17,13 +17,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class CommentViewModel extends AndroidViewModel {
-    private final CommentRemoteRepository commentRepository;
+    private CommentAPI commentRepository;
     private final MutableLiveData<List<Comment>> commentsLiveData;
 
     public CommentViewModel(@NonNull Application application) {
         super(application);
         // Pass application context to CommentRemoteRepository
-        commentRepository = new CommentRemoteRepository(application.getApplicationContext());
+        //commentRepository = new CommentAPI(application.getApplicationContext());
         commentsLiveData = new MutableLiveData<>();
         loadComments();
     }

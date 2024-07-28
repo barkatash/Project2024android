@@ -19,7 +19,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.youtube.R;
 import com.example.youtube.entities.Comment;
-import com.example.youtube.remoteRepositories.UserRemoteRepository;
 import com.example.youtube.repositories.UserRepository;
 
 import java.util.List;
@@ -80,6 +79,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
+        /*
         if (comments != null) {
             final Comment current = comments.get(position);
             AtomicBoolean isLiked = new AtomicBoolean(false);
@@ -206,6 +206,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                 }
             });
         }
+        */
     }
 
     @Override

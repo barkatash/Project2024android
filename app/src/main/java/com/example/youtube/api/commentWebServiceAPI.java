@@ -11,7 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-public interface CommentApiService {
+public interface commentWebServiceAPI {
     @GET("comments/video/{videoId}")
     Call<List<Comment>> getCommentsForVideo(@Path("videoId") int videoId);
 

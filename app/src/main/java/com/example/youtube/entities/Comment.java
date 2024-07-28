@@ -1,38 +1,35 @@
 package com.example.youtube.entities;
 
+
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(foreignKeys = @ForeignKey(entity = User.class,
-        parentColumns = "id",
-        childColumns = "authorId",
-        onDelete = ForeignKey.CASCADE))
+@Entity
 public class Comment {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private Integer videoId;
-    private Integer authorId;
+    private String videoId;
+    private User author;
     private String description;
     private String uploadDate;
     private int likes;
     private int dislikes;
 
-    // No-argument constructor
-    public Comment() {
-    }
 
-    // Constructor with all fields
-    public Comment(Integer videoId, Integer authorId, String description, String uploadDate, int likes, int dislikes) {
+
+    public Comment(String videoId, User author, String description, String uploadDate , int likes, int dislikes) {
+        this.author = author;
         this.videoId = videoId;
-        this.authorId = authorId;
         this.description = description;
-        this.uploadDate = uploadDate;
         this.likes = likes;
+        this.uploadDate = uploadDate;
         this.dislikes = dislikes;
     }
 
-    // Getters and Setters
+
+    public int getUnlikes() { return dislikes; }
+
+    public void setUnlikes(int unlikes) { this.dislikes = unlikes; }
 
     public int getId() {
         return id;
@@ -42,20 +39,16 @@ public class Comment {
         this.id = id;
     }
 
-    public Integer getVideoId() {
+    public String getVideoId() {
         return videoId;
     }
 
-    public void setVideoId(Integer videoId) {
+    public void setVideoId(String videoId) {
         this.videoId = videoId;
     }
 
-    public Integer getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(Integer authorId) {
-        this.authorId = authorId;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public String getDescription() {
@@ -88,5 +81,8 @@ public class Comment {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
+    }
+    public User getUser() {
+        return author;
     }
 }
