@@ -1,33 +1,40 @@
 package com.example.youtube.repositories;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.youtube.api.UserAPI;
 import com.example.youtube.dao.UserDao;
+import com.example.youtube.AppDB;
 import com.example.youtube.entities.User;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class UserRepository {
-    private static final String SHARED_PREFS_NAME = "user_prefs";
-    private static final String KEY_USER_TOKEN = "user_token";
-
-    private UserDao dao;
+    private static volatile UserRepository INSTANCE;
+    private UserDao userDao;
     private UserListData userListData;
-    private UserAPI api;
-    private SharedPreferences sharedPreferences;
+    private UserAPI apiService;
+    private User loggedInUser = null;
 
-    public UserRepository(Context context) {
+    public UserRepository() {
         userListData = new UserListData();
-        sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE);
-        String token = getUserToken();
-        api = new UserAPI(userListData, dao, token);
-        api.getAllUsers(userListData);
+        apiService = new UserAPI(userListData, userDao);
+        apiService.getAllUsers(userListData);
+    }
+
+    public static UserRepository getInstance(Context context) {
+        if (INSTANCE == null) {
+            synchronized (UserRepository.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new UserRepository();
+                }
+            }
+        }
+        return INSTANCE;
     }
 
     class UserListData extends MutableLiveData<List<User>> {
@@ -39,7 +46,6 @@ public class UserRepository {
         @Override
         protected void onActive() {
             super.onActive();
-            // Load data from the database if needed
         }
     }
 
@@ -47,31 +53,48 @@ public class UserRepository {
         return userListData;
     }
 
-    public LiveData<User> getUserById(String username) {
-        return api.getUserByUsername(username);
+    public LiveData<User> getUserById(String userId) {
+        return apiService.getUserById(userId);
     }
 
     public void resetUsers() {
-        api.getAllUsers(userListData);
+        apiService.getAllUsers(userListData);
     }
 
-    public void deleteUser(String username) {
-        api.deleteUser(username);
-        resetUsers();
+    public User getLoggedInUser() {
+        return loggedInUser;
     }
 
     public void addUser(User newUser) {
-        api.addUser(newUser);
+        apiService.addUser(newUser);
+    }
+
+    public void delete(String userId) {
+        apiService.deleteUser(userId);
         resetUsers();
     }
 
-    public void saveUserToken(String token) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_USER_TOKEN, token);
-        editor.apply();
+    public void loginUser(User user) {
+        this.loggedInUser = user;
     }
 
-    public String getUserToken() {
-        return sharedPreferences.getString(KEY_USER_TOKEN, null);
+    public void logoutUser() {
+        loggedInUser = null;
+    }
+
+    public boolean isUserLoggedIn() {
+        return loggedInUser != null;
+    }
+
+    public User checkUserCredentials(String username, String password) {
+        List<User> users = userListData.getValue();
+        if (users != null) {
+            for (User user : users) {
+                if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                    return user;
+                }
+            }
+        }
+        return null;
     }
 }

@@ -3,12 +3,18 @@ package com.example.youtube.repositories;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.youtube.AppDB;
 import com.example.youtube.dao.CommentDao;
+import com.example.youtube.dao.UserDao;
+import com.example.youtube.dao.VideoDao;
 import com.example.youtube.entities.Comment;
-import com.example.youtube.remoteRepositories.CommentRemoteRepository;
+import com.example.youtube.api.CommentAPI;
+import com.example.youtube.entities.User;
+import com.example.youtube.entities.Video;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -18,15 +24,13 @@ import retrofit2.Response;
 
 public class CommentRepository {
     private static CommentRepository instance;
-    private final CommentDao commentDao;
-    private final CommentRemoteRepository remoteRepository;
-    private final LiveData<List<Comment>> allComments;
+    private CommentDao commentDao;
+    private CommentListData commentListData;
+    private CommentAPI apiService;
 
     private CommentRepository(Context context) {
-        AppDB db = AppDB.getInstance(context.getApplicationContext());
-        commentDao = db.commentDao();
-        remoteRepository = new CommentRemoteRepository(context);
-        allComments = commentDao.index();
+        commentListData = new CommentListData();
+        apiService = new CommentAPI(commentListData, commentDao);
     }
 
     public static synchronized CommentRepository getInstance(Context context) {
@@ -35,11 +39,21 @@ public class CommentRepository {
         }
         return instance;
     }
+    class CommentListData extends MutableLiveData<List<Comment>> {
+        public CommentListData() {
+            super();
+            setValue(new LinkedList<Comment>());
+        }
 
-    public LiveData<List<Comment>> getAllComments() {
-        return allComments;
+        @Override
+        protected void onActive() {
+            super.onActive();
+        }
     }
-
+    public LiveData<List<Comment>> getAllComments() {
+        return commentListData;
+    }
+/*
     public void fetchCommentsForVideo(int videoId) {
         remoteRepository.getCommentsForVideo(videoId, new Callback<List<Comment>>() {
             @Override
@@ -102,4 +116,6 @@ public class CommentRepository {
             }
         });
     }
+
+ */
 }
