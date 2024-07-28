@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.youtube.entities.User;
+import com.example.youtube.repositories.UserRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -175,7 +176,7 @@ public class SignInActivity extends AppCompatActivity {
         newUser.setPassword(password);
         newUser.setUsername(username);
         newUser.setUserDisplayName(displayName);
-        UsersManager.addUser(newUser);
+        UserRepository.getInstance(this).addUser(newUser);
 
         Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(SignInActivity.this, LogInActivity.class));
