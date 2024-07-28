@@ -132,9 +132,11 @@ public class MainActivity extends AppCompatActivity {
         User loggedInUser = userRepository.getLoggedInUser();
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         if (loggedInUser != null) {
+
             if (loggedInUser.getImageUrl() != null && !loggedInUser.getImageUrl().isEmpty()) {
+                String imageUrl = "http://10.0.2.2:8080/" + loggedInUser.getImageUrl();
                 Glide.with(this)
-                        .load(userRepository.getLoggedInUser().getImageUrl())
+                        .load(imageUrl)
                         .transform(new CircleCrop())
                         .into(youBtn);
             }

@@ -1,5 +1,7 @@
 package com.example.youtube.entities;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +9,15 @@ public class User {
     private String username;
     private String userDisplayName;
     private String password;
+
+    @SerializedName("image")
     private String imageUrl = null;
+
+    @SerializedName("videoIdListLiked")
     private List<String> likedVideos = new ArrayList<>();
+    private List<String> videoIdListUnliked = new ArrayList<>();
+    private List <String> commentIdListLiked = new ArrayList<>();
+    private List <String> commentIdListUnliked = new ArrayList<>();
 
     public User() {}
 
