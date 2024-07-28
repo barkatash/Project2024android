@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +22,8 @@ import com.example.youtube.adapters.UsersListAdapter;
 import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.databinding.ActivityMainBinding;
 import com.example.youtube.entities.User;
-import com.example.youtube.viewmodels.VideosViewModel;
+import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.viewModels.VideoViewModel;
 
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private VideosListAdapter videoAdapter;
     private UsersListAdapter userAdapter;
     private ImageView youBtn;
-
+    private UserRepository userRepository;
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        userRepository = UserRepository.getInstance(this);
 
         ImageButton btnToggleDark = binding.modeBtn;
         btnToggleDark.setOnClickListener(new View.OnClickListener() {
@@ -54,11 +58,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         RecyclerView lstVideos = binding.lstVideos;
         videoAdapter = new VideosListAdapter(this);
 
-        VideosViewModel viewModel = new ViewModelProvider(this).get(VideosViewModel.class);
+        VideoViewModel viewModel = new ViewModelProvider(this).get(VideoViewModel.class);
         viewModel.getVideos().observe(this, videos -> {
             videoAdapter.setVideos(videos);
             // Optionally log the videos to debug
@@ -73,9 +76,8 @@ public class MainActivity extends AppCompatActivity {
         lstUsers.setAdapter(userAdapter);
         lstUsers.setLayoutManager(new LinearLayoutManager(this));
 
-        UsersManager usersManager = UsersManager.getInstance();
-        List<User> users = usersManager.getUsers();
-        userAdapter.setUsers(users);
+        LiveData<List<User>> users = userRepository.getAllUsers();
+        users.observe(this, userList -> userAdapter.setUsers(userList));
 
         ImageButton searchBtn = binding.searchBtn;
         searchBtn.setOnClickListener(v -> {
@@ -92,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton btnUploadVideo = binding.uploadBtn;
         btnUploadVideo.setOnClickListener(v -> {
-            if (!UsersManager.getInstance().isLoggedIn()) {
+            if (userRepository.getLoggedInUser() == null) {
                 Toast.makeText(MainActivity.this, "You need to be logged in to upload a video", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -111,15 +113,14 @@ public class MainActivity extends AppCompatActivity {
         //List<Video> videos = videoRepository.getVideos();
         //videoAdapter.setVideos(videos);
 
-        UsersManager usersManager = UsersManager.getInstance();
-        List<User> users = usersManager.getUsers();
-        userAdapter.setUsers(users);
+        LiveData<List<User>> users = userRepository.getAllUsers();
+        users.observe(this, userList -> userAdapter.setUsers(userList));
 
         updateProfileButtonState();
     }
 
     private void updateProfileButtonState() {
-        if (UsersManager.getInstance().isLoggedIn()) {
+        if (userRepository.getLoggedInUser() != null) {
             setLoggedInState();
         } else {
             setLoggedOutState();
@@ -128,25 +129,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void setLoggedInState() {
         binding.youBtnText.setText("Log Out");
-        User loggedInUser = UsersManager.getInstance().getLoggedInUser();
+        User loggedInUser = userRepository.getLoggedInUser();
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         if (loggedInUser != null) {
-             if (loggedInUser.getImageUrl() != null && !loggedInUser.getImageUrl().isEmpty()) {
+            if (loggedInUser.getImageUrl() != null && !loggedInUser.getImageUrl().isEmpty()) {
                 Glide.with(this)
-                        .load(UsersManager.getInstance().getLoggedInUser().getImageUrl())
+                        .load(userRepository.getLoggedInUser().getImageUrl())
                         .transform(new CircleCrop())
                         .into(youBtn);
             }
         }
         youBtn.setOnClickListener(v -> {
-            UsersManager.getInstance().logoutUser();
+            userRepository.logoutUser();
             setLoggedOutState();
         });
     }
 
     private void setLoggedOutState() {
         binding.youBtnText.setText("Log In");
-        UsersManager.getInstance().setLoggedInUser(null);
+        userRepository.logoutUser();
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         youBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, LogInActivity.class);
