@@ -175,7 +175,7 @@ public class SignInActivity extends AppCompatActivity {
         }
         newUser.setPassword(password);
         newUser.setUsername(username);
-        newUser.setUserDisplayName(displayName);
+        newUser.setDisplayName(displayName);
         UserRepository.getInstance(this).addUser(newUser);
 
         Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();

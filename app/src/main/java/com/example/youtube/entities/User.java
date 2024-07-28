@@ -5,7 +5,7 @@ import java.util.List;
 
 public class User {
     private String username;
-    private String userDisplayName;
+    private String displayName;
     private String password;
     private String imageUrl = null;
     private List<String> likedVideos = new ArrayList<>();
@@ -48,15 +48,15 @@ public class User {
         this.likedVideos = likedVideos;
     }
 
-    public User(String username, String userDisplayName, String password, String imageUrl) {
+    public User(String username, String displayName, String password, String imageUrl) {
         this.username = username;
-        this.userDisplayName = userDisplayName;
+        this.displayName = displayName;
         this.password = password;
         this.imageUrl = imageUrl;
     }
-    public User(String username, String userDisplayName, String password) {
+    public User(String username, String displayName, String password) {
         this.username = username;
-        this.userDisplayName = userDisplayName;
+        this.displayName = displayName;
         this.password = password;
     }
 
@@ -65,8 +65,8 @@ public class User {
         return username;
     }
 
-    public String getUserDisplayName() {
-        return userDisplayName;
+    public String getDisplayName() {
+        return displayName;
     }
 
     public String getPassword() {
@@ -82,8 +82,8 @@ public class User {
         this.username = username;
     }
 
-    public void setUserDisplayName(String userDisplayName) {
-        this.userDisplayName = userDisplayName;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public void setPassword(String password) {
