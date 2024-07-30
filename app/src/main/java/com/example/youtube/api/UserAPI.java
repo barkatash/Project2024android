@@ -1,6 +1,5 @@
 package com.example.youtube.api;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -9,12 +8,13 @@ import com.example.youtube.MyApplication;
 import com.example.youtube.R;
 import com.example.youtube.dao.UserDao;
 import com.example.youtube.entities.User;
-import com.example.youtube.entities.Video;
 
-import java.util.HashMap;
+import java.io.File;
 import java.util.List;
-import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,14 +70,23 @@ public class UserAPI {
             }
         });
     }
-    public void addUser(User user) {
-        Call<Void> call = webServiceAPI.addUser(user);
-        call.enqueue(new Callback<Void>() {
+    public void addUser(User user, File profileImageFile) {
+        RequestBody usernameBody = RequestBody.create(MultipartBody.FORM, user.getUsername());
+        RequestBody displayNameBody = RequestBody.create(MultipartBody.FORM, user.getDisplayName());
+        RequestBody passwordBody = RequestBody.create(MultipartBody.FORM, user.getPassword());
+
+        MultipartBody.Part imagePart = null;
+        if (profileImageFile != null) {
+            RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpeg"), profileImageFile);
+            imagePart = MultipartBody.Part.createFormData("image", profileImageFile.getName(), imageBody);
+        }
+        Call<String> call = webServiceAPI.createUser(usernameBody, displayNameBody, passwordBody, imagePart);
+        call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Log.d("UserAPI", "user added successfully.");
-                    // Optionally, refresh the video list
+                    Log.d("UserAPI", "User added successfully.");
+                    // Optionally, refresh the user list
                     getAllUsers(userListData);
                 } else {
                     Log.e("UserAPI", "Failed to add user: " + response.message());
@@ -85,11 +94,12 @@ public class UserAPI {
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<String> call, Throwable t) {
                 Log.e("UserAPI", "Error adding user: " + t.getMessage());
             }
         });
     }
+
     public void deleteUser(String id) {
         Call<Void> call = webServiceAPI.deleteUser(id);
         call.enqueue(new Callback<Void>() {

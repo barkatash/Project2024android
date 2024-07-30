@@ -85,6 +85,6 @@ public class LogInActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 500);
+        }, 0);
     }
 }

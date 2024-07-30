@@ -11,6 +11,7 @@ import com.example.youtube.dao.UserDao;
 import com.example.youtube.AppDB;
 import com.example.youtube.entities.User;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -79,8 +80,8 @@ public class UserRepository {
         return loggedInUser;
     }
 
-    public void addUser(User newUser) {
-        apiService.addUser(newUser);
+    public void addUser(User newUser, File profileImageFile) {
+        apiService.addUser(newUser, profileImageFile);
     }
 
     public void delete(String userId) {
