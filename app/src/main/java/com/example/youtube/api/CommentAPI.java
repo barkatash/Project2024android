@@ -1,14 +1,18 @@
 package com.example.youtube.api;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.youtube.MyApplication;
 import com.example.youtube.R;
+import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.dao.CommentDao;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.User;
+import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.viewModels.UserViewModel;
 
 import java.util.List;
 
@@ -23,6 +27,7 @@ public class CommentAPI {
     private CommentDao dao;
     Retrofit retrofit;
     commentWebServiceAPI webServiceAPI;
+    UserViewModel userViewModel;
 
     // Constructor that accepts Context
     public CommentAPI(MutableLiveData<List<Comment>> commentListData, CommentDao dao) {
@@ -73,7 +78,7 @@ public class CommentAPI {
 
     // Method to add a new comment
     public void addComment(Comment comment) {
-        Call<Void> call = webServiceAPI.addComment(comment);
+        Call<Void> call = webServiceAPI.createComment("h", comment.getUsername(), comment.getVideoId(), comment);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -82,6 +87,7 @@ public class CommentAPI {
                     // Optionally, refresh the video list
                     getAllComments(commentListData);
                 } else {
+                    Toast.makeText(null, "You need to be logged in to leave a comment.", Toast.LENGTH_SHORT).show();
                     Log.e("CommentAPI", "Failed to add comment: " + response.message());
                 }
             }

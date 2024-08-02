@@ -1,6 +1,7 @@
 package com.example.youtube.viewModels;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -24,7 +25,7 @@ public class CommentViewModel extends ViewModel {
     private CommentRepository commentRepository;
 
     public CommentViewModel() {
-        this.commentRepository = CommentRepository.getInstance(null);
+        this.commentRepository = CommentRepository.getInstance();
         this.comments = this.commentRepository.getAllComments();
     }
 

@@ -1,6 +1,7 @@
 package com.example.youtube.repositories;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -34,7 +35,7 @@ public class CommentRepository {
         apiService.getAllComments(commentListData);
     }
 
-    public static synchronized CommentRepository getInstance(Context context) {
+    public static synchronized CommentRepository getInstance() {
         if (instance == null) {
             synchronized (CommentRepository.class) {
                 if (instance == null) {
@@ -64,6 +65,7 @@ public class CommentRepository {
     }
 
     public void addComment(Comment comment) {
+        Log.d("CommentAPI", "comment added successfully.");
         apiService.addComment(comment);
     }
 

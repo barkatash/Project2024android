@@ -24,14 +24,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.youtube.adapters.CommentsListAdapter;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.CommentRepository;
 import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
 import com.example.youtube.viewModels.CommentViewModel;
+import com.example.youtube.viewModels.UserViewModel;
 
 import java.util.List;
 
 public class WatchVideoActivity extends AppCompatActivity implements CommentsListAdapter.CommentInteractionListener {
-
+    CommentViewModel commentViewModel = new CommentViewModel();
+    UserViewModel userViewModel = new UserViewModel();
     private VideoView videoView;
     private CommentsListAdapter commentAdapter;
     private MutableLiveData<List<Comment>> comments;
@@ -81,26 +84,22 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
             popupMenu.show();
         });
 
-/*
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (!UserRepository.getInstance().isLoggedIn()) {
-                    Toast.makeText(WatchVideoActivity.this, "You need to be logged in to leave a comment.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 String commentText = etComment.getText().toString().trim();
                 if (!TextUtils.isEmpty(commentText)) {
-                    Comment newComment = new Comment(getVideoId(), UsersManager.getInstance().getLoggedInUser(), commentText, "now", 0, 0);
-                    newComment.setId(CommentsManager.getNextCommentId());
-                    CommentsManager.getInstance().addComment(newComment);
+                    Comment newComment = new Comment(getVideoId(),"sagi", commentText, "now", 0, 0);
+                    Log.d("CommentAPI", "comment added successfully.");
+                    CommentRepository.getInstance().addComment(newComment);
                     etComment.setText("");
                     initializeCommentsList();
                 }
 
             }
         });
+
+        /*
 
         btnLike.setOnClickListener(v -> {
             if (!UsersManager.getInstance().isLoggedIn()) {
