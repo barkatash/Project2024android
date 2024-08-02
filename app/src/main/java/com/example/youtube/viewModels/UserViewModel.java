@@ -14,11 +14,13 @@ public class UserViewModel extends ViewModel {
     private LiveData<List<User>> users;
     private UserRepository userRepository;
     private MutableLiveData<User> loggedInUser;
+    private MutableLiveData<User> fetchedUser;
 
     public UserViewModel() {
-        this.userRepository = UserRepository.getInstance(null); // Pass context if needed
+        this.userRepository = UserRepository.getInstance(null);
         this.users = this.userRepository.getAllUsers();
         this.loggedInUser = this.userRepository.getLoggedInUser();
+        this.fetchedUser = new MutableLiveData<>();
     }
 
     public LiveData<List<User>> getUsers() {
@@ -52,5 +54,12 @@ public class UserViewModel extends ViewModel {
 
     public void checkUserCredentials(String username, String password) {
         userRepository.checkUserCredentials(username, password);
+    }
+
+    public void fetchUserByUsername(String username) {
+        userRepository.fetchUserByUsername(username, fetchedUser);
+    }
+    public LiveData<User> getFetchedUser() {
+        return fetchedUser;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.youtube;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -9,7 +9,6 @@ import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -24,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.youtube.adapters.CommentsListAdapter;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.Video;
-import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
 import com.example.youtube.viewModels.CommentViewModel;
 
@@ -212,6 +210,14 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                     likeCount = video.getLikes();
                     tvLikeCount.setText(String.valueOf(likeCount));
                     initializeVideoPlayer(video);
+                    tvAuthor.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(WatchVideoActivity.this, UserPageActivity.class);
+                            intent.putExtra("username", video.getUploader());
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
         });

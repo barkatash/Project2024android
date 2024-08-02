@@ -43,6 +43,7 @@
         <activity android:name=".LogInActivity" />
         <activity android:name=".SignInActivity" />
         <activity android:name=".EditVideoActivity" />
+        <activity android:name=".UserPageActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
