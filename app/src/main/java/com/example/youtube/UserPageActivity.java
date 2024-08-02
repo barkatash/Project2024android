@@ -40,7 +40,7 @@ public class UserPageActivity extends AppCompatActivity {
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         recyclerViewVideos.setLayoutManager(new LinearLayoutManager(this));
-        videoAdapter = new UserVideoAdapter(null);
+        videoAdapter = new UserVideoAdapter(this,null);
         recyclerViewVideos.setAdapter(videoAdapter);
 
         String username = getIntent().getStringExtra("username");

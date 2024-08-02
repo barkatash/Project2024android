@@ -2,7 +2,6 @@ package com.example.youtube.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.youtube.EditVideoActivity;
 import com.example.youtube.R;
-import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
@@ -58,8 +57,6 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             Glide.with(holder.ivPic.getContext())
                     .load(imageUrl)
                     .into(holder.ivPic);
-
-            Log.d("page", "id" + current.getId());
             holder.ivPic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

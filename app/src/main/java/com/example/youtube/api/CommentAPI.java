@@ -8,7 +8,6 @@ import com.example.youtube.MyApplication;
 import com.example.youtube.R;
 import com.example.youtube.dao.CommentDao;
 import com.example.youtube.entities.Comment;
-import com.example.youtube.entities.User;
 
 import java.util.List;
 
@@ -24,7 +23,6 @@ public class CommentAPI {
     Retrofit retrofit;
     commentWebServiceAPI webServiceAPI;
 
-    // Constructor that accepts Context
     public CommentAPI(MutableLiveData<List<Comment>> commentListData, CommentDao dao) {
         this.commentListData = commentListData;
         this.dao = dao;
@@ -48,7 +46,6 @@ public class CommentAPI {
        });
    }
 
-    // Method to get comments for a specific video
     public MutableLiveData<List<Comment>> getCommentsForVideo(String videoId) {
         MutableLiveData<List<Comment>> videosComment = new MutableLiveData<>();
         Call<List<Comment>> call = webServiceAPI.getCommentsForVideo(videoId);
@@ -93,7 +90,6 @@ public class CommentAPI {
         });
     }
 
-    // Method to delete a comment by ID
     public void deleteComment(String commentId) {
         Call<Void> call = webServiceAPI.deleteComment(commentId);
         call.enqueue(new Callback<Void>() {
