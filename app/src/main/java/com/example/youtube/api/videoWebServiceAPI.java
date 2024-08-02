@@ -22,4 +22,6 @@ public interface videoWebServiceAPI {
 
     @GET("videos/{id}")
     Call<Video> getVideoById(@Path("id") String id);
+    @GET("users/{username}/videos")
+    Call<List<Video>> getVideosByUser(@Path("username") String username);
 }

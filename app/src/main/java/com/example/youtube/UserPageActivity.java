@@ -8,17 +8,24 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.example.youtube.adapters.UserVideoAdapter;
 import com.example.youtube.entities.User;
+import com.example.youtube.entities.Video;
 import com.example.youtube.viewModels.UserViewModel;
+
+import java.util.List;
 
 public class UserPageActivity extends AppCompatActivity {
     private ImageView imageViewProfile;
     private TextView textViewUsername;
     private UserViewModel userViewModel;
-
+    private RecyclerView recyclerViewVideos;
+    private UserVideoAdapter videoAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,12 +33,15 @@ public class UserPageActivity extends AppCompatActivity {
 
         imageViewProfile = findViewById(R.id.imageViewProfile);
         textViewUsername = findViewById(R.id.textViewUsername);
-
+        recyclerViewVideos = findViewById(R.id.recyclerViewUserVideos);
         ImageButton btnGoBack = findViewById(R.id.btnGoBackUserPage);
         btnGoBack.setOnClickListener(v -> onBackPressed());
 
-
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
+        recyclerViewVideos.setLayoutManager(new LinearLayoutManager(this));
+        videoAdapter = new UserVideoAdapter(null);
+        recyclerViewVideos.setAdapter(videoAdapter);
 
         String username = getIntent().getStringExtra("username");
         if (username != null) {
@@ -45,6 +55,14 @@ public class UserPageActivity extends AppCompatActivity {
                 }
             }
         });
+        userViewModel.fetchUserVideos(username);
+        userViewModel.getUserVideos().observe(this, new Observer<List<Video>>() {
+            @Override
+            public void onChanged(List<Video> videos) {
+                videoAdapter.updateVideoList(videos);
+            }
+        });
+
     }
 
     private void displayUserInfo(User user) {
@@ -60,6 +78,6 @@ public class UserPageActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        super.onBackPressed(); // Go back to the previous screen
+        super.onBackPressed();
     }
 }

@@ -53,6 +53,11 @@ public class VideoRepository {
         api.addVideo(newVideo);
         resetVideos();
     }
+    public LiveData<List<Video>> getVideosByUser(String username) {
+        VideoListData userVideosData = new VideoListData();
+        api.getVideosByUser(username, userVideosData);
+        return userVideosData;
+    }
 
 
 }
