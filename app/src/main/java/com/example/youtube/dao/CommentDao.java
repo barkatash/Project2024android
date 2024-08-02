@@ -17,10 +17,10 @@ public interface CommentDao {
     LiveData<List<Comment>> index(); // Return LiveData
 
     @Query("SELECT * FROM comment WHERE id = :id")
-    LiveData<Comment> get(int id); // Return LiveData
+    LiveData<Comment> get(String id); // Return LiveData
 
     @Query("SELECT * FROM comment WHERE videoId = :videoId")
-    LiveData<List<Comment>> getCommentsForVideo(int videoId); // Return LiveData
+    LiveData<List<Comment>> getCommentsForVideo(String videoId); // Return LiveData
 
     @Insert
     void insert(Comment... comments);

@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Comment {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private String id;
     private String videoId;
-    private User author;
+    private String userName;
     private String description;
     private String uploadDate;
     private int likes;
@@ -17,8 +17,8 @@ public class Comment {
 
 
 
-    public Comment(String videoId, User author, String description, String uploadDate , int likes, int dislikes) {
-        this.author = author;
+    public Comment(String videoId, String userName, String description, String uploadDate , int likes, int dislikes) {
+        this.userName = userName;
         this.videoId = videoId;
         this.description = description;
         this.likes = likes;
@@ -31,11 +31,11 @@ public class Comment {
 
     public void setUnlikes(int unlikes) { this.dislikes = unlikes; }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -47,8 +47,8 @@ public class Comment {
         this.videoId = videoId;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getDescription() {
@@ -82,7 +82,7 @@ public class Comment {
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
     }
-    public User getUser() {
-        return author;
+    public String getUsername() {
+        return userName;
     }
 }

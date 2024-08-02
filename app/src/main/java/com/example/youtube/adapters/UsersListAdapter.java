@@ -39,7 +39,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = userList.get(position);
         holder.tvUsername.setText(user.getUsername());
-        holder.tvDisplayName.setText(user.getUserDisplayName());
+        holder.tvDisplayName.setText(user.getDisplayName());
         // Load image if necessary
     }
 

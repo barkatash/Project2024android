@@ -1,6 +1,7 @@
 package com.example.youtube.viewModels;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.youtube.entities.User;
@@ -12,7 +13,7 @@ public class UserViewModel extends ViewModel {
 
     private LiveData<List<User>> users;
     private UserRepository userRepository;
-    private User loggedInUser;
+    private MutableLiveData<User> loggedInUser;
 
     public UserViewModel() {
         this.userRepository = UserRepository.getInstance(null); // Pass context if needed
@@ -28,11 +29,11 @@ public class UserViewModel extends ViewModel {
         this.users = users;
     }
 
-    public User getLoggedInUser() {
+    public MutableLiveData<User> getLoggedInUser() {
         return loggedInUser;
     }
 
-    public void setLoggedInUser(User loggedInUser) {
+    public void setLoggedInUser(MutableLiveData<User> loggedInUser) {
         this.loggedInUser = loggedInUser;
         this.userRepository.loginUser(loggedInUser);
     }
@@ -49,7 +50,7 @@ public class UserViewModel extends ViewModel {
         this.userRepository = userRepository;
     }
 
-    public User checkUserCredentials(String username, String password) {
-        return userRepository.checkUserCredentials(username, password);
+    public void checkUserCredentials(String username, String password) {
+        userRepository.checkUserCredentials(username, password);
     }
 }

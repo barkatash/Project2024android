@@ -7,7 +7,7 @@ import java.util.List;
 
 public class User {
     private String username;
-    private String userDisplayName;
+    private String displayName;
     private String password;
 
     @SerializedName("image")
@@ -18,6 +18,7 @@ public class User {
     private List<String> videoIdListUnliked = new ArrayList<>();
     private List <String> commentIdListLiked = new ArrayList<>();
     private List <String> commentIdListUnliked = new ArrayList<>();
+    private String token;
 
     public User() {}
 
@@ -57,15 +58,22 @@ public class User {
         this.likedVideos = likedVideos;
     }
 
-    public User(String username, String userDisplayName, String password, String imageUrl) {
+    public String getToken() {
+        return token;
+    }
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public User(String username, String displayName, String password, String imageUrl) {
         this.username = username;
-        this.userDisplayName = userDisplayName;
+        this.displayName = displayName;
         this.password = password;
         this.imageUrl = imageUrl;
     }
-    public User(String username, String userDisplayName, String password) {
+    public User(String username, String displayName, String password) {
         this.username = username;
-        this.userDisplayName = userDisplayName;
+        this.displayName = displayName;
         this.password = password;
     }
 
@@ -74,8 +82,8 @@ public class User {
         return username;
     }
 
-    public String getUserDisplayName() {
-        return userDisplayName;
+    public String getDisplayName() {
+        return displayName;
     }
 
     public String getPassword() {
@@ -91,8 +99,8 @@ public class User {
         this.username = username;
     }
 
-    public void setUserDisplayName(String userDisplayName) {
-        this.userDisplayName = userDisplayName;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public void setPassword(String password) {

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         youBtn = binding.youBtn;
         updateProfileButtonState();
+        setLoggedOutState();
     }
 
     @Override
@@ -120,16 +122,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateProfileButtonState() {
-        if (userRepository.getLoggedInUser() != null) {
-            setLoggedInState();
-        } else {
-            setLoggedOutState();
-        }
+        userRepository.getLoggedInUser().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                if (user != null) {
+                    setLoggedInState();
+                } else {
+                    setLoggedOutState();
+                }
+            }
+        });
     }
 
     private void setLoggedInState() {
         binding.youBtnText.setText("Log Out");
-        User loggedInUser = userRepository.getLoggedInUser();
+        User loggedInUser = userRepository.getLoggedInUser().getValue();
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         if (loggedInUser != null) {
 
