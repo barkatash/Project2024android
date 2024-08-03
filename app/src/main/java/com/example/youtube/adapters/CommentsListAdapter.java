@@ -26,7 +26,6 @@ import com.example.youtube.entities.User;
 import com.example.youtube.repositories.UserRepository;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapter.CommentViewHolder> {
 
@@ -80,16 +79,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         if (comments != null) {
             final Comment current = comments.get(position);
-            AtomicBoolean isLiked = new AtomicBoolean(false);
-            AtomicBoolean isUnliked = new AtomicBoolean(false);
-
-            if (userRepository.getLoggedInUser() != null) {
-                //isLiked.set(userRepository.getLoggedInUser().getLikedVideoIds().contains(current.getVideoId()));
-                //isUnliked.set(userRepository.getLoggedInUser().getUnLikedVideoIds().contains(current.getVideoId()));
-            } else {
-                isUnliked.set(false);
-                isLiked.set(false);
-            }
 
             holder.tvUsername.setText(current.getUsername());
             holder.tvDescription.setText(current.getDescription());
@@ -98,8 +87,11 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                 public void onChanged(List<User> users) {
                     User foundUser = userRepository.getUserByUsername(current.getUsername());
                     if (foundUser != null) {
+                        String imageUrl = "http://10.0.2.2:8080/" + foundUser.getImageUrl();
                         Glide.with(context)
-                                .load(foundUser.getImageUrl()).transform(new CircleCrop()).into(holder.ivProfilePic);
+                                .load(imageUrl)
+                                .transform(new CircleCrop())
+                                .into(holder.ivProfilePic);
                     } else {
                         holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
                     }
