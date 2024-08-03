@@ -2,6 +2,7 @@ package com.example.youtube;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -9,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -22,7 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtube.adapters.CommentsListAdapter;
 import com.example.youtube.entities.Comment;
+import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.CommentRepository;
 import com.example.youtube.repositories.VideoRepository;
 import com.example.youtube.viewModels.CommentViewModel;
 
@@ -34,6 +38,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private CommentsListAdapter commentAdapter;
     private MutableLiveData<List<Comment>> comments;
     VideoRepository videoRepository = new VideoRepository();
+    CommentRepository commentRepository = CommentRepository.getInstance(null);
+    private User loggedInUser = MyApplication.getCurrentUser();
     private List<Comment> filteredComments;
     private int likeCount = 0;
     private boolean isLiked = false;
@@ -79,26 +85,27 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
             popupMenu.show();
         });
 
-/*
+
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (!UserRepository.getInstance().isLoggedIn()) {
+                if (loggedInUser == null) {
                     Toast.makeText(WatchVideoActivity.this, "You need to be logged in to leave a comment.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String commentText = etComment.getText().toString().trim();
                 if (!TextUtils.isEmpty(commentText)) {
-                    Comment newComment = new Comment(getVideoId(), UsersManager.getInstance().getLoggedInUser(), commentText, "now", 0, 0);
-                    newComment.setId(CommentsManager.getNextCommentId());
-                    CommentsManager.getInstance().addComment(newComment);
+                    Comment newComment = new Comment(getVideoId(), loggedInUser.getUsername(), commentText);
+                    commentRepository.addComment(loggedInUser.getToken(), newComment);
                     etComment.setText("");
                     initializeCommentsList();
                 }
 
             }
         });
+
+        /*
 
         btnLike.setOnClickListener(v -> {
             if (!UsersManager.getInstance().isLoggedIn()) {

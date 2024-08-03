@@ -2,7 +2,6 @@ package com.example.youtube.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
@@ -26,7 +23,6 @@ import com.example.youtube.R;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.User;
 import com.example.youtube.repositories.UserRepository;
-import com.example.youtube.viewModels.UserViewModel;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -50,7 +46,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     public class CommentViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvUsername;
         private final TextView tvDescription;
-        private final TextView tvUploadDate;
         private final TextView tvLikes;
         private ImageButton btnLike, btnUnlike;
         private EditText etEditComment;
@@ -64,7 +59,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             tvDescription = itemView.findViewById(R.id.tvDescription);
-            tvUploadDate = itemView.findViewById(R.id.tvUploadDateComment);
             tvLikes = itemView.findViewById(R.id.tvLikes);
             btnLike = itemView.findViewById(R.id.tvLike);
             btnUnlike = itemView.findViewById(R.id.tvDislikes);
@@ -104,7 +98,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
 
             holder.tvUsername.setText(current.getUsername());
             holder.tvDescription.setText(current.getDescription());
-            holder.tvUploadDate.setText(current.getUploadDate());
             holder.tvLikes.setText(String.valueOf(current.getLikes()));
             userRepository.getAllUsers().observe((LifecycleOwner) context, new Observer<List<User>>() {
                 @Override

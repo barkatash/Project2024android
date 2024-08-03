@@ -68,15 +68,13 @@ public class CommentAPI {
         return videosComment;
     }
 
-    // Method to add a new comment
-    public void addComment(Comment comment) {
-        Call<Void> call = webServiceAPI.addComment(comment);
+    public void addComment(String token, Comment comment) {
+        Call<Void> call = webServiceAPI.addComment("Bearer " + token, comment.getUsername(), comment.getVideoId(), comment);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("CommentAPI", "comment added successfully.");
-                    // Optionally, refresh the video list
                     getAllComments(commentListData);
                 } else {
                     Log.e("CommentAPI", "Failed to add comment: " + response.message());
