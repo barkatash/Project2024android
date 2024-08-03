@@ -57,7 +57,7 @@ public class CommentRepository {
         apiService.addComment(token, comment);
     }
 
-    public void deleteComment(String id) {
-        apiService.deleteComment(id);
+    public void deleteComment(String token, String username, String commentId) {
+        apiService.deleteComment(token, username, commentId);
     }
 }

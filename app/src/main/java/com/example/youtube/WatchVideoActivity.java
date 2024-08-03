@@ -263,9 +263,11 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
 
     @Override
     public void onDeleteComment(Comment comment) {
-        CommentsManager.getInstance().deleteComment(comment);
-        filteredComments.remove(comment);
-        commentAdapter.setComments(filteredComments);
+        if (loggedInUser != null && loggedInUser.getUsername().equals(comment.getUsername())) {
+            CommentRepository.getInstance(null).deleteComment(loggedInUser.getToken(), loggedInUser.getUsername(), comment.getId());
+            return;
+        }
+        Toast.makeText(this, "You need to be logged in and the owner of this comment to delete it.", Toast.LENGTH_SHORT).show();
     }
 
     private void updateLikeDislikeUI() {

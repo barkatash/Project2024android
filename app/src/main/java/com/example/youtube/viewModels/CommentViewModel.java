@@ -30,7 +30,7 @@ public class CommentViewModel extends ViewModel {
         commentRepository.addComment(token, comment);
     }
 
-    public void deleteComment(String commentId) {
-        commentRepository.deleteComment(commentId);
+    public void deleteComment(String token, String username, String commentId) {
+        commentRepository.deleteComment(token, username, commentId);
     }
 }

@@ -88,8 +88,8 @@ public class CommentAPI {
         });
     }
 
-    public void deleteComment(String commentId) {
-        Call<Void> call = webServiceAPI.deleteComment(commentId);
+    public void deleteComment(String token, String username, String commentId) {
+        Call<Void> call = webServiceAPI.deleteComment("Bearer " + token, username,commentId);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

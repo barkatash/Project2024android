@@ -32,7 +32,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     private Context context;
     private List<Comment> comments;
     private CommentInteractionListener listener;
-    private final UserRepository userRepository; // Added repository field
+    private final UserRepository userRepository;
     public interface CommentInteractionListener {
         void onDeleteComment(Comment comment);
     }

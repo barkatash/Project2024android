@@ -24,6 +24,8 @@ public interface commentWebServiceAPI {
                           @Path("pid") String videoId,
                           @Body Comment comment);
 
-    @DELETE("comments/{id}")
-    Call<Void> deleteComment(@Path("id") String id);
+    @DELETE("comments/user/{id}/{pid}")
+    Call<Void> deleteComment(@Header("Authorization") String authHeader,
+                             @Path("id") String userId,
+                             @Path("pid") String commentId);
 }
