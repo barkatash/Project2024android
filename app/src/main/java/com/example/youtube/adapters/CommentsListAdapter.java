@@ -49,8 +49,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     public class CommentViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvUsername;
         private final TextView tvDescription;
-        private final TextView tvLikes;
-        private ImageButton btnLike, btnUnlike;
         private EditText etEditComment;
         private ImageButton btnEdit;
         private ImageButton btnDelete;
@@ -62,9 +60,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             tvDescription = itemView.findViewById(R.id.tvDescription);
-            tvLikes = itemView.findViewById(R.id.tvLikes);
-            btnLike = itemView.findViewById(R.id.tvLike);
-            btnUnlike = itemView.findViewById(R.id.tvDislikes);
             etEditComment = itemView.findViewById(R.id.etEditComment);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
@@ -96,12 +91,8 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                 isLiked.set(false);
             }
 
-            holder.btnLike.setImageResource(isLiked.get() ? R.drawable.baseline_thumb_up_24 : R.drawable.baseline_thumb_up_off_alt_24);
-            holder.btnUnlike.setImageResource(isUnliked.get() ? R.drawable.baseline_thumb_down_24 : R.drawable.baseline_thumb_down_off_alt_24);
-
             holder.tvUsername.setText(current.getUsername());
             holder.tvDescription.setText(current.getDescription());
-            holder.tvLikes.setText(String.valueOf(current.getLikes()));
             userRepository.getAllUsers().observe((LifecycleOwner) context, new Observer<List<User>>() {
                 @Override
                 public void onChanged(List<User> users) {
@@ -115,54 +106,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                 }
             });
 
-            holder.btnLike.setOnClickListener(v -> {
-                if (userRepository.getLoggedInUser() == null) {
-                    Toast.makeText(context, "You need to be logged in to like a comment", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (!isLiked.get()) {
-                    current.setLikes(current.getLikes() + 1);
-                    holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_24);
-                    //userRepository.getLoggedInUser().getLikedVideoIds().add(current.getVideoId());
-                    isLiked.set(true);
-
-                    if (isUnliked.get()) {
-                        isUnliked.set(false);
-                        holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-                        //userRepository.getLoggedInUser().getUnLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
-                    }
-                } else {
-                    isLiked.set(false);
-                    current.setLikes(current.getLikes() - 1);
-                    holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                    //userRepository.getLoggedInUser().getLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
-                }
-                notifyItemChanged(position);
-            });
-
-            holder.btnUnlike.setOnClickListener(v -> {
-                if (userRepository.getLoggedInUser() == null) {
-                    Toast.makeText(context, "You need to be logged in to unlike a comment", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (!isUnliked.get()) {
-                    isUnliked.set(true);
-                    holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_24);
-                    //userRepository.getLoggedInUser().getUnLikedVideoIds().add(current.getVideoId());
-
-                    if (isLiked.get()) {
-                        isLiked.set(false);
-                        current.setLikes(current.getLikes() - 1);
-                        holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                        //userRepository.getLoggedInUser().getLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
-                    }
-                } else {
-                    isUnliked.set(false);
-                    holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-                    //userRepository.getLoggedInUser().getUnLikedVideoIds().remove(Integer.valueOf(current.getVideoId()));
-                }
-                notifyItemChanged(position);
-            });
 
             holder.btnEdit.setOnClickListener(v -> {
                 if (loggedInUser == null || !loggedInUser.getUsername().equals(current.getUsername())) {

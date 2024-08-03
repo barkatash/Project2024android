@@ -26,6 +26,7 @@ import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
 import com.example.youtube.repositories.CommentRepository;
+import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
 import com.example.youtube.viewModels.CommentViewModel;
 
@@ -42,6 +43,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private int likeCount = 0;
     private boolean isLiked = false;
     private boolean isUnliked = false;
+    private Video current;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +53,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         videoView = findViewById(R.id.videoView);
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
-        /*
-        if (UsersManager.getInstance().getLoggedInUser() != null) {
-            isLiked = UsersManager.getInstance().getLoggedInUser().getLikedVideos().contains(getVideoId());
-            isUnliked = UsersManager.getInstance().getLoggedInUser().getUnLikedVideos().contains(getVideoId());
-        }
-
-         */
 
         initializeViews();
         initializeCommentsList();
@@ -84,6 +79,12 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         });
 
 
+        if (loggedInUser != null) {
+            isLiked = loggedInUser.getLikedVideos().contains(getVideoId());
+            isUnliked = loggedInUser.getUnLikedVideos().contains(getVideoId());
+        }
+
+
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,10 +104,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
             }
         });
 
-        /*
-
         btnLike.setOnClickListener(v -> {
-            if (!UsersManager.getInstance().isLoggedIn()) {
+            if (loggedInUser == null) {
                 Toast.makeText(WatchVideoActivity.this, "You need to be logged in to like a video", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -114,73 +113,46 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                 likeCount++;
                 isLiked = true;
                 btnLike.setImageResource(R.drawable.baseline_thumb_up_24);
-                List<String> newLikedVideos = UsersManager.getInstance().getLoggedInUser().getLikedVideos();
-                newLikedVideos.add(getVideoId());
-                UsersManager.getInstance().getLoggedInUser().setLikedVideos(newLikedVideos);
+                UserRepository.getInstance(this).editLikes(loggedInUser.getToken(), loggedInUser.getUsername(),
+                        getVideoId(), current.getLikes() + 1);
 
                 if (isUnliked) {
                     btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
                     isUnliked = false;
-                    List<String> newUnLikedVideos = UsersManager.getInstance().getLoggedInUser().getUnLikedVideos();
-                    int index = newUnLikedVideos.indexOf(getVideoId());
-                    newUnLikedVideos.remove(index);
-                    UsersManager.getInstance().getLoggedInUser().setUnLikedVideos(newUnLikedVideos);
                 }
             } else {
                 likeCount--;
                 isLiked = false;
                 btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                List<String> newLikedVideos = UsersManager.getInstance().getLoggedInUser().getLikedVideos();
-                int index = newLikedVideos.indexOf(getVideoId());
-                newLikedVideos.remove(index);
-                UsersManager.getInstance().getLoggedInUser().setLikedVideos(newLikedVideos);
+                UserRepository.getInstance(this).editLikes(loggedInUser.getToken(), loggedInUser.getUsername(),
+                        getVideoId(), current.getLikes() - 1);
+
             }
-            updateLikeDislikeUI();
 
         });
 
         btnUnlike.setOnClickListener(v -> {
-            /*
-            if (!UsersManager.getInstance().isLoggedIn()) {
+            if (loggedInUser == null) {
                 Toast.makeText(WatchVideoActivity.this, "You need to be logged in to unlike a video", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (!isUnliked) {
                 btnUnlike.setImageResource(R.drawable.baseline_thumb_down_24);
                 isUnliked = true;
-                List<String> newUnlikedVideos = UsersManager.getInstance().getLoggedInUser().getUnLikedVideos();
-                newUnlikedVideos.add(getVideoId());
-                UsersManager.getInstance().getLoggedInUser().setUnLikedVideos(newUnlikedVideos);
-
                 if (isLiked) {
                     likeCount--;
                     isLiked = false;
                     btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                    List<String> newLikedVideos = UsersManager.getInstance().getLoggedInUser().getLikedVideos();
-                    int index = newLikedVideos.indexOf(getVideoId());
-                    newLikedVideos.remove(index);
-                    UsersManager.getInstance().getLoggedInUser().setLikedVideos(newLikedVideos);
+                    UserRepository.getInstance(this).editLikes(loggedInUser.getToken(), loggedInUser.getUsername(),
+                            getVideoId(), current.getLikes() - 1);
                 }
             } else {
                 btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
                 isUnliked = false;
-                List<String> newUnLikedVideos = UsersManager.getInstance().getLoggedInUser().getUnLikedVideos();
-                int index = newUnLikedVideos.indexOf(getVideoId());
-                newUnLikedVideos.remove(index);
-                UsersManager.getInstance().getLoggedInUser().setUnLikedVideos(newUnLikedVideos);
             }
-            updateLikeDislikeUI();
+
         });
 
-        if (savedInstanceState != null) {
-            likeCount = savedInstanceState.getInt("likeCount", 0);
-            isLiked = savedInstanceState.getBoolean("isLiked", false);
-            isUnliked = savedInstanceState.getBoolean("isUnliked", false);
-        }
-
-        updateLikeDislikeUI();
-
-             */
     }
 
     private void initializeViews() {
@@ -197,6 +169,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
             @Override
             public void onChanged(Video video) {
                 if (video != null) {
+                    current = video;
                     tvAuthor.setText(video.getUploader());
                     tvContent.setText(video.getTitle());
                     tvDuration.setText(video.getDuration());
@@ -205,6 +178,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                     likeCount = video.getLikes();
                     tvLikeCount.setText(String.valueOf(likeCount));
                     initializeVideoPlayer(video);
+                    if (loggedInUser != null && loggedInUser.getLikedVideos().contains(videoId)) isLiked = true;
+                    if (loggedInUser != null && loggedInUser.getUnLikedVideos().contains(videoId)) isUnliked = true;
                     tvAuthor.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -267,10 +242,4 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         Toast.makeText(this, "You need to be logged in and the owner of this comment to delete it.", Toast.LENGTH_SHORT).show();
     }
 
-    private void updateLikeDislikeUI() {
-       // String videoId = getIntent().getStringExtra("videoId");
-//        video.setLikes(likeCount);
-//        TextView tvLikeCount = findViewById(R.id.tvLikeCount);
-//        tvLikeCount.setText(String.valueOf(likeCount));
-    }
 }

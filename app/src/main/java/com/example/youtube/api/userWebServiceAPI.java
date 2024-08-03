@@ -1,7 +1,9 @@
 package com.example.youtube.api;
 
+import com.example.youtube.Like;
 import com.example.youtube.UserLogin;
 import com.example.youtube.entities.User;
+import com.example.youtube.entities.Video;
 
 import java.util.List;
 
@@ -50,4 +52,10 @@ public interface userWebServiceAPI {
             @Part("password") RequestBody password,
             @Part MultipartBody.Part image
     );
+
+    @PATCH("users/{userId}/videos/like/{videoId}")
+    Call<Video> updateUserLikeVideo(@Header("Authorization") String authHeader,
+                                    @Path("userId") String userId,
+                                    @Path("videoId") String videoId,
+                                    @Body Like newLikes);
 }
