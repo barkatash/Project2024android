@@ -25,7 +25,6 @@ import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.databinding.ActivityMainBinding;
 import com.example.youtube.entities.User;
 import com.example.youtube.repositories.UserRepository;
-import com.example.youtube.viewModels.UserViewModel;
 import com.example.youtube.viewModels.VideoViewModel;
 
 import java.util.List;
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView youBtn;
     private UserRepository userRepository;
     private User loggedInUser;
-    private UserViewModel userViewModel;
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -91,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         ImageButton homeBtn = binding.homeBtn;
         homeBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, MainActivity.class);
-            //videoRepository.resetVideos();
             startActivity(i);
         });
 

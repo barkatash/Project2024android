@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 
+import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
 import com.example.youtube.repositories.VideoRepository;
 
@@ -31,9 +32,8 @@ public class EditVideoActivity extends AppCompatActivity {
 
     private static final int REQUEST_VIDEO_FILE = 1;
     private static final int REQUEST_IMAGE_FILE = 2;
-    private EditText etAuthor;
     private EditText etContent;
-    private EditText etDuration;
+    private EditText etDescription;
     private Button btnSelectVideo;
     private Button btnSelectImage;
     private Button btnSave;
@@ -41,15 +41,14 @@ public class EditVideoActivity extends AppCompatActivity {
     private VideoView videoViewUpload;
     private Video currentVideo;
     private ImageView videoImageView;
-
+    private User loggedInUser = MyApplication.getCurrentUser();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_video);
 
-        etAuthor = findViewById(R.id.etAuthor);
         etContent = findViewById(R.id.etContent);
-        etDuration = findViewById(R.id.etDuration);
+        etDescription = findViewById(R.id.etDescription);
         btnSelectVideo = findViewById(R.id.btnSelectVideo);
         btnSelectImage = findViewById(R.id.btnSelectImage);
         btnSave = findViewById(R.id.btnSave);
@@ -80,14 +79,6 @@ public class EditVideoActivity extends AppCompatActivity {
             videoViewUpload.start();
         }
 
-        if (videoId != null) {
-            if (currentVideo != null) {
-                etAuthor.setText(currentVideo.getUploader());
-                etContent.setText(currentVideo.getTitle());
-                etDuration.setText(currentVideo.getDuration());
-            }
-        }
-
         btnSelectVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,10 +96,12 @@ public class EditVideoActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentVideo.setUploader(etAuthor.getText().toString().trim());
                 currentVideo.setTitle(etContent.getText().toString().trim());
-                currentVideo.setDuration(etDuration.getText().toString().trim());
-                //VideoRepository.getInstance(getApplicationContext()).updateVideo(currentVideo);
+                currentVideo.setDescription(etDescription.getText().toString().trim());
+                File videoFile = new File(getFilesDir(), "video_" + currentVideo.getId() + ".mp4");
+                File imageFile = new File(getFilesDir(), "image_" + currentVideo.getId() + ".jpg");
+                videoRepository.editVideo(loggedInUser.getToken(), currentVideo, imageFile, videoFile);
+                videoRepository.resetVideos();
                 finish();
             }
         });
@@ -137,6 +130,8 @@ public class EditVideoActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_FILE && resultCode == RESULT_OK) {
             if (data != null && data.getData() != null) {
                 try {
+                    Uri imageUri = data.getData();
+                    saveImageToInternalStorage(imageUri);
                     Bitmap bitmap;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                         ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), data.getData());
@@ -159,7 +154,25 @@ public class EditVideoActivity extends AppCompatActivity {
             }
         }
     }
+    private void saveImageToInternalStorage(Uri imageUri) {
+        try {
+            String imageId = currentVideo.getId();
+            String imageFileName = "image_" + imageId + ".jpg";
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            File imageFile = new File(getFilesDir(), imageFileName);
+            OutputStream outputStream = new FileOutputStream(imageFile);
 
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void saveVideoToInternalStorage(Uri videoUri) {
         try {
             String videoId = currentVideo.getId();

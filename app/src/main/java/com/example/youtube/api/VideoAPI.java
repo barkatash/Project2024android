@@ -73,7 +73,6 @@ public class VideoAPI {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("VideoAPI", "Video added successfully.");
-                    // Optionally, refresh the video list
                     getAllVideos(videoListData);
                 } else {
                     Log.e("VideoAPI", "Failed to add video: " + response.message());
@@ -86,7 +85,37 @@ public class VideoAPI {
             }
         });
     }
+    public void editVideo(String token, Video video, File videoImageFile, File videoFile) {
+        MultipartBody.Part imagePart = null;
+        if (videoImageFile != null) {
+            RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpeg"), videoImageFile);
+            imagePart = MultipartBody.Part.createFormData("image", videoImageFile.getName(), imageBody);
+        }
+        MultipartBody.Part videoPart = MultipartBody.Part.createFormData("video", videoFile.getName(),
+                RequestBody.create(MediaType.parse("video/mp4"), videoFile));
+        RequestBody titleBody = RequestBody.create(MediaType.parse("text/plain"), video.getTitle());
+        RequestBody descriptionBody = RequestBody.create(MediaType.parse("text/plain"), video.getDescription());
+        Call<Void> call = webServiceAPI.editVideo("Bearer " + token, video.getUploader(), video.getId(),
+                titleBody,
+                descriptionBody,
+                videoPart, imagePart);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("VideoAPI", "Video edited successfully.");
+                    getAllVideos(videoListData);
+                } else {
+                    Log.e("VideoAPI", "Failed to edit video: " + response.message());
+                }
+            }
 
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("VideoAPI", "Error adding video: " + t.getMessage());
+            }
+        });
+    }
     public void deleteVideo(String token, String username, String videoId) {
         Call<Void> call = webServiceAPI.deleteVideo("Bearer " + token, username, videoId);
         call.enqueue(new Callback<Void>() {

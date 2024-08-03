@@ -11,13 +11,14 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface videoWebServiceAPI {
 
-    @GET("videos/all")
+    @GET("videos")
     Call<List<Video>> getVideos();
     @Multipart
     @POST("users/{id}/videos")
@@ -28,6 +29,18 @@ public interface videoWebServiceAPI {
             @Part("uploader") RequestBody uploader,
             @Part("duration") RequestBody duration,
             @Part("visits") RequestBody visits,
+            @Part MultipartBody.Part videoFile,
+            @Part MultipartBody.Part image
+    );
+
+    @Multipart
+    @PATCH("users/{id}/videos/{pid}")
+    Call<Void> editVideo(
+            @Header("Authorization") String authHeader,
+            @Path("id") String userId,
+            @Path("pid") String videoId,
+            @Part("title") RequestBody title,
+            @Part("uploader") RequestBody uploader,
             @Part MultipartBody.Part videoFile,
             @Part MultipartBody.Part image
     );

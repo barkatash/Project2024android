@@ -18,8 +18,16 @@ public class Video {
     private int likes;
     private String image;
     private String duration;
+    private String description;
     private int visits;
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Video() {
     }

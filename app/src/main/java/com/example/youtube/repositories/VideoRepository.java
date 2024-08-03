@@ -1,7 +1,5 @@
 package com.example.youtube.repositories;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -54,6 +52,10 @@ public class VideoRepository {
     }
     public void addVideo(String token, Video newVideo, File videoImageFile, File videoFile) {
         api.addVideo(token, newVideo, videoImageFile, videoFile);
+        resetVideos();
+    }
+    public void editVideo(String token, Video newVideo, File videoImageFile, File videoFile) {
+        api.editVideo(token, newVideo, videoImageFile, videoFile);
         resetVideos();
     }
     public LiveData<List<Video>> getVideosByUser(String username) {
