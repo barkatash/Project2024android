@@ -3,16 +3,17 @@ package com.example.youtube;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,7 @@ import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.databinding.ActivityMainBinding;
 import com.example.youtube.entities.User;
 import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.viewModels.UserViewModel;
 import com.example.youtube.viewModels.VideoViewModel;
 
 import java.util.List;
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private UsersListAdapter userAdapter;
     private ImageView youBtn;
     private UserRepository userRepository;
+    private User loggedInUser;
+    private UserViewModel userViewModel;
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -65,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
         VideoViewModel viewModel = new ViewModelProvider(this).get(VideoViewModel.class);
         viewModel.getVideos().observe(this, videos -> {
             videoAdapter.setVideos(videos);
-            // Optionally log the videos to debug
-            Log.d("MainActivity", "Videos: " + videos);
         });
 
         lstVideos.setAdapter(videoAdapter);
@@ -103,43 +105,27 @@ public class MainActivity extends AppCompatActivity {
             startActivity(i);
         });
 
+        loggedInUser = MyApplication.getCurrentUser();
         youBtn = binding.youBtn;
-        updateProfileButtonState();
-        setLoggedOutState();
+        if (loggedInUser == null) {
+            setLoggedOutState();
+        }
+        else {
+            setLoggedInState();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //VideoRepository videoRepository = VideoRepository.getInstance(getApplicationContext());
-        //List<Video> videos = videoRepository.getVideos();
-        //videoAdapter.setVideos(videos);
-
         LiveData<List<User>> users = userRepository.getAllUsers();
         users.observe(this, userList -> userAdapter.setUsers(userList));
-
-        updateProfileButtonState();
-    }
-
-    private void updateProfileButtonState() {
-        userRepository.getLoggedInUser().observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                if (user != null) {
-                    setLoggedInState();
-                } else {
-                    setLoggedOutState();
-                }
-            }
-        });
     }
 
     private void setLoggedInState() {
-        binding.youBtnText.setText("Log Out");
-        User loggedInUser = userRepository.getLoggedInUser().getValue();
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         if (loggedInUser != null) {
-
+            binding.youBtnText.setText("Log Out");
             if (loggedInUser.getImageUrl() != null && !loggedInUser.getImageUrl().isEmpty()) {
                 String imageUrl = "http://10.0.2.2:8080/" + loggedInUser.getImageUrl();
                 Glide.with(this)
@@ -148,10 +134,44 @@ public class MainActivity extends AppCompatActivity {
                         .into(youBtn);
             }
         }
-        youBtn.setOnClickListener(v -> {
-            userRepository.logoutUser();
-            setLoggedOutState();
+//        youBtn.setOnClickListener(v -> {
+//            userRepository.logoutUser();
+//            setLoggedOutState();
+//        });
+        youBtn.setOnClickListener(v -> showUserOptionsMenu(v));
+    }
+
+    private void showUserOptionsMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.user_options_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                CharSequence title = item.getTitle();
+                assert title != null;
+                if (title.equals("Log Out")) {
+                    userRepository.logoutUser();
+                    setLoggedOutState();
+                    return true;
+                } else if (title.equals("Edit User")) {
+                    Intent editIntent = new Intent(MainActivity.this, EditUserActivity.class);
+                    startActivity(editIntent);
+                    return true;
+                } else if (title.equals("Delete User")) {
+                    if (loggedInUser != null) {
+                        //userRepository.delete(loggedInUser.getId());
+                        userRepository.logoutUser();
+                        setLoggedOutState();
+                    }
+                    return true;
+                }
+                return false;
+            }
         });
+
+        popupMenu.show();
     }
 
     private void setLoggedOutState() {

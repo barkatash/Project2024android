@@ -92,8 +92,12 @@
                 android:id="@+id/tvAuthor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:focusable="true"
                 android:text="@string/author"
                 android:contentDescription="@string/author"
+                android:clickable="true"
+                android:textSize="18dp"
+                android:padding="12dp"
                 android:importantForAccessibility="yes" />
 
             <TextView

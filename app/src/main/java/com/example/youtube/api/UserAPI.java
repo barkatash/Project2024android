@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.youtube.MyApplication;
 import com.example.youtube.R;
+import com.example.youtube.UserLogin;
 import com.example.youtube.dao.UserDao;
 import com.example.youtube.entities.User;
 
@@ -20,7 +21,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import com.example.youtube.UserLogin;
 
 public class UserAPI {
     private MutableLiveData<List<User>> userListData;
@@ -44,6 +44,7 @@ public class UserAPI {
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     userLiveData.setValue(response.body());
+                    MyApplication.setCurrentUser(response.body());
                 } else {
                     Log.e("UserAPI", "Failed to login: " + response.message());
                     userLiveData.setValue(null);
@@ -144,5 +145,25 @@ public class UserAPI {
         });
 
         return userLiveData;
+    }
+    public void getUserByUsername(String username, MutableLiveData<User> userLiveData) {
+        Call<User> call = webServiceAPI.getUserById(username);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    userLiveData.setValue(response.body());
+                } else {
+                    Log.e("UserAPI", "Failed to fetch user: " + response.message());
+                    userLiveData.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e("UserAPI", "Error fetching user: " + t.getMessage());
+                userLiveData.setValue(null);
+            }
+        });
     }
 }

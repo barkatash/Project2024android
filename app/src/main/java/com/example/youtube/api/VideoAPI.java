@@ -114,4 +114,25 @@ public class VideoAPI {
         return videoLiveData;
     }
 
+    public void getVideosByUser(String username, MutableLiveData<List<Video>> videos) {
+        Call<List<Video>> call = webServiceAPI.getVideosByUser(username);
+        call.enqueue(new Callback<List<Video>>() {
+            @Override
+            public void onResponse(Call<List<Video>> call, Response<List<Video>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    videos.postValue(response.body());
+                } else {
+                    Log.e("VideoAPI", "Failed to fetch videos by user: " + response.message());
+                    videos.postValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Video>> call, Throwable t) {
+                Log.e("VideoAPI", "Error fetching videos by user: " + t.getMessage());
+                videos.postValue(null);
+            }
+        });
+    }
+
 }

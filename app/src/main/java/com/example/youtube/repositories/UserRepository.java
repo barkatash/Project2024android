@@ -1,20 +1,17 @@
 package com.example.youtube.repositories;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.youtube.api.UserAPI;
 import com.example.youtube.dao.UserDao;
-import com.example.youtube.AppDB;
 import com.example.youtube.entities.User;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 public class UserRepository {
     private static volatile UserRepository INSTANCE;
@@ -103,5 +100,8 @@ public class UserRepository {
 
     public void checkUserCredentials(String username, String password) {
         apiService.login(username, password, this.loggedInUser);
+    }
+    public void fetchUserByUsername(String username, MutableLiveData<User> userLiveData) {
+        apiService.getUserByUsername(username, userLiveData);
     }
 }
