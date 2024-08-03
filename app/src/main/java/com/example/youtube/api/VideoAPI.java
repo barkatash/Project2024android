@@ -87,20 +87,18 @@ public class VideoAPI {
         });
     }
 
-    public void deleteVideo(String id) {
-        Call<Void> call = webServiceAPI.deleteVideo(id);
+    public void deleteVideo(String token, String username, String videoId) {
+        Call<Void> call = webServiceAPI.deleteVideo("Bearer " + token, username, videoId);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("VideoAPI", "Video deleted successfully.");
-                    // Optionally, refresh the video list
                     getAllVideos(videoListData);
                 } else {
                     Log.e("VideoAPI", "Failed to delete video: " + response.message());
                 }
             }
-
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Log.e("VideoAPI", "Error deleting video: " + t.getMessage());

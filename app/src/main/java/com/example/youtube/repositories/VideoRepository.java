@@ -1,5 +1,7 @@
 package com.example.youtube.repositories;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -46,8 +48,8 @@ public class VideoRepository {
     public void resetVideos() {
         api.getAllVideos(videoListData);
     }
-    public void deleteVideo(String videoId) {
-        api.deleteVideo(videoId);
+    public void deleteVideo(String token, String username, String videoId) {
+        api.deleteVideo(token, username, videoId);
         resetVideos();
     }
     public void addVideo(String token, Video newVideo, File videoImageFile, File videoFile) {

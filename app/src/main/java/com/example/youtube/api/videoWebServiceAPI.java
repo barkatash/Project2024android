@@ -32,7 +32,7 @@ public interface videoWebServiceAPI {
             @Part MultipartBody.Part image
     );
     @DELETE("users/{id}/videos/{pid}")
-    Call<Void> deleteVideo(@Path("id") String id);
+    Call<Void> deleteVideo(@Header("Authorization") String authHeader, @Path("id") String id, @Path("pid") String pid);
 
     @GET("videos/{id}")
     Call<Video> getVideoById(@Path("id") String id);
