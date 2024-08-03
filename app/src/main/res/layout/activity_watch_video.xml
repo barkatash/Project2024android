@@ -128,6 +128,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/views"
                 android:contentDescription="@string/views"
+                android:importantForAccessibility="yes"
+                android:paddingEnd="7dp"/>
+            <TextView
+                android:id="@+id/viewsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/views"
+                android:contentDescription="@string/views"
                 android:importantForAccessibility="yes" />
 
             <TextView
@@ -158,7 +166,7 @@
                 android:id="@+id/btnLike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/baseline_thumb_up_24"
+                android:src="@drawable/baseline_thumb_up_off_alt_24"
                 android:contentDescription="@string/like"
                 android:background="@null"
                 android:padding="12dp"/>
@@ -176,7 +184,7 @@
                 android:id="@+id/btnUnlike"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/baseline_thumb_down_24"
+                android:src="@drawable/baseline_thumb_down_off_alt_24"
                 android:contentDescription="@string/unlike"
                 android:background="@null"
                 android:padding="12dp"/>

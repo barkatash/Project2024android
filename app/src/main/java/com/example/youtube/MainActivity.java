@@ -25,7 +25,6 @@ import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.databinding.ActivityMainBinding;
 import com.example.youtube.entities.User;
 import com.example.youtube.repositories.UserRepository;
-import com.example.youtube.viewModels.UserViewModel;
 import com.example.youtube.viewModels.VideoViewModel;
 
 import java.util.List;
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView youBtn;
     private UserRepository userRepository;
     private User loggedInUser;
-    private UserViewModel userViewModel;
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -91,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         ImageButton homeBtn = binding.homeBtn;
         homeBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, MainActivity.class);
-            //videoRepository.resetVideos();
             startActivity(i);
         });
 
@@ -125,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     private void setLoggedInState() {
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         if (loggedInUser != null) {
-            binding.youBtnText.setText("Log Out");
+            binding.youBtnText.setText("You");
             if (loggedInUser.getImageUrl() != null && !loggedInUser.getImageUrl().isEmpty()) {
                 String imageUrl = "http://10.0.2.2:8080/" + loggedInUser.getImageUrl();
                 Glide.with(this)
@@ -134,10 +131,6 @@ public class MainActivity extends AppCompatActivity {
                         .into(youBtn);
             }
         }
-//        youBtn.setOnClickListener(v -> {
-//            userRepository.logoutUser();
-//            setLoggedOutState();
-//        });
         youBtn.setOnClickListener(v -> showUserOptionsMenu(v));
     }
 
@@ -161,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (title.equals("Delete User")) {
                     if (loggedInUser != null) {
-                        //userRepository.delete(loggedInUser.getId());
+                        userRepository.delete(loggedInUser.getUsername(), loggedInUser.getToken());
                         userRepository.logoutUser();
                         setLoggedOutState();
                     }

@@ -16,7 +16,7 @@
     <string name="search">Search YouTube</string>
     <string name="comments_description">Comments</string>
     <string name="upload_date">Upload Date</string>
-    <string name="views">Views</string>
+    <string name="views">views</string>
     <string name="duration">Duration</string>
     <string name="author">Author</string>
     <string name="image_description">Image</string>
@@ -77,4 +77,8 @@
     <string name="log_out">Log Out</string>
     <string name="edit_user">Edit User</string>
     <string name="delete_user">Delete User</string>
+    <string name="change_profile_image">Change Profile Image</string>
+    <string name="name">Name</string>
+    <string name="new_password">New Password</string>
+    <string name="description">Description</string>
 </resources>

@@ -1,22 +1,12 @@
 package com.example.youtube.viewModels;
 
-import android.app.Application;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.youtube.entities.Comment;
-import com.example.youtube.api.CommentAPI;
 import com.example.youtube.repositories.CommentRepository;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class CommentViewModel extends ViewModel {
 
@@ -36,11 +26,11 @@ public class CommentViewModel extends ViewModel {
         return comments;
     }
 
-    public void addComment(Comment comment) {
-        commentRepository.addComment(comment);
+    public void addComment(String token, Comment comment) {
+        commentRepository.addComment(token, comment);
     }
 
-    public void deleteComment(String commentId) {
-        commentRepository.deleteComment(commentId);
+    public void deleteComment(String token, String username, String commentId) {
+        commentRepository.deleteComment(token, username, commentId);
     }
 }

@@ -4,11 +4,14 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.youtube.Like;
 import com.example.youtube.MyApplication;
 import com.example.youtube.R;
 import com.example.youtube.UserLogin;
 import com.example.youtube.dao.UserDao;
 import com.example.youtube.entities.User;
+import com.example.youtube.entities.Video;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.List;
@@ -101,14 +104,13 @@ public class UserAPI {
         });
     }
 
-    public void deleteUser(String id) {
-        Call<Void> call = webServiceAPI.deleteUser(id);
+    public void deleteUser(String id, String token) {
+        Call<Void> call = webServiceAPI.deleteUser("Bearer " + token, id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("UserAPI", "user deleted successfully.");
-                    // Optionally, refresh the video list
                     getAllUsers(userListData);
                 } else {
                     Log.e("UserAPI", "Failed to delete user: " + response.message());
@@ -121,7 +123,56 @@ public class UserAPI {
             }
         });
     }
+    public void editUser(User user, File profileImageFile) {
+        RequestBody displayNameBody = RequestBody.create(MultipartBody.FORM, user.getDisplayName());
+        RequestBody passwordBody = RequestBody.create(MultipartBody.FORM, user.getPassword());
 
+        MultipartBody.Part imagePart = null;
+        if (profileImageFile != null) {
+            RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpeg"), profileImageFile);
+            imagePart = MultipartBody.Part.createFormData("image", profileImageFile.getName(), imageBody);
+        }
+
+        Call<Void> call = webServiceAPI.updateUser("Bearer " + user.getToken(), user.getUsername(), displayNameBody, passwordBody, imagePart);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("UserAPI", "User updated successfully.");
+                    Log.d("UserAPI", "User updated successfully.");
+                    getAllUsers(userListData);
+                } else {
+                    Log.e("UserAPI", "Failed to update user: " + response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("UserAPI", "Error updating user: " + t.getMessage());
+            }
+        });
+    }
+    public void editUserLike(User user) {
+        Gson gson = new Gson();
+        String userJsonString = gson.toJson(user);
+        RequestBody userJson = RequestBody.create(MediaType.parse("application/json"), userJsonString);
+        Call<Void> call = webServiceAPI.updateUserLike("Bearer " + user.getToken(), user.getUsername(), null, userJson);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("UserAPI", "User updated successfully.");
+                    Log.d("UserAPI", "User updated successfully.");
+                    getAllUsers(userListData);
+                } else {
+                    Log.e("UserAPI", "Failed to update user: " + response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("UserAPI", "Error updating user: " + t.getMessage());
+            }
+        });
+    }
     public MutableLiveData<User> getUserById(String userId) {
         MutableLiveData<User> userLiveData = new MutableLiveData<>();
 
@@ -163,6 +214,25 @@ public class UserAPI {
             public void onFailure(Call<User> call, Throwable t) {
                 Log.e("UserAPI", "Error fetching user: " + t.getMessage());
                 userLiveData.setValue(null);
+            }
+        });
+    }
+    public void updateUserLikeVideo(String token, String userId, String videoId, int newLikes) {
+        Like updatedLikes = new Like(newLikes);
+        Call<Video> call = webServiceAPI.updateUserLikeVideo("Bearer " + token, userId, videoId, updatedLikes);
+        call.enqueue(new Callback<Video>() {
+            @Override
+            public void onResponse(Call<Video> call, Response<Video> response) {
+                if (response.isSuccessful()) {
+                    Log.d("UserAPI", "Video like status updated successfully.");
+                } else {
+                    Log.e("UserAPI", "Failed to update video like status: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Video> call, Throwable t) {
+                Log.e("UserAPI", "Error updating video like status: " + t.getMessage());
             }
         });
     }

@@ -80,10 +80,18 @@ public class UserRepository {
     public void addUser(User newUser, File profileImageFile) {
         apiService.addUser(newUser, profileImageFile);
     }
-
-    public void delete(String userId) {
-        apiService.deleteUser(userId);
+    public void editUser(User newUser, File profileImageFile) {
+        apiService.editUser(newUser, profileImageFile);
+    }
+    public void delete(String userId, String token) {
+        apiService.deleteUser(userId, token);
         resetUsers();
+    }
+    public void editLikes(String token, String username, String videoId, int newLikes) {
+        apiService.updateUserLikeVideo(token, username, videoId, newLikes);
+    }
+    public void editUserLikes(User user) {
+        apiService.editUserLike(user);
     }
 
     public void loginUser(MutableLiveData<User> user) {

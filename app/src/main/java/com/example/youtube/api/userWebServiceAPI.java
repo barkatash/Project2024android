@@ -1,7 +1,9 @@
 package com.example.youtube.api;
 
+import com.example.youtube.Like;
 import com.example.youtube.UserLogin;
 import com.example.youtube.entities.User;
+import com.example.youtube.entities.Video;
 
 import java.util.List;
 
@@ -11,9 +13,10 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
@@ -25,7 +28,7 @@ public interface userWebServiceAPI {
     Call<User> getUserById(@Path("id") String id);
 
     @DELETE("users/{id}")
-    Call<Void> deleteUser(@Path("id") String id);
+    Call<Void> deleteUser(@Header("Authorization") String authHeader, @Path("id") String id);
 
     @POST("tokens/")
     Call<User> login(@Body UserLogin credentials);
@@ -39,9 +42,28 @@ public interface userWebServiceAPI {
             @Part("password") RequestBody password,
             @Part MultipartBody.Part image
     );
-    @PUT("api/users/{id}")
+
+    @Multipart
+    @PATCH("users/{id}")
     Call<Void> updateUser(
+            @Header("Authorization") String authHeader,
             @Path("id") String userId,
-            @Body User user
+            @Part("displayName") RequestBody displayName,
+            @Part("password") RequestBody password,
+            @Part MultipartBody.Part image
     );
+    @Multipart
+    @PATCH("users/{id}")
+    Call<Void> updateUserLike(
+            @Header("Authorization") String authHeader,
+            @Path("id") String userId,
+            @Part MultipartBody.Part image,
+            @Part("user") RequestBody userJson
+    );
+
+    @PATCH("users/{userId}/videos/like/{videoId}")
+    Call<Video> updateUserLikeVideo(@Header("Authorization") String authHeader,
+                                    @Path("userId") String userId,
+                                    @Path("videoId") String videoId,
+                                    @Body Like newLikes);
 }
