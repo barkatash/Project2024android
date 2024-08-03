@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
     private void setLoggedInState() {
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         if (loggedInUser != null) {
-            binding.youBtnText.setText("Log Out");
+            binding.youBtnText.setText("You");
             if (loggedInUser.getImageUrl() != null && !loggedInUser.getImageUrl().isEmpty()) {
                 String imageUrl = "http://10.0.2.2:8080/" + loggedInUser.getImageUrl();
                 Glide.with(this)
@@ -134,10 +134,6 @@ public class MainActivity extends AppCompatActivity {
                         .into(youBtn);
             }
         }
-//        youBtn.setOnClickListener(v -> {
-//            userRepository.logoutUser();
-//            setLoggedOutState();
-//        });
         youBtn.setOnClickListener(v -> showUserOptionsMenu(v));
     }
 
@@ -161,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (title.equals("Delete User")) {
                     if (loggedInUser != null) {
-                        //userRepository.delete(loggedInUser.getId());
+                        userRepository.delete(loggedInUser.getUsername(), loggedInUser.getToken());
                         userRepository.logoutUser();
                         setLoggedOutState();
                     }

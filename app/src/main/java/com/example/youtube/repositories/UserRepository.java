@@ -80,9 +80,13 @@ public class UserRepository {
     public void addUser(User newUser, File profileImageFile) {
         apiService.addUser(newUser, profileImageFile);
     }
+    public void editUser(User newUser, File profileImageFile) {
+        apiService.editUser(newUser, profileImageFile);
+    }
 
-    public void delete(String userId) {
-        apiService.deleteUser(userId);
+
+    public void delete(String userId, String token) {
+        apiService.deleteUser(userId, token);
         resetUsers();
     }
 

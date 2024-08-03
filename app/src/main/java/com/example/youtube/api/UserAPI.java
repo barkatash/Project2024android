@@ -101,14 +101,13 @@ public class UserAPI {
         });
     }
 
-    public void deleteUser(String id) {
-        Call<Void> call = webServiceAPI.deleteUser(id);
+    public void deleteUser(String id, String token) {
+        Call<Void> call = webServiceAPI.deleteUser("Bearer " + token, id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("UserAPI", "user deleted successfully.");
-                    // Optionally, refresh the video list
                     getAllUsers(userListData);
                 } else {
                     Log.e("UserAPI", "Failed to delete user: " + response.message());
@@ -121,7 +120,34 @@ public class UserAPI {
             }
         });
     }
+    public void editUser(User user, File profileImageFile) {
+        RequestBody displayNameBody = RequestBody.create(MultipartBody.FORM, user.getDisplayName());
+        RequestBody passwordBody = RequestBody.create(MultipartBody.FORM, user.getPassword());
 
+        MultipartBody.Part imagePart = null;
+        if (profileImageFile != null) {
+            RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpeg"), profileImageFile);
+            imagePart = MultipartBody.Part.createFormData("image", profileImageFile.getName(), imageBody);
+        }
+
+        Call<Void> call = webServiceAPI.updateUser("Bearer " + user.getToken(), user.getUsername(), displayNameBody, passwordBody, imagePart);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("UserAPI", "User updated successfully.");
+                    // Optionally, refresh the user list
+                    getAllUsers(userListData);
+                } else {
+                    Log.e("UserAPI", "Failed to update user: " + response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("UserAPI", "Error updating user: " + t.getMessage());
+            }
+        });
+    }
     public MutableLiveData<User> getUserById(String userId) {
         MutableLiveData<User> userLiveData = new MutableLiveData<>();
 

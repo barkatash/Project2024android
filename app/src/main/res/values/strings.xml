@@ -77,4 +77,7 @@
     <string name="log_out">Log Out</string>
     <string name="edit_user">Edit User</string>
     <string name="delete_user">Delete User</string>
+    <string name="change_profile_image">Change Profile Image</string>
+    <string name="name">Name</string>
+    <string name="new_password">New Password</string>
 </resources>
