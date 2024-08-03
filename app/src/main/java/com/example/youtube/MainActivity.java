@@ -3,9 +3,12 @@ package com.example.youtube;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -131,10 +134,44 @@ public class MainActivity extends AppCompatActivity {
                         .into(youBtn);
             }
         }
-        youBtn.setOnClickListener(v -> {
-            userRepository.logoutUser();
-            setLoggedOutState();
+//        youBtn.setOnClickListener(v -> {
+//            userRepository.logoutUser();
+//            setLoggedOutState();
+//        });
+        youBtn.setOnClickListener(v -> showUserOptionsMenu(v));
+    }
+
+    private void showUserOptionsMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.user_options_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                CharSequence title = item.getTitle();
+                assert title != null;
+                if (title.equals("Log Out")) {
+                    userRepository.logoutUser();
+                    setLoggedOutState();
+                    return true;
+                } else if (title.equals("Edit User")) {
+                    Intent editIntent = new Intent(MainActivity.this, EditUserActivity.class);
+                    startActivity(editIntent);
+                    return true;
+                } else if (title.equals("Delete User")) {
+                    if (loggedInUser != null) {
+                        //userRepository.delete(loggedInUser.getId());
+                        userRepository.logoutUser();
+                        setLoggedOutState();
+                    }
+                    return true;
+                }
+                return false;
+            }
         });
+
+        popupMenu.show();
     }
 
     private void setLoggedOutState() {
