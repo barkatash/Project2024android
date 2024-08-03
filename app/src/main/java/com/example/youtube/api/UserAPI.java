@@ -11,6 +11,7 @@ import com.example.youtube.UserLogin;
 import com.example.youtube.dao.UserDao;
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.List;
@@ -133,6 +134,28 @@ public class UserAPI {
         }
 
         Call<Void> call = webServiceAPI.updateUser("Bearer " + user.getToken(), user.getUsername(), displayNameBody, passwordBody, imagePart);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("UserAPI", "User updated successfully.");
+                    Log.d("UserAPI", "User updated successfully.");
+                    getAllUsers(userListData);
+                } else {
+                    Log.e("UserAPI", "Failed to update user: " + response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("UserAPI", "Error updating user: " + t.getMessage());
+            }
+        });
+    }
+    public void editUserLike(User user) {
+        Gson gson = new Gson();
+        String userJsonString = gson.toJson(user);
+        RequestBody userJson = RequestBody.create(MediaType.parse("application/json"), userJsonString);
+        Call<Void> call = webServiceAPI.updateUserLike("Bearer " + user.getToken(), user.getUsername(), null, userJson);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

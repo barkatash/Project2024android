@@ -52,6 +52,14 @@ public interface userWebServiceAPI {
             @Part("password") RequestBody password,
             @Part MultipartBody.Part image
     );
+    @Multipart
+    @PATCH("users/{id}")
+    Call<Void> updateUserLike(
+            @Header("Authorization") String authHeader,
+            @Path("id") String userId,
+            @Part MultipartBody.Part image,
+            @Part("user") RequestBody userJson
+    );
 
     @PATCH("users/{userId}/videos/like/{videoId}")
     Call<Video> updateUserLikeVideo(@Header("Authorization") String authHeader,

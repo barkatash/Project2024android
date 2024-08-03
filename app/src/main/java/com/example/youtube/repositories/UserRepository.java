@@ -90,6 +90,9 @@ public class UserRepository {
     public void editLikes(String token, String username, String videoId, int newLikes) {
         apiService.updateUserLikeVideo(token, username, videoId, newLikes);
     }
+    public void editUserLikes(User user) {
+        apiService.editUserLike(user);
+    }
 
     public void loginUser(MutableLiveData<User> user) {
         this.loggedInUser = user;
