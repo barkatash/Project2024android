@@ -46,7 +46,7 @@ username: bar
 password: 78495210
 
 *to access to user video page and see some user videos u need to go to watch video page and click on the uploader name.
-*to access to edit and delete your user u need to be logged in and click on the user image in the bottom right of the main activity. 
+*to access to edit and delete your user u need to be logged in and click on the user image in the bottom "You" right of the main activity. 
 
 
 
