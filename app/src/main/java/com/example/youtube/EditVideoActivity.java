@@ -61,7 +61,7 @@ public class EditVideoActivity extends AppCompatActivity {
         videoLiveData = videoRepository.getVideoById(videoId);
         videoLiveData.observe(this, cur -> {
             if (cur != null) {
-                currentVideo = cur; // Save the video data
+                currentVideo = cur;
             } else {
             }
         });

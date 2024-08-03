@@ -67,7 +67,6 @@ public class EditUserActivity extends AppCompatActivity {
         }
 
         buttonChangeImage.setOnClickListener(v -> checkCameraPermission());
-
         buttonSave.setOnClickListener(v -> saveUser());
     }
     private void checkCameraPermission() {

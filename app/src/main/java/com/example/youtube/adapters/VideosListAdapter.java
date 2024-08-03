@@ -50,7 +50,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.tvAuthor.setText(current.getUploader());
             holder.tvContent.setText(current.getTitle());
             holder.tvDuration.setText(current.getDuration());
-            holder.tvViews.setText(current.getVisits());
+            holder.tvViews.setText(String.valueOf(current.getVisits()));
             holder.tvUploadDate.setText(current.getUploadDate());
 
             String imageUrl = "http://10.0.2.2:8080/" + current.getImage();

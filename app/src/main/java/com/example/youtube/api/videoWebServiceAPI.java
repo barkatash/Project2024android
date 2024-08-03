@@ -4,19 +4,33 @@ import com.example.youtube.entities.Video;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface videoWebServiceAPI {
 
-    @GET("videos")
+    @GET("videos/all")
     Call<List<Video>> getVideos();
+    @Multipart
     @POST("users/{id}/videos")
-    Call<Void> addVideo(@Body Video video);
+    Call<Void> addVideo(
+            @Header("Authorization") String authHeader,
+            @Path("id") String userId,
+            @Part("title") RequestBody title,
+            @Part("uploader") RequestBody uploader,
+            @Part("duration") RequestBody duration,
+            @Part("visits") RequestBody visits,
+            @Part MultipartBody.Part videoFile,
+            @Part MultipartBody.Part image
+    );
     @DELETE("users/{id}/videos/{pid}")
     Call<Void> deleteVideo(@Path("id") String id);
 

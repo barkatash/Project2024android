@@ -9,8 +9,12 @@ import com.example.youtube.R;
 import com.example.youtube.dao.VideoDao;
 import com.example.youtube.entities.Video;
 
+import java.io.File;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,8 +51,23 @@ public class VideoAPI {
         });
     }
 
-    public void addVideo(Video video) {
-        Call<Void> call = webServiceAPI.addVideo(video);
+    public void addVideo(String token, Video video, File videoImageFile, File videoFile) {
+        MultipartBody.Part imagePart = null;
+        if (videoImageFile != null) {
+            RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpeg"), videoImageFile);
+            imagePart = MultipartBody.Part.createFormData("image", videoImageFile.getName(), imageBody);
+        }
+        MultipartBody.Part videoPart = MultipartBody.Part.createFormData("video", videoFile.getName(),
+                RequestBody.create(MediaType.parse("video/mp4"), videoFile));
+        RequestBody titleBody = RequestBody.create(MediaType.parse("text/plain"), video.getTitle());
+        RequestBody uploaderBody = RequestBody.create(MediaType.parse("text/plain"), video.getUploader());
+        RequestBody durationBody = RequestBody.create(MediaType.parse("text/plain"), video.getDuration());
+        RequestBody visitsBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(video.getVisits()));
+        Call<Void> call = webServiceAPI.addVideo("Bearer " + token, video.getUploader(), titleBody,
+                uploaderBody,
+                durationBody,
+                visitsBody,
+                videoPart, imagePart);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

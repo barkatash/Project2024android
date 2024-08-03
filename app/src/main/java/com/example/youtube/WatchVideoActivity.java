@@ -205,7 +205,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                     tvAuthor.setText(video.getUploader());
                     tvContent.setText(video.getTitle());
                     tvDuration.setText(video.getDuration());
-                    tvViews.setText(video.getVisits());
+                    tvViews.setText(String.valueOf(video.getVisits()));
                     tvUploadDate.setText(video.getUploadDate());
                     likeCount = video.getLikes();
                     tvLikeCount.setText(String.valueOf(likeCount));

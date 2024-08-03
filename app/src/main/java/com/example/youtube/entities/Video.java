@@ -18,7 +18,7 @@ public class Video {
     private int likes;
     private String image;
     private String duration;
-    private String visits;
+    private int visits;
 
 
     public Video() {
@@ -35,7 +35,7 @@ public class Video {
 
     private String uploadDate;
 
-    public Video(String id, String uploader, String title, String duration , String visits, String uploadDate, String image, String video) {
+    public Video(String id, String uploader, String title, String duration , int visits, String uploadDate, String image, String video) {
         this.id = id;
         this.uploader = uploader;
         this.title = title;
@@ -54,11 +54,11 @@ public class Video {
         this.duration = duration;
     }
 
-    public String getVisits() {
+    public int getVisits() {
         return visits;
     }
 
-    public void setVisits(String visits) {
+    public void setVisits(int visits) {
         this.visits = visits;
     }
 

@@ -7,6 +7,7 @@ import com.example.youtube.api.VideoAPI;
 import com.example.youtube.dao.VideoDao;
 import com.example.youtube.entities.Video;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,8 +50,8 @@ public class VideoRepository {
         api.deleteVideo(videoId);
         resetVideos();
     }
-    public void addVideo(Video newVideo) {
-        api.addVideo(newVideo);
+    public void addVideo(String token, Video newVideo, File videoImageFile, File videoFile) {
+        api.addVideo(token, newVideo, videoImageFile, videoFile);
         resetVideos();
     }
     public LiveData<List<Video>> getVideosByUser(String username) {

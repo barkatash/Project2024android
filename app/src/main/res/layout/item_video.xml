@@ -48,8 +48,23 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:paddingStart="8dp"
+            android:paddingEnd="3dp"
+            android:text="Views"/>
+        <TextView
+            android:id="@+id/viewstext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:text="Views"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" • "
+            android:textStyle="bold"
+            android:importantForAccessibility="no" />
 
         <TextView
             android:id="@+id/textViewUploadDate"
