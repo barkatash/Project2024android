@@ -22,9 +22,9 @@ public class UserViewModel extends ViewModel {
 
     public UserViewModel() {
         this.userRepository = UserRepository.getInstance(null);
-        this.users = this.userRepository.getAllUsers();
+        this.users = userRepository.getAllUsers();
         videoRepository = new VideoRepository();
-        this.loggedInUser = this.userRepository.getLoggedInUser();
+        this.loggedInUser = userRepository.getLoggedInUser();
         this.fetchedUser = new MutableLiveData<>();
         this.userVideos = new MutableLiveData<>();
     }

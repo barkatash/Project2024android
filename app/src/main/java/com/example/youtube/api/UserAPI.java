@@ -44,6 +44,7 @@ public class UserAPI {
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     userLiveData.setValue(response.body());
+                    MyApplication.setCurrentUser(response.body());
                 } else {
                     Log.e("UserAPI", "Failed to login: " + response.message());
                     userLiveData.setValue(null);

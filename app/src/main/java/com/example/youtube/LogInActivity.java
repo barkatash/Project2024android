@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -37,7 +36,6 @@ public class LogInActivity extends AppCompatActivity {
         passwordInput = binding.loginPasswordInput;
         logInButton = binding.loginLogInButton;
 
-        // Initialize UserViewModel
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         logInButton.setOnClickListener(new View.OnClickListener() {

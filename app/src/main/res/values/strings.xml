@@ -73,4 +73,5 @@
     <string name="BaseUrl">http://10.0.2.2:8080/api/</string>
     <string name="mediaUrl">http://10.0.2.2:8080/</string>
     <string name="videos">Videos</string>
+    <string name="Log_in">Log In</string>
 </resources>
