@@ -91,7 +91,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Save and Cancel Buttons for Edit Mode -->
     <LinearLayout
         android:id="@+id/editButtonsLayout"
         style="?android:attr/buttonBarStyle"

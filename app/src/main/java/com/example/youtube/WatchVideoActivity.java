@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -40,11 +39,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     VideoRepository videoRepository = new VideoRepository();
     CommentRepository commentRepository = CommentRepository.getInstance(null);
     private User loggedInUser = MyApplication.getCurrentUser();
-    private List<Comment> filteredComments;
     private int likeCount = 0;
     private boolean isLiked = false;
     private boolean isUnliked = false;
-    Video video;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,16 +183,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
              */
     }
 
-
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("likeCount", likeCount);
-        outState.putBoolean("isLiked", isLiked);
-        outState.putBoolean("isUnliked", isUnliked);
-    }
-
     private void initializeViews() {
         TextView tvAuthor = findViewById(R.id.tvAuthor);
         TextView tvContent = findViewById(R.id.tvContent);
@@ -255,16 +243,25 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
             commentAdapter.setComments(comments);
             Log.d("WatchVideoActivity", "Comments: " + comments);
         });
-
         lstComments.setAdapter(commentAdapter);
         lstComments.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
     @Override
     public void onDeleteComment(Comment comment) {
         if (loggedInUser != null && loggedInUser.getUsername().equals(comment.getUsername())) {
             CommentRepository.getInstance(null).deleteComment(loggedInUser.getToken(), loggedInUser.getUsername(), comment.getId());
+            initializeCommentsList();
+            return;
+        }
+        Toast.makeText(this, "You need to be logged in and the owner of this comment to delete it.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onEditComment(Comment comment) {
+        if (loggedInUser != null && loggedInUser.getUsername().equals(comment.getUsername())) {
+            CommentRepository.getInstance(null).editComment(loggedInUser.getToken(), loggedInUser.getUsername(), comment.getId(), comment);
+            initializeCommentsList();
             return;
         }
         Toast.makeText(this, "You need to be logged in and the owner of this comment to delete it.", Toast.LENGTH_SHORT).show();

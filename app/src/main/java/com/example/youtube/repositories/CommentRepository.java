@@ -56,7 +56,9 @@ public class CommentRepository {
     public void addComment(String token, Comment comment) {
         apiService.addComment(token, comment);
     }
-
+    public void editComment(String token, String username, String commentId, Comment comment) {
+        apiService.editComment(token, username, commentId, comment);
+    }
     public void deleteComment(String token, String username, String commentId) {
         apiService.deleteComment(token, username, commentId);
     }

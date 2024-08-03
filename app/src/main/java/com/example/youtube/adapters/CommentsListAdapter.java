@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.example.youtube.MyApplication;
 import com.example.youtube.R;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.User;
@@ -33,8 +34,10 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     private List<Comment> comments;
     private CommentInteractionListener listener;
     private final UserRepository userRepository;
+    private User loggedInUser = MyApplication.getCurrentUser();
     public interface CommentInteractionListener {
         void onDeleteComment(Comment comment);
+        void onEditComment(Comment comment);
     }
 
     public CommentsListAdapter(Context context, CommentInteractionListener listener) {
@@ -162,8 +165,8 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
 
             holder.btnEdit.setOnClickListener(v -> {
-                if (userRepository.getLoggedInUser() == null) {
-                    Toast.makeText(context, "You need to be logged in to edit a comment", Toast.LENGTH_SHORT).show();
+                if (loggedInUser == null || !loggedInUser.getUsername().equals(current.getUsername())) {
+                    Toast.makeText(context, "You need to be logged in and the owner of this comment to edit it.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 holder.etEditComment.setVisibility(View.VISIBLE);
@@ -179,7 +182,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                 String editedCommentText = holder.etEditComment.getText().toString().trim();
                 if (!TextUtils.isEmpty(editedCommentText)) {
                     current.setDescription(editedCommentText);
-                    notifyDataSetChanged();
+                    listener.onEditComment(current);
                 }
                 holder.etEditComment.setVisibility(View.GONE);
                 holder.tvDescription.setVisibility(View.VISIBLE);

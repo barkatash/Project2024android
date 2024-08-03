@@ -87,6 +87,25 @@ public class CommentAPI {
             }
         });
     }
+    public void editComment(String token, String username, String commentId, Comment comment) {
+        Call<Void> call = webServiceAPI.editComment("Bearer " + token, username, commentId, comment);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("CommentAPI", "comment added successfully.");
+                    getAllComments(commentListData);
+                } else {
+                    Log.e("CommentAPI", "Failed to edit comment: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("CommentAPI", "Error adding comment: " + t.getMessage());
+            }
+        });
+    }
 
     public void deleteComment(String token, String username, String commentId) {
         Call<Void> call = webServiceAPI.deleteComment("Bearer " + token, username,commentId);

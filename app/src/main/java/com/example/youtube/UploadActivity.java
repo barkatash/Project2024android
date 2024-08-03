@@ -118,7 +118,6 @@ public class UploadActivity extends AppCompatActivity {
             File videoFile = new File(getFilesDir(), "video_" + newVideo.getId() + ".mp4");
             File imageFile = new File(getFilesDir(), "image_" + newVideo.getId() + ".jpg");
 
-
             videoRepository.addVideo(loggedInUser.getToken(), newVideo, imageFile, videoFile);
             Toast.makeText(this, "Video Uploaded Successfully", Toast.LENGTH_SHORT).show();
             goToMainActivity(null);
