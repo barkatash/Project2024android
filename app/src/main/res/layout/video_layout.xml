@@ -87,6 +87,12 @@
                     android:id="@+id/tvViews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/views"
+                    android:paddingEnd="3dp"/>
+                <TextView
+                    android:id="@+id/tvViewsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="@string/views"/>
 
                 <TextView
