@@ -9,8 +9,12 @@ import com.example.youtube.R;
 import com.example.youtube.dao.VideoDao;
 import com.example.youtube.entities.Video;
 
+import java.io.File;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,14 +51,28 @@ public class VideoAPI {
         });
     }
 
-    public void addVideo(Video video) {
-        Call<Void> call = webServiceAPI.addVideo(video);
+    public void addVideo(String token, Video video, File videoImageFile, File videoFile) {
+        MultipartBody.Part imagePart = null;
+        if (videoImageFile != null) {
+            RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpeg"), videoImageFile);
+            imagePart = MultipartBody.Part.createFormData("image", videoImageFile.getName(), imageBody);
+        }
+        MultipartBody.Part videoPart = MultipartBody.Part.createFormData("video", videoFile.getName(),
+                RequestBody.create(MediaType.parse("video/mp4"), videoFile));
+        RequestBody titleBody = RequestBody.create(MediaType.parse("text/plain"), video.getTitle());
+        RequestBody uploaderBody = RequestBody.create(MediaType.parse("text/plain"), video.getUploader());
+        RequestBody durationBody = RequestBody.create(MediaType.parse("text/plain"), video.getDuration());
+        RequestBody visitsBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(video.getVisits()));
+        Call<Void> call = webServiceAPI.addVideo("Bearer " + token, video.getUploader(), titleBody,
+                uploaderBody,
+                durationBody,
+                visitsBody,
+                videoPart, imagePart);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("VideoAPI", "Video added successfully.");
-                    // Optionally, refresh the video list
                     getAllVideos(videoListData);
                 } else {
                     Log.e("VideoAPI", "Failed to add video: " + response.message());
@@ -67,21 +85,49 @@ public class VideoAPI {
             }
         });
     }
+    public void editVideo(String token, Video video, File videoImageFile, File videoFile) {
+        MultipartBody.Part imagePart = null;
+        if (videoImageFile != null) {
+            RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpeg"), videoImageFile);
+            imagePart = MultipartBody.Part.createFormData("image", videoImageFile.getName(), imageBody);
+        }
+        MultipartBody.Part videoPart = MultipartBody.Part.createFormData("video", videoFile.getName(),
+                RequestBody.create(MediaType.parse("video/mp4"), videoFile));
+        RequestBody titleBody = RequestBody.create(MediaType.parse("text/plain"), video.getTitle());
+        RequestBody descriptionBody = RequestBody.create(MediaType.parse("text/plain"), video.getDescription());
+        Call<Void> call = webServiceAPI.editVideo("Bearer " + token, video.getUploader(), video.getId(),
+                titleBody,
+                descriptionBody,
+                videoPart, imagePart);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("VideoAPI", "Video edited successfully.");
+                    getAllVideos(videoListData);
+                } else {
+                    Log.e("VideoAPI", "Failed to edit video: " + response.message());
+                }
+            }
 
-    public void deleteVideo(String id) {
-        Call<Void> call = webServiceAPI.deleteVideo(id);
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("VideoAPI", "Error adding video: " + t.getMessage());
+            }
+        });
+    }
+    public void deleteVideo(String token, String username, String videoId) {
+        Call<Void> call = webServiceAPI.deleteVideo("Bearer " + token, username, videoId);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("VideoAPI", "Video deleted successfully.");
-                    // Optionally, refresh the video list
                     getAllVideos(videoListData);
                 } else {
                     Log.e("VideoAPI", "Failed to delete video: " + response.message());
                 }
             }
-
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Log.e("VideoAPI", "Error deleting video: " + t.getMessage());
@@ -112,6 +158,27 @@ public class VideoAPI {
         });
 
         return videoLiveData;
+    }
+
+    public void getVideosByUser(String username, MutableLiveData<List<Video>> videos) {
+        Call<List<Video>> call = webServiceAPI.getVideosByUser(username);
+        call.enqueue(new Callback<List<Video>>() {
+            @Override
+            public void onResponse(Call<List<Video>> call, Response<List<Video>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    videos.postValue(response.body());
+                } else {
+                    Log.e("VideoAPI", "Failed to fetch videos by user: " + response.message());
+                    videos.postValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Video>> call, Throwable t) {
+                Log.e("VideoAPI", "Error fetching videos by user: " + t.getMessage());
+                videos.postValue(null);
+            }
+        });
     }
 
 }

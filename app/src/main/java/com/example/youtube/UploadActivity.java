@@ -21,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
-import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
 
 import java.io.File;
@@ -39,6 +38,7 @@ public class UploadActivity extends AppCompatActivity {
     private EditText newContent;
     private ImageView videoUploadImageView;
     private final Video newVideo = new Video();
+    User loggedInUser;
     String duration = "2:00";
     VideoRepository videoRepository = new VideoRepository();
 
@@ -53,7 +53,7 @@ public class UploadActivity extends AppCompatActivity {
         videoUpload.setMediaController(mediaController);
         videoUploadImageView = findViewById(R.id.videoUploadImage);
         newContent = findViewById(R.id.etNewContent);
-
+        loggedInUser = MyApplication.getCurrentUser();
 
         Button buttonSelectVideo = findViewById(R.id.btnUploadVideo);
         Button buttonSelectImage = findViewById(R.id.btnUploadImage);
@@ -84,6 +84,8 @@ public class UploadActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_FILE && resultCode == RESULT_OK) {
             if (data != null && data.getData() != null) {
                 try {
+                    Uri imageUri = data.getData();
+                    saveImageToInternalStorage(imageUri);
                     Bitmap bitmap;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                         ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), data.getData());
@@ -103,24 +105,44 @@ public class UploadActivity extends AppCompatActivity {
                 saveVideoToInternalStorage(videoUri);
                 videoUpload.setVideoURI(videoUri);
                 videoUpload.start();
-//                newVideo.setVideoFileUri(videoUri);
             }
         }
     }
 
     private void uploadVideo() {
         if (newVideo != null) {
-            User loggedInUser = UserRepository.getInstance(this).getLoggedInUser().getValue();
-            newVideo.setUploader(loggedInUser.getDisplayName());
+            newVideo.setUploader(loggedInUser.getUsername());
             newVideo.setTitle(newContent.getText().toString().trim());
             newVideo.setDuration(duration);
-            newVideo.setVisits("0 views");
-            newVideo.setUploadDate("now");
-            videoRepository.addVideo(newVideo);
+            newVideo.setVisits(0);
+            File videoFile = new File(getFilesDir(), "video_" + newVideo.getId() + ".mp4");
+            File imageFile = new File(getFilesDir(), "image_" + newVideo.getId() + ".jpg");
+
+            videoRepository.addVideo(loggedInUser.getToken(), newVideo, imageFile, videoFile);
             Toast.makeText(this, "Video Uploaded Successfully", Toast.LENGTH_SHORT).show();
             goToMainActivity(null);
         } else {
             Toast.makeText(this, "Please select a video first", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveImageToInternalStorage(Uri imageUri) {
+        try {
+            String imageId = newVideo.getId();
+            String imageFileName = "image_" + imageId + ".jpg";
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            File imageFile = new File(getFilesDir(), imageFileName);
+            OutputStream outputStream = new FileOutputStream(imageFile);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     private void saveVideoToInternalStorage(Uri videoUri) {
@@ -139,7 +161,6 @@ public class UploadActivity extends AppCompatActivity {
             outputStream.close();
             inputStream.close();
             duration = getVideoDuration(videoUri);
-//            newVideo.setVideoFilePath(videoFile.getAbsolutePath());
 
         } catch (IOException e) {
             e.printStackTrace();

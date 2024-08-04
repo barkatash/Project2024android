@@ -44,19 +44,6 @@
                     android:importantForAccessibility="yes"
                     android:layout_marginEnd="8dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" • "
-                    android:textStyle="bold"
-                    android:importantForAccessibility="no" />
-
-                <TextView
-                    android:id="@+id/tvUploadDateComment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/upload_date"
-                    android:textSize="12sp" />
             </LinearLayout>
 
             <!-- Comment Text -->
@@ -104,7 +91,6 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Save and Cancel Buttons for Edit Mode -->
     <LinearLayout
         android:id="@+id/editButtonsLayout"
         style="?android:attr/buttonBarStyle"
@@ -131,42 +117,5 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:text="@string/cancel" />
-    </LinearLayout>
-
-    <!-- Bottom Layout with Like and Dislike Buttons -->
-    <LinearLayout
-        android:id="@+id/bottomLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/editButtonsLayout"
-        android:padding="8dp">
-
-        <ImageButton
-            android:id="@+id/tvLike"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/baseline_thumb_up_off_alt_24"
-            android:contentDescription="@string/like_button"
-            android:layout_marginEnd="4dp" />
-
-        <!-- Like Count -->
-        <TextView
-            android:id="@+id/tvLikes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/likes"
-            android:textSize="12sp"
-            android:layout_marginEnd="16dp" />
-
-        <!-- Dislike Button -->
-        <ImageButton
-            android:id="@+id/tvDislikes"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/baseline_thumb_down_off_alt_24"
-            android:contentDescription="@string/dislike_button"
-            android:layout_marginEnd="4dp" />
-
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

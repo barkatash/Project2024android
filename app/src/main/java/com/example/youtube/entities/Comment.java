@@ -1,29 +1,39 @@
 package com.example.youtube.entities;
 
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 @Entity
 public class Comment {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
+    @NonNull
+    @SerializedName("_id")
     private String id;
     private String videoId;
     private String userName;
     private String description;
-    private String uploadDate;
     private int likes;
     private int dislikes;
 
 
 
-    public Comment(String videoId, String userName, String description, String uploadDate , int likes, int dislikes) {
+    public Comment(String videoId, String userName, String description, int likes, int dislikes) {
         this.userName = userName;
         this.videoId = videoId;
         this.description = description;
         this.likes = likes;
-        this.uploadDate = uploadDate;
         this.dislikes = dislikes;
+    }
+    public Comment(String videoId, String userName, String description) {
+        this.userName = userName;
+        this.videoId = videoId;
+        this.description = description;
+        this.likes = 0;
+        this.dislikes = 0;
     }
 
 
@@ -58,15 +68,6 @@ public class Comment {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public String getUploadDate() {
-        return uploadDate;
-    }
-
-    public void setUploadDate(String uploadDate) {
-        this.uploadDate = uploadDate;
-    }
-
     public int getLikes() {
         return likes;
     }

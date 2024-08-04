@@ -8,8 +8,6 @@ import android.graphics.ImageDecoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.example.youtube.entities.User;
 import com.example.youtube.repositories.UserRepository;
 
@@ -31,51 +31,59 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class SignInActivity extends AppCompatActivity {
-    private static final int PICK_IMAGE_REQUEST = 1;
+public class EditUserActivity extends AppCompatActivity {
+
+    private static final int REQUEST_IMAGE_PICK = 1;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
-    private final User newUser = new User();
-    private EditText usernameInput, displayNameInput, passwordInput, verifyPasswordInput;
-    private Button signInButton, uploadImageButton;
     private ImageView profileImageView;
+    private EditText editTextDisplayName;
+    private EditText editTextPassword;
+    private final User newUser = new User();
+    private Button buttonSave;
+    private Button buttonChangeImage;
+    private UserRepository userRepository;
+    private User loggedInUser;
     private File imageFile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.acticity_signin);
+        setContentView(R.layout.activity_edit_user);
 
-        usernameInput = findViewById(R.id.signin_usernameInput);
-        displayNameInput = findViewById(R.id.signin_displayNameInput);
-        passwordInput = findViewById(R.id.signin_passwordInput);
-        verifyPasswordInput = findViewById(R.id.signin_verifyPasswordInput);
-        signInButton = findViewById(R.id.signin_signInButton);
-        uploadImageButton = findViewById(R.id.signin_uploadImageButton);
-        profileImageView = findViewById(R.id.signin_profileImageView);
+        userRepository = UserRepository.getInstance(this);
+        loggedInUser = MyApplication.getCurrentUser();
 
-        uploadImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkCameraPermission();
+        profileImageView = findViewById(R.id.imageViewProfile);
+        editTextDisplayName = findViewById(R.id.editTextDisplayName);
+        editTextPassword = findViewById(R.id.editTextPassword);
+        buttonSave = findViewById(R.id.buttonSave);
+        buttonChangeImage = findViewById(R.id.buttonChangeImage);
+
+        if (loggedInUser != null) {
+            if (loggedInUser.getImageUrl() != null) {
+                String imageUrl = "http://10.0.2.2:8080/" + loggedInUser.getImageUrl();
+                Glide.with(this).load(imageUrl).transform(new CircleCrop()).into(profileImageView);
             }
-        });
+        }
 
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleSignIn();
-            }
-        });
+        buttonChangeImage.setOnClickListener(v -> checkCameraPermission());
+        buttonSave.setOnClickListener(v -> saveUser());
     }
-
     private void checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
         } else {
             openImagePicker();
         }
     }
-
+    private void openImagePicker() {
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent chooserIntent = Intent.createChooser(pickIntent, "Select or take a new Picture");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
+        startActivityForResult(chooserIntent, REQUEST_IMAGE_PICK);
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -89,22 +97,10 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    private void openImagePicker() {
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("image/*");
-
-        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        Intent chooserIntent = Intent.createChooser(pickIntent, "Select or take a new Picture");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
-
-        startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK) {
             Bitmap bitmap = null;
             if (data != null && data.getData() != null) {
                 try {
@@ -152,40 +148,24 @@ public class SignInActivity extends AppCompatActivity {
         return imageFile;
     }
 
-    private void handleSignIn() {
-        String username = usernameInput.getText().toString();
-        String displayName = displayNameInput.getText().toString();
-        String password = passwordInput.getText().toString();
-        String verifyPassword = verifyPasswordInput.getText().toString();
+    private void saveUser() {
+        String displayName = editTextDisplayName.getText().toString();
+        String password = editTextPassword.getText().toString();
 
-        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(displayName) ||
-                TextUtils.isEmpty(password) || TextUtils.isEmpty(verifyPassword)) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        if (UserRepository.getInstance(this).getUserByUsername(username) != null) {
-            Toast.makeText(this, "This username already taken, please choose other one", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (password.length() < 8 || password.length() > 20) {
+        if (!password.isEmpty() && (password.length() < 8 || password.length() > 20)) {
             Toast.makeText(this, "Password must be 8-20 characters long", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        if (!password.equals(verifyPassword)) {
-            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+        newUser.setUsername(loggedInUser.getUsername());
+        newUser.setToken(loggedInUser.getToken());
+        newUser.setDisplayName(loggedInUser.getDisplayName());
+        newUser.setPassword(loggedInUser.getPassword());
         newUser.setPassword(password);
-        newUser.setUsername(username);
         newUser.setDisplayName(displayName);
-        UserRepository.getInstance(this).addUser(newUser, imageFile);
+        UserRepository.getInstance(this).editUser(newUser, imageFile);
 
-        Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(SignInActivity.this, LogInActivity.class));
+        Toast.makeText(this, "User updated successfully!", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

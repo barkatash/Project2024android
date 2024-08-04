@@ -36,10 +36,10 @@
     </LinearLayout>
 
     <EditText
-        android:id="@+id/etAuthor"
+        android:id="@+id/etContent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/usernameEdit"
+        android:hint="New Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topPage"
@@ -47,21 +47,10 @@
         android:padding="15dp"/>
 
     <EditText
-        android:id="@+id/etContent"
+        android:id="@+id/etDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etAuthor"
-        android:layout_margin="16dp"
-        android:padding="15dp"/>
-
-    <EditText
-        android:id="@+id/etDuration"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/durationEdit"
+        android:hint="@string/description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etContent"
@@ -73,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/select_video"
-        app:layout_constraintTop_toBottomOf="@id/etDuration"
+        app:layout_constraintTop_toBottomOf="@id/etDescription"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:backgroundTint="#D3D3D3"

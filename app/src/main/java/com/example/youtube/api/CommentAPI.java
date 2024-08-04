@@ -1,18 +1,13 @@
 package com.example.youtube.api;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.youtube.MyApplication;
 import com.example.youtube.R;
-import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.dao.CommentDao;
 import com.example.youtube.entities.Comment;
-import com.example.youtube.entities.User;
-import com.example.youtube.repositories.UserRepository;
-import com.example.youtube.viewModels.UserViewModel;
 
 import java.util.List;
 
@@ -27,9 +22,7 @@ public class CommentAPI {
     private CommentDao dao;
     Retrofit retrofit;
     commentWebServiceAPI webServiceAPI;
-    UserViewModel userViewModel;
 
-    // Constructor that accepts Context
     public CommentAPI(MutableLiveData<List<Comment>> commentListData, CommentDao dao) {
         this.commentListData = commentListData;
         this.dao = dao;
@@ -53,7 +46,6 @@ public class CommentAPI {
        });
    }
 
-    // Method to get comments for a specific video
     public MutableLiveData<List<Comment>> getCommentsForVideo(String videoId) {
         MutableLiveData<List<Comment>> videosComment = new MutableLiveData<>();
         Call<List<Comment>> call = webServiceAPI.getCommentsForVideo(videoId);
@@ -76,18 +68,15 @@ public class CommentAPI {
         return videosComment;
     }
 
-    // Method to add a new comment
-    public void addComment(Comment comment) {
-        Call<Void> call = webServiceAPI.createComment("h", comment.getUsername(), comment.getVideoId(), comment);
+    public void addComment(String token, Comment comment) {
+        Call<Void> call = webServiceAPI.addComment("Bearer " + token, comment.getUsername(), comment.getVideoId(), comment);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.d("CommentAPI", "comment added successfully.");
-                    // Optionally, refresh the video list
                     getAllComments(commentListData);
                 } else {
-                    Toast.makeText(null, "You need to be logged in to leave a comment.", Toast.LENGTH_SHORT).show();
                     Log.e("CommentAPI", "Failed to add comment: " + response.message());
                 }
             }
@@ -98,10 +87,28 @@ public class CommentAPI {
             }
         });
     }
+    public void editComment(String token, String username, String commentId, Comment comment) {
+        Call<Void> call = webServiceAPI.editComment("Bearer " + token, username, commentId, comment);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("CommentAPI", "comment added successfully.");
+                    getAllComments(commentListData);
+                } else {
+                    Log.e("CommentAPI", "Failed to edit comment: " + response.message());
+                }
+            }
 
-    // Method to delete a comment by ID
-    public void deleteComment(String commentId) {
-        Call<Void> call = webServiceAPI.deleteComment(commentId);
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("CommentAPI", "Error adding comment: " + t.getMessage());
+            }
+        });
+    }
+
+    public void deleteComment(String token, String username, String commentId) {
+        Call<Void> call = webServiceAPI.deleteComment("Bearer " + token, username,commentId);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
