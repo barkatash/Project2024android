@@ -40,7 +40,7 @@ public class UploadActivity extends AppCompatActivity {
     private final Video newVideo = new Video();
     User loggedInUser;
     String duration = "2:00";
-    VideoRepository videoRepository = new VideoRepository();
+    VideoRepository videoRepository = new VideoRepository(getApplication());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

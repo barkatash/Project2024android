@@ -1,8 +1,12 @@
 package com.example.youtube.repositories;
 
+import android.app.Application;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Room;
 
+import com.example.youtube.AppDB;
 import com.example.youtube.api.VideoAPI;
 import com.example.youtube.dao.VideoDao;
 import com.example.youtube.entities.Video;
@@ -15,27 +19,36 @@ public class VideoRepository {
     private VideoDao dao;
     private VideoListData videoListData;
     private VideoAPI api;
-    public VideoRepository() {
+    private AppDB appDB;
+    public VideoRepository(Application application) {
+        appDB = Room.databaseBuilder(application, AppDB.class, "video_database")
+                .fallbackToDestructiveMigration()
+                .build();
+        dao = appDB.videoDao();
+
         videoListData = new VideoListData();
         api = new VideoAPI(videoListData, dao);
         api.getAllVideos(videoListData);
+        resetVideos();
     }
     class VideoListData extends MutableLiveData<List<Video>>
     {
         public VideoListData() {
-             super();
-             setValue(new LinkedList<Video>());
+            super();
+            setValue(new LinkedList<Video>());
         }
-         @Override
-         protected void onActive() {
-         super.onActive();
-//         new Thread(() ->
-//        {
-//            VideoListData.postValue(dao.get());
-//             }).start();
+        @Override
+        protected void onActive() {
+            super.onActive();
         }
-
     }
+    private void loadVideosFromLocal() {
+        new Thread(() -> {
+            List<Video> videos = dao.index();
+            videoListData.postValue(videos);
+        }).start();
+    }
+
     public LiveData<List<Video>> getAllVideos() {
         return videoListData;
     }
@@ -45,6 +58,13 @@ public class VideoRepository {
     }
     public void resetVideos() {
         api.getAllVideos(videoListData);
+        new Thread(() -> {
+            List<Video> videos = videoListData.getValue();
+            if (videos != null) {
+                dao.insert(videos);
+            }
+        }).start();
+        loadVideosFromLocal();
     }
     public void deleteVideo(String token, String username, String videoId) {
         api.deleteVideo(token, username, videoId);

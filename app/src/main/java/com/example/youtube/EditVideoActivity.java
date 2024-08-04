@@ -37,7 +37,7 @@ public class EditVideoActivity extends AppCompatActivity {
     private Button btnSelectVideo;
     private Button btnSelectImage;
     private Button btnSave;
-    VideoRepository videoRepository = new VideoRepository();
+    VideoRepository videoRepository = new VideoRepository(getApplication());
     private VideoView videoViewUpload;
     private Video currentVideo;
     private ImageView videoImageView;

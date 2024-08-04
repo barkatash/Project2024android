@@ -1,5 +1,8 @@
 package com.example.youtube.viewModels;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,7 +14,7 @@ import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
 
-public class UserViewModel extends ViewModel {
+public class UserViewModel extends AndroidViewModel {
 
     private LiveData<List<User>> users;
     private UserRepository userRepository;
@@ -20,10 +23,11 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<User> fetchedUser;
     private LiveData<List<Video>> userVideos;
 
-    public UserViewModel() {
+    public UserViewModel(Application application) {
+        super(application);
         this.userRepository = UserRepository.getInstance(null);
         this.users = userRepository.getAllUsers();
-        videoRepository = new VideoRepository();
+        videoRepository = new VideoRepository(application);
         this.loggedInUser = userRepository.getLoggedInUser();
         this.fetchedUser = new MutableLiveData<>();
         this.userVideos = new MutableLiveData<>();

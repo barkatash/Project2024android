@@ -32,7 +32,7 @@ public class SearchActivity extends AppCompatActivity {
         EditText searchEditText = binding.searchEditText;
         String query = searchEditText.getText().toString().trim();
 
-        VideoRepository videoRepository = new VideoRepository();
+        VideoRepository videoRepository = new VideoRepository(getApplication());
 //        videoRepository.searchVideos(query);
         finish();
     }

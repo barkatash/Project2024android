@@ -38,7 +38,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private VideoView videoView;
     private CommentsListAdapter commentAdapter;
     private MutableLiveData<List<Comment>> comments;
-    VideoRepository videoRepository = new VideoRepository();
+    private VideoRepository videoRepository;
     CommentRepository commentRepository = CommentRepository.getInstance(null);
     private User loggedInUser = MyApplication.getCurrentUser();
     private int likeCount = 0;
@@ -54,7 +54,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch_video);
-
+        this.videoRepository = new VideoRepository(getApplication());
         videoView = findViewById(R.id.videoView);
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);

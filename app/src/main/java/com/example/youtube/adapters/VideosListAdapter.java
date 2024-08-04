@@ -1,5 +1,6 @@
 package com.example.youtube.adapters;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -31,12 +32,14 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
     private List<Video> videos;
     private Context context;
     private User loggedInUser = MyApplication.getCurrentUser();
-
-    VideoRepository videoRepository = new VideoRepository();
+    private VideoRepository videoRepository;
 
     public VideosListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
+        if (context.getApplicationContext() instanceof Application) {
+            this.videoRepository = new VideoRepository((Application) context.getApplicationContext());
+        }
     }
 
     @NonNull

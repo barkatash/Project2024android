@@ -26,6 +26,7 @@ import com.example.youtube.databinding.ActivityMainBinding;
 import com.example.youtube.entities.User;
 import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.viewModels.VideoViewModel;
+import com.example.youtube.viewModels.VideoViewModelFactory;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private VideosListAdapter videoAdapter;
     private UsersListAdapter userAdapter;
+    private VideoViewModel videoViewModel;
     private ImageView youBtn;
     private UserRepository userRepository;
     private User loggedInUser;
@@ -48,26 +50,18 @@ public class MainActivity extends AppCompatActivity {
         userRepository = UserRepository.getInstance(this);
 
         ImageButton btnToggleDark = binding.modeBtn;
-        btnToggleDark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean isDarkMode = (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
-                if (isDarkMode) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                }
-                recreate();
-            }
+        btnToggleDark.setOnClickListener(view -> {
+            boolean isDarkMode = (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
+            AppCompatDelegate.setDefaultNightMode(isDarkMode ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+            recreate();
         });
 
         RecyclerView lstVideos = binding.lstVideos;
         videoAdapter = new VideosListAdapter(this);
 
-        VideoViewModel viewModel = new ViewModelProvider(this).get(VideoViewModel.class);
-        viewModel.getVideos().observe(this, videos -> {
-            videoAdapter.setVideos(videos);
-        });
+        VideoViewModelFactory factory = new VideoViewModelFactory(getApplication());
+        videoViewModel = new ViewModelProvider(this, factory).get(VideoViewModel.class);
+        videoViewModel.getVideos().observe(this, videos -> videoAdapter.setVideos(videos));
 
         lstVideos.setAdapter(videoAdapter);
         lstVideos.setLayoutManager(new LinearLayoutManager(this));
@@ -106,8 +100,7 @@ public class MainActivity extends AppCompatActivity {
         youBtn = binding.youBtn;
         if (loggedInUser == null) {
             setLoggedOutState();
-        }
-        else {
+        } else {
             setLoggedInState();
         }
     }
@@ -115,6 +108,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        RecyclerView lstVideos = binding.lstVideos;
+        videoViewModel.getVideos().observe(this, videos -> videoAdapter.setVideos(videos));
+        lstVideos.setAdapter(videoAdapter);
+        lstVideos.setLayoutManager(new LinearLayoutManager(this));
         LiveData<List<User>> users = userRepository.getAllUsers();
         users.observe(this, userList -> userAdapter.setUsers(userList));
     }
@@ -131,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                         .into(youBtn);
             }
         }
-        youBtn.setOnClickListener(v -> showUserOptionsMenu(v));
+        youBtn.setOnClickListener(this::showUserOptionsMenu);
     }
 
     private void showUserOptionsMenu(View view) {
@@ -139,11 +136,9 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.user_options_menu, popupMenu.getMenu());
 
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                CharSequence title = item.getTitle();
-                assert title != null;
+        popupMenu.setOnMenuItemClickListener(item -> {
+            CharSequence title = item.getTitle();
+            if (title != null) {
                 if (title.equals("Log Out")) {
                     userRepository.logoutUser();
                     setLoggedOutState();
@@ -160,8 +155,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     return true;
                 }
-                return false;
             }
+            return false;
         });
 
         popupMenu.show();
