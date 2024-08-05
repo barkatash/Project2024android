@@ -22,14 +22,22 @@ public class VideoRepository {
     private AppDB appDB;
     public VideoRepository(Application application) {
         appDB = Room.databaseBuilder(application, AppDB.class, "video_database")
-                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
                 .build();
         dao = appDB.videoDao();
-
         videoListData = new VideoListData();
         api = new VideoAPI(videoListData, dao);
+
+        videoListData.observeForever(videos -> {
+            if (videos != null && !videos.isEmpty()) {
+                new Thread(() -> {
+                    dao.insert(videos);
+                    loadVideosFromLocal();
+                }).start();
+            }
+        });
+
         api.getAllVideos(videoListData);
-        resetVideos();
     }
     class VideoListData extends MutableLiveData<List<Video>>
     {

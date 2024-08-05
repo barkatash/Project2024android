@@ -20,7 +20,7 @@ public interface VideoDao {
     @Query("SELECT * FROM Video WHERE id = :id")
     LiveData<Video> get(String id);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<Video> videos);
 
     @Update
@@ -29,7 +29,5 @@ public interface VideoDao {
     @Delete
     void delete(Video... videos);
 
-    @Query("DELETE FROM Video")
-    void deleteAll(); // Deletes all videos
 }
 

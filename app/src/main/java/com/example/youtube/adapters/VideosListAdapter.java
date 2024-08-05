@@ -21,7 +21,6 @@ import com.example.youtube.R;
 import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
-import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
@@ -75,12 +74,12 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (UserRepository.getInstance(context).isUserLoggedIn()) {
+                    if (loggedInUser != null && loggedInUser.getUsername().equals(current.getUploader())) {
                         Intent intent = new Intent(context, EditVideoActivity.class);
                         intent.putExtra("videoId", current.getId());
                         context.startActivity(intent);
                     } else {
-                        Toast.makeText(context ,"You need to be logged in to edit a video.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context ,"You need to be logged in and the owner of this video in order to edit it.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
