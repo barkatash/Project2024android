@@ -38,6 +38,9 @@ public class CommentAPI {
            @Override
            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
                comments.postValue(response.body());
+               new Thread(() -> {
+                   dao.insert(response.body());
+               }).start();
            }
            @Override
            public void onFailure (Call<List<Comment>> call, Throwable t) {

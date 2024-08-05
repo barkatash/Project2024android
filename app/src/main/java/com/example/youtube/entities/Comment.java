@@ -3,6 +3,7 @@ package com.example.youtube.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -28,6 +29,7 @@ public class Comment {
         this.likes = likes;
         this.dislikes = dislikes;
     }
+    @Ignore
     public Comment(String videoId, String userName, String description) {
         this.userName = userName;
         this.videoId = videoId;
@@ -36,7 +38,12 @@ public class Comment {
         this.dislikes = 0;
     }
 
-
+    public String getUserName() {
+        return userName;
+    }
+    public void setUsername(String username) {
+        this.userName = username;
+    }
     public int getUnlikes() { return dislikes; }
 
     public void setUnlikes(int unlikes) { this.dislikes = unlikes; }

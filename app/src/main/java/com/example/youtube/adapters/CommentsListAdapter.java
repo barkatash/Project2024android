@@ -1,5 +1,6 @@
 package com.example.youtube.adapters;
 
+import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -23,7 +24,9 @@ import com.example.youtube.MyApplication;
 import com.example.youtube.R;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.User;
+import com.example.youtube.repositories.CommentRepository;
 import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
 
@@ -33,6 +36,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     private List<Comment> comments;
     private CommentInteractionListener listener;
     private final UserRepository userRepository;
+    private CommentRepository commentRepository;
     private User loggedInUser = MyApplication.getCurrentUser();
     public interface CommentInteractionListener {
         void onDeleteComment(Comment comment);
@@ -43,6 +47,9 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
         this.context = context;
         this.listener = listener;
         this.userRepository = UserRepository.getInstance(context.getApplicationContext());
+        if (context.getApplicationContext() instanceof Application) {
+            this.commentRepository = new CommentRepository((Application) context.getApplicationContext());
+        }
     }
 
     public class CommentViewHolder extends RecyclerView.ViewHolder {

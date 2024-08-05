@@ -1,6 +1,9 @@
 package com.example.youtube;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,7 +40,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private VideoView videoView;
     private CommentsListAdapter commentAdapter;
     private VideoRepository videoRepository;
-    CommentRepository commentRepository = CommentRepository.getInstance(null);
+    private CommentRepository commentRepository;
     private User loggedInUser = MyApplication.getCurrentUser();
     private int likeCount = 0;
     private boolean isLiked = false;
@@ -52,6 +55,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch_video);
         this.videoRepository = new VideoRepository(getApplication());
+        this.commentRepository = new CommentRepository(getApplication());
         videoView = findViewById(R.id.videoView);
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
@@ -242,13 +246,21 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         });
     }
 
-
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
+    }
     private void initializeVideoPlayer(Video video) {
         if (video != null) {
-            String videoFile = video.getVideo();
-            if (videoFile != null && !videoFile.isEmpty()) {
-                videoView.setVideoPath("http://10.0.2.2:8080/" + videoFile);
+            String videoFile;
+            if (isOffline() && video.getVideo() != null) {
+                videoFile = "android.resource://" + video.getVideo();
+                Log.d("WatchVideoActivity", "video: " + video.getVideo());
+            } else {
+                videoFile = "http://10.0.2.2:8080/"+ getPackageName() + "/" + video.getVideo();
             }
+            videoView.setVideoPath(videoFile);
             videoView.start();
         }
     }

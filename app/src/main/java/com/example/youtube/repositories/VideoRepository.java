@@ -21,7 +21,7 @@ public class VideoRepository {
     private VideoAPI api;
     private AppDB appDB;
     public VideoRepository(Application application) {
-        appDB = Room.databaseBuilder(application, AppDB.class, "video_database")
+        appDB = Room.databaseBuilder(application, AppDB.class, "database")
                 .allowMainThreadQueries()
                 .build();
         dao = appDB.videoDao();
@@ -29,6 +29,7 @@ public class VideoRepository {
         api = new VideoAPI(videoListData, dao);
         resetVideos();
     }
+
     class VideoListData extends MutableLiveData<List<Video>>
     {
         public VideoListData() {
@@ -52,7 +53,9 @@ public class VideoRepository {
     }
 
     public LiveData<Video> getVideoById(String videoId) {
-        return api.getVideoById(videoId);
+        resetVideos();
+        return dao.get(videoId);
+        //return api.getVideoById(videoId);
     }
     public void resetVideos() {
         api.getAllVideos(videoListData);

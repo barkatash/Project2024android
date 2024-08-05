@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -40,6 +41,11 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
         if (context.getApplicationContext() instanceof Application) {
             this.videoRepository = new VideoRepository((Application) context.getApplicationContext());
         }
+        // Observe the local database for changes
+        videoRepository.getAllVideos().observe((LifecycleOwner) context, videos -> {
+            this.videos = videos;
+            notifyDataSetChanged();
+        });
 
     }
 
