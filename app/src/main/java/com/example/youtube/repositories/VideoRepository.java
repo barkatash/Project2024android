@@ -29,6 +29,7 @@ public class VideoRepository {
         api = new VideoAPI(videoListData, dao);
         resetVideos();
     }
+
     class VideoListData extends MutableLiveData<List<Video>>
     {
         public VideoListData() {

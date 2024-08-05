@@ -43,6 +43,9 @@ public class VideoAPI {
             @Override
             public void onResponse(Call<List<Video>> call, Response<List<Video>> response) {
                 videos.postValue(response.body());
+                new Thread(() -> {
+                    dao.insert(response.body());
+                }).start();
             }
             @Override
             public void onFailure (Call<List<Video>> call, Throwable t) {

@@ -9,4 +9,9 @@ import com.example.youtube.entities.Video;
 @Database(entities = {Video.class}, version = 2)
 public abstract class AppDB extends RoomDatabase {
     public abstract VideoDao videoDao();
+    public void clearAllTables() {
+        new Thread(() -> {
+            clearAllTables();
+        }).start();
+    }
 }
