@@ -1,8 +1,11 @@
 package com.example.youtube;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
@@ -97,6 +101,10 @@ public class EditVideoActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isOffline()) {
+                    Toast.makeText(getBaseContext(), "you are offline, to edit a video please connect to the internet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 currentVideo.setTitle(etContent.getText().toString().trim());
                 currentVideo.setDescription(etDescription.getText().toString().trim());
                 File videoFile = new File(getFilesDir(), "video_" + currentVideo.getId() + ".mp4");
@@ -193,5 +201,10 @@ public class EditVideoActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
     }
 }

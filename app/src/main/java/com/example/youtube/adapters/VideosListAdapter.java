@@ -3,6 +3,8 @@ package com.example.youtube.adapters;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,6 +85,10 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (isOffline()) {
+                        Toast.makeText(context, "you are offline, to edit a video please connect to the internet", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (loggedInUser != null && loggedInUser.getUsername().equals(current.getUploader())) {
                         Intent intent = new Intent(context, EditVideoActivity.class);
                         intent.putExtra("videoId", current.getId());
@@ -96,6 +102,10 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (isOffline()) {
+                        Toast.makeText(context, "you are offline, to delete a video please connect to the internet", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (loggedInUser != null && loggedInUser.getUsername().equals(current.getUploader())) {
                         videoRepository.deleteVideo(loggedInUser.getToken(), loggedInUser.getUsername(), current.getId());
                         videos.remove(current);
@@ -139,5 +149,10 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             btnDelete = itemView.findViewById(R.id.btnDeleteVideo);
             btnEdit = itemView.findViewById(R.id.btnEditVideo);
         }
+    }
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
     }
 }

@@ -82,7 +82,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (isOffline()) {
+                    Toast.makeText(WatchVideoActivity.this, "you are offline, to add a comment please connect to the internet first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (loggedInUser == null) {
                     Toast.makeText(WatchVideoActivity.this, "You need to be logged in to leave a comment.", Toast.LENGTH_SHORT).show();
                     return;
@@ -99,6 +102,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         });
 
         btnLike.setOnClickListener(v -> {
+            if (isOffline()) {
+                Toast.makeText(this, "you are offline, to like a video please connect to the internet first", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (loggedInUser == null) {
                 Toast.makeText(WatchVideoActivity.this, "You need to be logged in to like a video", Toast.LENGTH_SHORT).show();
                 return;
@@ -146,6 +153,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         });
 
         btnUnlike.setOnClickListener(v -> {
+            if (isOffline()) {
+                Toast.makeText(this, "you are offline, to unlike a video please connect to the internet first", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (loggedInUser == null) {
                 Toast.makeText(WatchVideoActivity.this, "You need to be logged in to unlike a video", Toast.LENGTH_SHORT).show();
                 return;
@@ -255,13 +266,12 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         if (video != null) {
             String videoFile;
             if (isOffline() && video.getVideo() != null) {
-                videoFile = "android.resource://" + video.getVideo();
-                Log.d("WatchVideoActivity", "video: " + video.getVideo());
+                Toast.makeText(this, "you are offline, to watch the video please connect to the internet first", Toast.LENGTH_SHORT).show();
             } else {
-                videoFile = "http://10.0.2.2:8080/"+ getPackageName() + "/" + video.getVideo();
+                videoFile = "http://10.0.2.2:8080/" + video.getVideo();
+                videoView.setVideoPath(videoFile);
+                videoView.start();
             }
-            videoView.setVideoPath(videoFile);
-            videoView.start();
         }
     }
 

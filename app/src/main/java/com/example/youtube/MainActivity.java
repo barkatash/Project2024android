@@ -1,7 +1,10 @@
 package com.example.youtube;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.View;
@@ -87,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton btnUploadVideo = binding.uploadBtn;
         btnUploadVideo.setOnClickListener(v -> {
+            if (isOffline()) {
+                Toast.makeText(this, "you are offline, to upload a video please connect to the internet first", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (loggedInUser == null) {
                 Toast.makeText(MainActivity.this, "You need to be logged in to upload a video", Toast.LENGTH_SHORT).show();
                 return;
@@ -143,11 +150,19 @@ public class MainActivity extends AppCompatActivity {
                     setLoggedOutState();
                     return true;
                 } else if (title.equals("Edit User")) {
+                    if (isOffline()) {
+                        Toast.makeText(this, "you are offline, to edit a user please connect to the internet first", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
                     Intent editIntent = new Intent(MainActivity.this, EditUserActivity.class);
                     startActivity(editIntent);
                     return true;
                 } else if (title.equals("Delete User")) {
                     if (loggedInUser != null) {
+                        if (isOffline()) {
+                            Toast.makeText(this, "you are offline, to delete a user please connect to the internet first", Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
                         userRepository.delete(loggedInUser.getUsername(), loggedInUser.getToken());
                         userRepository.logoutUser();
                         setLoggedOutState();
@@ -169,5 +184,10 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(i);
         });
+    }
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
     }
 }

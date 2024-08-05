@@ -1,10 +1,13 @@
 package com.example.youtube;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -153,6 +156,10 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void handleSignIn() {
+        if (isOffline()) {
+            Toast.makeText(this, "you are offline, to sign in please connect to the internet first", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String username = usernameInput.getText().toString();
         String displayName = displayNameInput.getText().toString();
         String password = passwordInput.getText().toString();
@@ -187,5 +194,10 @@ public class SignInActivity extends AppCompatActivity {
         Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(SignInActivity.this, LogInActivity.class));
         finish();
+    }
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
     }
 }

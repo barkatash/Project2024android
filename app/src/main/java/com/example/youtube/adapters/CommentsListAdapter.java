@@ -2,6 +2,8 @@ package com.example.youtube.adapters;
 
 import android.app.Application;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,6 +109,10 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
 
 
             holder.btnEdit.setOnClickListener(v -> {
+                if (isOffline()) {
+                    Toast.makeText(context, "you are offline, to edit a comment please connect to the internet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (loggedInUser == null || !loggedInUser.getUsername().equals(current.getUsername())) {
                     Toast.makeText(context, "You need to be logged in and the owner of this comment to edit it.", Toast.LENGTH_SHORT).show();
                     return;
@@ -144,6 +150,10 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
 
             holder.btnDelete.setOnClickListener(v -> {
+                if (isOffline()) {
+                    Toast.makeText(context, "you are offline, to delete a comment please connect to the internet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (userRepository.getLoggedInUser() == null) {
                     Toast.makeText(context, "You need to be logged in to delete a comment", Toast.LENGTH_SHORT).show();
                     return;
@@ -154,7 +164,11 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
         }
     }
-
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
+    }
     @Override
     public int getItemCount() {
         return comments != null ? comments.size() : 0;
