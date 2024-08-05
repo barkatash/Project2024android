@@ -37,13 +37,14 @@ public class EditVideoActivity extends AppCompatActivity {
     private Button btnSelectVideo;
     private Button btnSelectImage;
     private Button btnSave;
-    VideoRepository videoRepository = new VideoRepository(getApplication());
+    VideoRepository videoRepository;
     private VideoView videoViewUpload;
     private Video currentVideo;
     private ImageView videoImageView;
     private User loggedInUser = MyApplication.getCurrentUser();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        videoRepository = new VideoRepository(getApplication());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_video);
 

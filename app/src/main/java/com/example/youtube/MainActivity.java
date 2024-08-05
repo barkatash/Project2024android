@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton btnUploadVideo = binding.uploadBtn;
         btnUploadVideo.setOnClickListener(v -> {
-            if (userRepository.getLoggedInUser() == null) {
+            if (loggedInUser == null) {
                 Toast.makeText(MainActivity.this, "You need to be logged in to upload a video", Toast.LENGTH_SHORT).show();
                 return;
             }

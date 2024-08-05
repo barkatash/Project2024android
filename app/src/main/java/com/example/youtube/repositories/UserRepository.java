@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.youtube.api.UserAPI;
-import com.example.youtube.dao.UserDao;
 import com.example.youtube.entities.User;
 
 import java.io.File;
@@ -15,14 +14,13 @@ import java.util.List;
 
 public class UserRepository {
     private static volatile UserRepository INSTANCE;
-    private UserDao userDao;
     private UserListData userListData;
     private UserAPI apiService;
     private MutableLiveData<User> loggedInUser = new MutableLiveData<>();
 
     public UserRepository() {
         userListData = new UserListData();
-        apiService = new UserAPI(userListData, userDao);
+        apiService = new UserAPI(userListData);
         apiService.getAllUsers(userListData);
     }
 

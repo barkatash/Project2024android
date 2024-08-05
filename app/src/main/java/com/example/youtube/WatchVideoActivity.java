@@ -15,7 +15,6 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,7 +36,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
 
     private VideoView videoView;
     private CommentsListAdapter commentAdapter;
-    private MutableLiveData<List<Comment>> comments;
     private VideoRepository videoRepository;
     CommentRepository commentRepository = CommentRepository.getInstance(null);
     private User loggedInUser = MyApplication.getCurrentUser();
@@ -48,7 +46,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private ImageButton btnLike;
     private ImageButton btnUnlike;
     TextView tvLikeCount;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

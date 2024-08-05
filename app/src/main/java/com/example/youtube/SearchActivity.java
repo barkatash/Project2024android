@@ -1,14 +1,12 @@
 package com.example.youtube;
 
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.youtube.databinding.ActivitySearchBinding;
-import com.example.youtube.repositories.VideoRepository;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -29,11 +27,6 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void performSearch() {
-        EditText searchEditText = binding.searchEditText;
-        String query = searchEditText.getText().toString().trim();
-
-        VideoRepository videoRepository = new VideoRepository(getApplication());
-//        videoRepository.searchVideos(query);
         finish();
     }
 }
