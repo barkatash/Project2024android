@@ -3,6 +3,7 @@ package com.example.youtube.adapters;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
         if (context.getApplicationContext() instanceof Application) {
             this.videoRepository = new VideoRepository((Application) context.getApplicationContext());
         }
+
     }
 
     @NonNull
@@ -65,6 +67,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.ivPic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d("VideosListAdapter", "Image clicked for video ID: " + current.getId());
                     Intent intent = new Intent(context, WatchVideoActivity.class);
                     intent.putExtra("videoId", current.getId());
                     context.startActivity(intent);

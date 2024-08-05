@@ -27,17 +27,7 @@ public class VideoRepository {
         dao = appDB.videoDao();
         videoListData = new VideoListData();
         api = new VideoAPI(videoListData, dao);
-
-        videoListData.observeForever(videos -> {
-            if (videos != null && !videos.isEmpty()) {
-                new Thread(() -> {
-                    dao.insert(videos);
-                    loadVideosFromLocal();
-                }).start();
-            }
-        });
-
-        api.getAllVideos(videoListData);
+        resetVideos();
     }
     class VideoListData extends MutableLiveData<List<Video>>
     {
@@ -66,12 +56,6 @@ public class VideoRepository {
     }
     public void resetVideos() {
         api.getAllVideos(videoListData);
-        new Thread(() -> {
-            List<Video> videos = videoListData.getValue();
-            if (videos != null) {
-                dao.insert(videos);
-            }
-        }).start();
         loadVideosFromLocal();
     }
     public void deleteVideo(String token, String username, String videoId) {
