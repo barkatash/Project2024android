@@ -30,4 +30,3 @@ public interface VideoDao {
     void delete(Video... videos);
 
 }
-
