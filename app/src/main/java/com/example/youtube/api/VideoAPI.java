@@ -90,12 +90,15 @@ public class VideoAPI {
     }
     public void editVideo(String token, Video video, File videoImageFile, File videoFile) {
         MultipartBody.Part imagePart = null;
-        if (videoImageFile != null) {
+        MultipartBody.Part videoPart = null;
+        if (videoImageFile.exists() && videoImageFile.length() > 0) {
             RequestBody imageBody = RequestBody.create(MediaType.parse("image/jpeg"), videoImageFile);
             imagePart = MultipartBody.Part.createFormData("image", videoImageFile.getName(), imageBody);
         }
-        MultipartBody.Part videoPart = MultipartBody.Part.createFormData("video", videoFile.getName(),
-                RequestBody.create(MediaType.parse("video/mp4"), videoFile));
+        if (videoFile.exists() && videoFile.length() > 0) {
+            videoPart = MultipartBody.Part.createFormData("video", videoFile.getName(),
+                    RequestBody.create(MediaType.parse("video/mp4"), videoFile));
+        }
         RequestBody titleBody = RequestBody.create(MediaType.parse("text/plain"), video.getTitle());
         RequestBody descriptionBody = RequestBody.create(MediaType.parse("text/plain"), video.getDescription());
         Call<Void> call = webServiceAPI.editVideo("Bearer " + token, video.getUploader(), video.getId(),
@@ -115,7 +118,7 @@ public class VideoAPI {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Log.e("VideoAPI", "Error adding video: " + t.getMessage());
+                Log.e("VideoAPI", "Error editing video: " + t.getMessage());
             }
         });
     }
