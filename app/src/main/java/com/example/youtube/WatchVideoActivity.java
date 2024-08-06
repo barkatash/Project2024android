@@ -247,6 +247,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
                     tvAuthor.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            if (isOffline()) {
+                                Toast.makeText(WatchVideoActivity.this, "you are offline, please connect to the internet first", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             Intent intent = new Intent(WatchVideoActivity.this, UserPageActivity.class);
                             intent.putExtra("username", video.getUploader());
                             startActivity(intent);

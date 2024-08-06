@@ -146,12 +146,11 @@ public class MainActivity extends AppCompatActivity {
             CharSequence title = item.getTitle();
             if (title != null) {
                 if (title.equals("Log Out")) {
-                    userRepository.logoutUser();
                     setLoggedOutState();
                     return true;
                 } else if (title.equals("Edit User")) {
                     if (isOffline()) {
-                        Toast.makeText(this, "you are offline, to edit a user please connect to the internet first", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "you are offline, to edit your user please connect to the internet first", Toast.LENGTH_SHORT).show();
                         return true;
                     }
                     Intent editIntent = new Intent(MainActivity.this, EditUserActivity.class);
@@ -160,11 +159,10 @@ public class MainActivity extends AppCompatActivity {
                 } else if (title.equals("Delete User")) {
                     if (loggedInUser != null) {
                         if (isOffline()) {
-                            Toast.makeText(this, "you are offline, to delete a user please connect to the internet first", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "you are offline, to delete your user please connect to the internet first", Toast.LENGTH_SHORT).show();
                             return true;
                         }
                         userRepository.delete(loggedInUser.getUsername(), loggedInUser.getToken());
-                        userRepository.logoutUser();
                         setLoggedOutState();
                     }
                     return true;
@@ -179,8 +177,13 @@ public class MainActivity extends AppCompatActivity {
     private void setLoggedOutState() {
         binding.youBtnText.setText("Log In");
         userRepository.logoutUser();
+        MyApplication.setCurrentUser(null);
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         youBtn.setOnClickListener(v -> {
+            if (isOffline()) {
+                Toast.makeText(this, "you are offline, for log in please connect to the internet first", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent i = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(i);
         });
