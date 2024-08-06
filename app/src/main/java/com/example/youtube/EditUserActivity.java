@@ -1,10 +1,13 @@
 package com.example.youtube;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -149,6 +152,10 @@ public class EditUserActivity extends AppCompatActivity {
     }
 
     private void saveUser() {
+        if (isOffline()) {
+            Toast.makeText(this, "you are offline, to edit a user please connect to the internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String displayName = editTextDisplayName.getText().toString();
         String password = editTextPassword.getText().toString();
 
@@ -167,5 +174,10 @@ public class EditUserActivity extends AppCompatActivity {
 
         Toast.makeText(this, "User updated successfully!", Toast.LENGTH_SHORT).show();
         finish();
+    }
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
     }
 }

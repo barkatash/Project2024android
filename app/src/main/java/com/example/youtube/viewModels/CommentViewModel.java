@@ -1,5 +1,8 @@
 package com.example.youtube.viewModels;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -8,13 +11,14 @@ import com.example.youtube.repositories.CommentRepository;
 
 import java.util.List;
 
-public class CommentViewModel extends ViewModel {
+public class CommentViewModel extends AndroidViewModel {
 
     private LiveData<List<Comment>> comments;
     private CommentRepository commentRepository;
 
-    public CommentViewModel() {
-        this.commentRepository = CommentRepository.getInstance(null);
+    public CommentViewModel(Application application) {
+        super(application);
+        this.commentRepository = CommentRepository.getInstance(application);
         this.comments = this.commentRepository.getAllComments();
     }
 

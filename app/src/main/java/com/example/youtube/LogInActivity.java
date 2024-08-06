@@ -1,7 +1,10 @@
 package com.example.youtube;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -65,6 +68,10 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     private void handleLogIn() {
+        if (isOffline()) {
+            Toast.makeText(this, "you are offline, to delete a video please connect to the internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String username = usernameInput.getText().toString();
         String password = passwordInput.getText().toString();
 
@@ -84,5 +91,10 @@ public class LogInActivity extends AppCompatActivity {
                 finish();
             }
         }, 0);
+    }
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
     }
 }

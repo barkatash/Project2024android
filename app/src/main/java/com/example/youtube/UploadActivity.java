@@ -1,9 +1,12 @@
 package com.example.youtube;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
 import android.media.MediaMetadataRetriever;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,10 +43,11 @@ public class UploadActivity extends AppCompatActivity {
     private final Video newVideo = new Video();
     User loggedInUser;
     String duration = "2:00";
-    VideoRepository videoRepository = new VideoRepository();
+    VideoRepository videoRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        videoRepository = new VideoRepository(getApplication());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
@@ -110,6 +114,10 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     private void uploadVideo() {
+        if (isOffline()) {
+            Toast.makeText(this, "you are offline, to upload a video please connect to the internet first", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (newVideo != null) {
             newVideo.setUploader(loggedInUser.getUsername());
             newVideo.setTitle(newContent.getText().toString().trim());
@@ -183,5 +191,9 @@ public class UploadActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
+    }
 }

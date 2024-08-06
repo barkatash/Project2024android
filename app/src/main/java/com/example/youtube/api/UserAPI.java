@@ -8,7 +8,6 @@ import com.example.youtube.Like;
 import com.example.youtube.MyApplication;
 import com.example.youtube.R;
 import com.example.youtube.UserLogin;
-import com.example.youtube.dao.UserDao;
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
 import com.google.gson.Gson;
@@ -27,13 +26,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserAPI {
     private MutableLiveData<List<User>> userListData;
-    private UserDao dao;
     Retrofit retrofit;
     userWebServiceAPI webServiceAPI;
 
-    public UserAPI(MutableLiveData<List<User>> userListData, UserDao dao) {
+    public UserAPI(MutableLiveData<List<User>> userListData) {
         this.userListData = userListData;
-        this.dao = dao;
         retrofit = new Retrofit.Builder()
                 .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
                 .addConverterFactory(GsonConverterFactory.create()).build();

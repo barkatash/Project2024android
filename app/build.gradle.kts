@@ -45,8 +45,8 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     // Room components
-    implementation("androidx.room:room-runtime:2.4.0")
-    annotationProcessor("androidx.room:room-compiler:2.4.0")
+    implementation("androidx.room:room-runtime:2.4.2")
+    annotationProcessor("androidx.room:room-compiler:2.4.2")
 
     // SwipeRefreshLayout dependency
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")

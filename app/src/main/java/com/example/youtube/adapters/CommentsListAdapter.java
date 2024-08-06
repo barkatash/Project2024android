@@ -1,6 +1,9 @@
 package com.example.youtube.adapters;
 
+import android.app.Application;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +26,9 @@ import com.example.youtube.MyApplication;
 import com.example.youtube.R;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.User;
+import com.example.youtube.repositories.CommentRepository;
 import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
 
@@ -33,6 +38,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     private List<Comment> comments;
     private CommentInteractionListener listener;
     private final UserRepository userRepository;
+    private CommentRepository commentRepository;
     private User loggedInUser = MyApplication.getCurrentUser();
     public interface CommentInteractionListener {
         void onDeleteComment(Comment comment);
@@ -43,6 +49,9 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
         this.context = context;
         this.listener = listener;
         this.userRepository = UserRepository.getInstance(context.getApplicationContext());
+        if (context.getApplicationContext() instanceof Application) {
+            this.commentRepository = new CommentRepository((Application) context.getApplicationContext());
+        }
     }
 
     public class CommentViewHolder extends RecyclerView.ViewHolder {
@@ -100,6 +109,10 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
 
 
             holder.btnEdit.setOnClickListener(v -> {
+                if (isOffline()) {
+                    Toast.makeText(context, "you are offline, to edit a comment please connect to the internet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (loggedInUser == null || !loggedInUser.getUsername().equals(current.getUsername())) {
                     Toast.makeText(context, "You need to be logged in and the owner of this comment to edit it.", Toast.LENGTH_SHORT).show();
                     return;
@@ -137,6 +150,10 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
 
             holder.btnDelete.setOnClickListener(v -> {
+                if (isOffline()) {
+                    Toast.makeText(context, "you are offline, to delete a comment please connect to the internet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (userRepository.getLoggedInUser() == null) {
                     Toast.makeText(context, "You need to be logged in to delete a comment", Toast.LENGTH_SHORT).show();
                     return;
@@ -147,7 +164,11 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
         }
     }
-
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
+    }
     @Override
     public int getItemCount() {
         return comments != null ? comments.size() : 0;

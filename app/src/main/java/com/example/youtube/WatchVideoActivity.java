@@ -1,6 +1,9 @@
 package com.example.youtube;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,7 +18,6 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,9 +39,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
 
     private VideoView videoView;
     private CommentsListAdapter commentAdapter;
-    private MutableLiveData<List<Comment>> comments;
-    VideoRepository videoRepository = new VideoRepository();
-    CommentRepository commentRepository = CommentRepository.getInstance(null);
+    private VideoRepository videoRepository;
+    private CommentRepository commentRepository;
     private User loggedInUser = MyApplication.getCurrentUser();
     private int likeCount = 0;
     private boolean isLiked = false;
@@ -49,12 +50,12 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private ImageButton btnUnlike;
     TextView tvLikeCount;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch_video);
-
+        this.videoRepository = new VideoRepository(getApplication());
+        this.commentRepository = new CommentRepository(getApplication());
         videoView = findViewById(R.id.videoView);
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
@@ -81,7 +82,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (isOffline()) {
+                    Toast.makeText(WatchVideoActivity.this, "you are offline, to add a comment please connect to the internet first", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (loggedInUser == null) {
                     Toast.makeText(WatchVideoActivity.this, "You need to be logged in to leave a comment.", Toast.LENGTH_SHORT).show();
                     return;
@@ -98,6 +102,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         });
 
         btnLike.setOnClickListener(v -> {
+            if (isOffline()) {
+                Toast.makeText(this, "you are offline, to like a video please connect to the internet first", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (loggedInUser == null) {
                 Toast.makeText(WatchVideoActivity.this, "You need to be logged in to like a video", Toast.LENGTH_SHORT).show();
                 return;
@@ -145,6 +153,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         });
 
         btnUnlike.setOnClickListener(v -> {
+            if (isOffline()) {
+                Toast.makeText(this, "you are offline, to unlike a video please connect to the internet first", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (loggedInUser == null) {
                 Toast.makeText(WatchVideoActivity.this, "You need to be logged in to unlike a video", Toast.LENGTH_SHORT).show();
                 return;
@@ -245,14 +257,21 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         });
     }
 
-
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
+    }
     private void initializeVideoPlayer(Video video) {
         if (video != null) {
-            String videoFile = video.getVideo();
-            if (videoFile != null && !videoFile.isEmpty()) {
-                videoView.setVideoPath("http://10.0.2.2:8080/" + videoFile);
+            String videoFile;
+            if (isOffline() && video.getVideo() != null) {
+                Toast.makeText(this, "you are offline, to watch the video please connect to the internet first", Toast.LENGTH_SHORT).show();
+            } else {
+                videoFile = "http://10.0.2.2:8080/" + video.getVideo();
+                videoView.setVideoPath(videoFile);
+                videoView.start();
             }
-            videoView.start();
         }
     }
 

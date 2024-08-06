@@ -1,5 +1,8 @@
 package com.example.youtube.viewModels;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -8,14 +11,15 @@ import com.example.youtube.entities.Video;
 
 import java.util.List;
 
-public class VideoViewModel extends ViewModel {
+public class VideoViewModel extends AndroidViewModel {
 
     private LiveData<List<Video>> videos;
     private LiveData<Video> video;
     private VideoRepository videoRepository;
 
-    public VideoViewModel() {
-        videoRepository = new VideoRepository();
+    public VideoViewModel(Application application) {
+        super(application);
+        videoRepository = new VideoRepository(application);
         videos = videoRepository.getAllVideos();
     }
 

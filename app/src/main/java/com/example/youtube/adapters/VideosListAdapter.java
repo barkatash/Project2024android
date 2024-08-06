@@ -1,7 +1,11 @@
 package com.example.youtube.adapters;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,7 +25,6 @@ import com.example.youtube.R;
 import com.example.youtube.WatchVideoActivity;
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
-import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
@@ -31,12 +35,20 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
     private List<Video> videos;
     private Context context;
     private User loggedInUser = MyApplication.getCurrentUser();
-
-    VideoRepository videoRepository = new VideoRepository();
+    private VideoRepository videoRepository;
 
     public VideosListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
+        if (context.getApplicationContext() instanceof Application) {
+            this.videoRepository = new VideoRepository((Application) context.getApplicationContext());
+        }
+        // Observe the local database for changes
+        videoRepository.getAllVideos().observe((LifecycleOwner) context, videos -> {
+            this.videos = videos;
+            notifyDataSetChanged();
+        });
+
     }
 
     @NonNull
@@ -63,6 +75,7 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.ivPic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d("VideosListAdapter", "Image clicked for video ID: " + current.getId());
                     Intent intent = new Intent(context, WatchVideoActivity.class);
                     intent.putExtra("videoId", current.getId());
                     context.startActivity(intent);
@@ -72,12 +85,16 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (UserRepository.getInstance(context).isUserLoggedIn()) {
+                    if (isOffline()) {
+                        Toast.makeText(context, "you are offline, to edit a video please connect to the internet", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (loggedInUser != null && loggedInUser.getUsername().equals(current.getUploader())) {
                         Intent intent = new Intent(context, EditVideoActivity.class);
                         intent.putExtra("videoId", current.getId());
                         context.startActivity(intent);
                     } else {
-                        Toast.makeText(context ,"You need to be logged in to edit a video.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context ,"You need to be logged in and the owner of this video in order to edit it.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -85,6 +102,10 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (isOffline()) {
+                        Toast.makeText(context, "you are offline, to delete a video please connect to the internet", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (loggedInUser != null && loggedInUser.getUsername().equals(current.getUploader())) {
                         videoRepository.deleteVideo(loggedInUser.getToken(), loggedInUser.getUsername(), current.getId());
                         videos.remove(current);
@@ -128,5 +149,10 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             btnDelete = itemView.findViewById(R.id.btnDeleteVideo);
             btnEdit = itemView.findViewById(R.id.btnEditVideo);
         }
+    }
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
     }
 }
