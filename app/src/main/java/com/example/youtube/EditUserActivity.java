@@ -159,7 +159,6 @@ public class EditUserActivity extends AppCompatActivity {
         String displayName = editTextDisplayName.getText().toString();
         String password = editTextPassword.getText().toString();
 
-
         if (!password.isEmpty() && (password.length() < 8 || password.length() > 20)) {
             Toast.makeText(this, "Password must be 8-20 characters long", Toast.LENGTH_SHORT).show();
             return;
@@ -171,7 +170,6 @@ public class EditUserActivity extends AppCompatActivity {
         newUser.setPassword(password);
         newUser.setDisplayName(displayName);
         UserRepository.getInstance(this).editUser(newUser, imageFile);
-
         Toast.makeText(this, "User updated successfully!", Toast.LENGTH_SHORT).show();
         finish();
     }

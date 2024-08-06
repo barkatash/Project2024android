@@ -87,7 +87,6 @@ public class UserAPI {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
                     Log.d("UserAPI", "User added successfully.");
-                    // Optionally, refresh the user list
                     getAllUsers(userListData);
                 } else {
                     Log.e("UserAPI", "Failed to add user: " + response.message());
@@ -136,7 +135,6 @@ public class UserAPI {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d("UserAPI", "User updated successfully.");
-                    Log.d("UserAPI", "User updated successfully.");
                     getAllUsers(userListData);
                 } else {
                     Log.e("UserAPI", "Failed to update user: " + response.message());
@@ -169,30 +167,6 @@ public class UserAPI {
                 Log.e("UserAPI", "Error updating user: " + t.getMessage());
             }
         });
-    }
-    public MutableLiveData<User> getUserById(String userId) {
-        MutableLiveData<User> userLiveData = new MutableLiveData<>();
-
-        Call<User> call = webServiceAPI.getUserById(userId);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    userLiveData.setValue(response.body());
-                } else {
-                    Log.e("UserAPI", "Failed to fetch user: " + response.message());
-                    userLiveData.setValue(null);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e("UserAPI", "Error fetching user: " + t.getMessage());
-                userLiveData.setValue(null);
-            }
-        });
-
-        return userLiveData;
     }
     public void getUserByUsername(String username, MutableLiveData<User> userLiveData) {
         Call<User> call = webServiceAPI.getUserById(username);

@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -291,7 +290,6 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         CommentViewModel viewModel = new ViewModelProvider(this).get(CommentViewModel.class);
         viewModel.loadComments(this.getVideoId()).observe(this, comments -> {
             commentAdapter.setComments(comments);
-            Log.d("WatchVideoActivity", "Comments: " + comments);
         });
         lstComments.setAdapter(commentAdapter);
         lstComments.setLayoutManager(new LinearLayoutManager(this));

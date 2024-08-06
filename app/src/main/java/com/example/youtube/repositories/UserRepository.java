@@ -51,10 +51,6 @@ public class UserRepository {
         return userListData;
     }
 
-    public LiveData<User> getUserById(String userId) {
-        return apiService.getUserById(userId);
-    }
-
     public User getUserByUsername(String username) {
         List<User> userList = userListData.getValue();
         if (userList != null) {

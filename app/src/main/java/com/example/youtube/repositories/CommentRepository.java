@@ -1,7 +1,6 @@
 package com.example.youtube.repositories;
 
 import android.app.Application;
-import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -11,7 +10,6 @@ import com.example.youtube.AppDB;
 import com.example.youtube.api.CommentAPI;
 import com.example.youtube.dao.CommentDao;
 import com.example.youtube.entities.Comment;
-import com.example.youtube.entities.Video;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -71,7 +69,7 @@ public class CommentRepository {
 
     public LiveData<List<Comment>> fetchCommentsForVideo(String videoId) {
         resetComments();
-        return dao.getCommentsForVideo(videoId);
+        return apiService.getCommentsForVideo(videoId);
     }
 
     public void addComment(String token, Comment comment) {
