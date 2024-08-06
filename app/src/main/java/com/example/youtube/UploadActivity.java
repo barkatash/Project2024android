@@ -44,6 +44,8 @@ public class UploadActivity extends AppCompatActivity {
     User loggedInUser;
     String duration = "2:00";
     VideoRepository videoRepository;
+    private boolean videoFileUpload = false;
+    private boolean imageFileUpload = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,7 @@ public class UploadActivity extends AppCompatActivity {
                 try {
                     Uri imageUri = data.getData();
                     saveImageToInternalStorage(imageUri);
+                    imageFileUpload = true;
                     Bitmap bitmap;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                         ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), data.getData());
@@ -107,6 +110,7 @@ public class UploadActivity extends AppCompatActivity {
             if (data != null && data.getData() != null) {
                 Uri videoUri = data.getData();
                 saveVideoToInternalStorage(videoUri);
+                videoFileUpload = true;
                 videoUpload.setVideoURI(videoUri);
                 videoUpload.start();
             }
@@ -118,19 +122,18 @@ public class UploadActivity extends AppCompatActivity {
             Toast.makeText(this, "you are offline, to upload a video please connect to the internet first", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (newVideo != null) {
+        File videoFile = new File(getFilesDir(), "video_" + newVideo.getId() + ".mp4");
+        File imageFile = new File(getFilesDir(), "image_" + newVideo.getId() + ".jpg");
+        if (videoFileUpload && imageFileUpload) {
             newVideo.setUploader(loggedInUser.getUsername());
             newVideo.setTitle(newContent.getText().toString().trim());
             newVideo.setDuration(duration);
             newVideo.setVisits(0);
-            File videoFile = new File(getFilesDir(), "video_" + newVideo.getId() + ".mp4");
-            File imageFile = new File(getFilesDir(), "image_" + newVideo.getId() + ".jpg");
-
             videoRepository.addVideo(loggedInUser.getToken(), newVideo, imageFile, videoFile);
             Toast.makeText(this, "Video Uploaded Successfully", Toast.LENGTH_SHORT).show();
             goToMainActivity(null);
         } else {
-            Toast.makeText(this, "Please select a video first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please select a video and image first", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -110,6 +110,7 @@ public class EditVideoActivity extends AppCompatActivity {
                 File videoFile = new File(getFilesDir(), "video_" + currentVideo.getId() + ".mp4");
                 File imageFile = new File(getFilesDir(), "image_" + currentVideo.getId() + ".jpg");
                 videoRepository.editVideo(loggedInUser.getToken(), currentVideo, imageFile, videoFile);
+                Toast.makeText(MyApplication.context, "Video Edited Successfully", Toast.LENGTH_SHORT).show();
                 videoRepository.resetVideos();
                 finish();
             }
