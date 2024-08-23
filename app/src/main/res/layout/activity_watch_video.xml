@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- VideoView with MediaController -->
+
     <FrameLayout
         android:id="@+id/videoLayout"
         android:layout_width="0dp"
@@ -32,7 +32,6 @@
             />
     </FrameLayout>
 
-    <!-- Other Views Below VideoView -->
     <LinearLayout
         android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
@@ -272,7 +271,6 @@
                 />
         </LinearLayout>
 
-        <!-- RecyclerView for Comments -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
@@ -281,6 +279,25 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/lstComments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/recommended_videos_for_you"
+            android:textStyle="bold"
+            android:textSize="20dp"/>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/secondRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lstRecommendedVideos"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

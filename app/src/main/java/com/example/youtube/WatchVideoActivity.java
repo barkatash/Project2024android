@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.youtube.adapters.CommentsListAdapter;
+import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
@@ -30,6 +31,8 @@ import com.example.youtube.repositories.CommentRepository;
 import com.example.youtube.repositories.UserRepository;
 import com.example.youtube.repositories.VideoRepository;
 import com.example.youtube.viewModels.CommentViewModel;
+import com.example.youtube.viewModels.VideoViewModel;
+import com.example.youtube.viewModels.VideoViewModelFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +51,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private ImageButton btnLike;
     private ImageButton btnUnlike;
     TextView tvLikeCount;
+    private VideoViewModel recommendedVideoViewModel;
+    private VideosListAdapter recommendedVideoAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +69,17 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         btnLike = findViewById(R.id.btnLike);
         btnUnlike = findViewById(R.id.btnUnlike);
         tvLikeCount = findViewById(R.id.tvLikeCount);
-
         ImageButton btnAddComment = findViewById(R.id.btnAddComment);
         EditText etComment = findViewById(R.id.etComment);
+        RecyclerView lstRecommendedVideos = findViewById(R.id.lstRecommendedVideos);
+        recommendedVideoAdapter = new VideosListAdapter(this);
+        VideoViewModelFactory recommendedVideosfactory = new VideoViewModelFactory(getApplication());
+        recommendedVideoViewModel = new ViewModelProvider(this, recommendedVideosfactory).get(VideoViewModel.class);
+        recommendedVideoViewModel.getRecommendedVideos().observe(this, videos -> recommendedVideoAdapter.setRecommendedvideos(videos));
+        lstRecommendedVideos.setAdapter(recommendedVideoAdapter);
+        lstRecommendedVideos.setLayoutManager(new LinearLayoutManager(this));
+
+
         initializeViews();
         initializeCommentsList();
 

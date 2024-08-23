@@ -24,12 +24,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class VideoAPI {
 
     private MutableLiveData<List<Video>> videoListData;
+    private MutableLiveData<List<Video>> recommenedVideoListData;
     private VideoDao dao;
     Retrofit retrofit;
     videoWebServiceAPI webServiceAPI;
 
-    public VideoAPI(MutableLiveData<List<Video>> videoListData, VideoDao dao) {
+    public VideoAPI(MutableLiveData<List<Video>> videoListData, MutableLiveData<List<Video>> recommenedVideoListData, VideoDao dao) {
         this.videoListData = videoListData;
+        this.recommenedVideoListData = recommenedVideoListData;
         this.dao = dao;
         retrofit = new Retrofit.Builder()
                 .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
@@ -46,6 +48,20 @@ public class VideoAPI {
                 new Thread(() -> {
                     dao.insert(response.body());
                 }).start();
+            }
+            @Override
+            public void onFailure (Call<List<Video>> call, Throwable t) {
+                Log.e("error", t.getMessage());
+            }
+        });
+    }
+
+    public void getRecommendedVideos(MutableLiveData<List<Video>> videos, String username) {
+        Call<List<Video>> call = webServiceAPI.getRecommendedVideos(username);
+        call.enqueue(new Callback<List<Video>>() {
+            @Override
+            public void onResponse(Call<List<Video>> call, Response<List<Video>> response) {
+                videos.postValue(response.body());
             }
             @Override
             public void onFailure (Call<List<Video>> call, Throwable t) {

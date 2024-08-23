@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
 import com.example.youtube.AppDB;
+import com.example.youtube.MyApplication;
 import com.example.youtube.api.VideoAPI;
 import com.example.youtube.dao.VideoDao;
 import com.example.youtube.entities.Video;
@@ -18,15 +19,18 @@ import java.util.List;
 public class VideoRepository {
     private VideoDao dao;
     private VideoListData videoListData;
+    private VideoListData recommendedVideoListData;
     private VideoAPI api;
     private AppDB appDB;
+
     public VideoRepository(Application application) {
         appDB = Room.databaseBuilder(application, AppDB.class, "database")
                 .allowMainThreadQueries()
                 .build();
         dao = appDB.videoDao();
         videoListData = new VideoListData();
-        api = new VideoAPI(videoListData, dao);
+        recommendedVideoListData = new VideoListData();
+        api = new VideoAPI(videoListData, recommendedVideoListData, dao);
         resetVideos();
     }
 
@@ -51,14 +55,19 @@ public class VideoRepository {
     public LiveData<List<Video>> getAllVideos() {
         return videoListData;
     }
+    public LiveData<List<Video>> getRecommendedVideos() {
+        return recommendedVideoListData;
+    }
 
     public LiveData<Video> getVideoById(String videoId) {
         resetVideos();
         return dao.get(videoId);
-        //return api.getVideoById(videoId);
     }
     public void resetVideos() {
         api.getAllVideos(videoListData);
+        if (MyApplication.getCurrentUser() != null) {
+            api.getRecommendedVideos(recommendedVideoListData, MyApplication.getCurrentUser().getUsername());
+        }
         loadVideosFromLocal();
     }
     public void deleteVideo(String token, String username, String videoId) {

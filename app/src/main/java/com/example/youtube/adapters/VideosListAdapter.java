@@ -33,9 +33,18 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
 
     private final LayoutInflater mInflater;
     private List<Video> videos;
+    private List<Video> recommendedvideos;
     private Context context;
     private User loggedInUser = MyApplication.getCurrentUser();
     private VideoRepository videoRepository;
+
+    public List<Video> getRecommendedvideos() {
+        return recommendedvideos;
+    }
+
+    public void setRecommendedvideos(List<Video> recommendedvideos) {
+        this.recommendedvideos = recommendedvideos;
+    }
 
     public VideosListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
