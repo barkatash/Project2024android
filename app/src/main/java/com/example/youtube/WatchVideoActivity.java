@@ -60,6 +60,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     TextView tvLikeCount;
     private VideoViewModel recommendedVideoViewModel;
     private VideosListAdapter recommendedVideoAdapter;
+    private TextView tvRecommendedVideos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +71,8 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         videoView = findViewById(R.id.videoView);
         MediaController mediaController = new MediaController(this);
         videoView.setMediaController(mediaController);
-
         ImageButton btnGoBack = findViewById(R.id.btnGoBack);
+        tvRecommendedVideos = findViewById(R.id.tvRecommendedVideos);
         btnGoBack.setOnClickListener(v -> finish());
         btnLike = findViewById(R.id.btnLike);
         btnUnlike = findViewById(R.id.btnUnlike);
@@ -80,11 +81,12 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         EditText etComment = findViewById(R.id.etComment);
         RecyclerView lstRecommendedVideos = findViewById(R.id.lstRecommendedVideos);
         recommendedVideoAdapter = new VideosListAdapter(this);
-        VideoViewModelFactory recommendedVideosfactory = new VideoViewModelFactory(getApplication());
-        recommendedVideoViewModel = new ViewModelProvider(this, recommendedVideosfactory).get(VideoViewModel.class);
+        VideoViewModelFactory recommendedVideosFactory = new VideoViewModelFactory(getApplication());
+        recommendedVideoViewModel = new ViewModelProvider(this, recommendedVideosFactory).get(VideoViewModel.class);
         recommendedVideoViewModel.getRecommendedVideos().observe(this, videos -> recommendedVideoAdapter.setRecommendedvideos(videos));
         lstRecommendedVideos.setAdapter(recommendedVideoAdapter);
-        lstRecommendedVideos.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        lstRecommendedVideos.setLayoutManager(horizontalLayoutManager);
 
         refreshLayout = findViewById(R.id.refreshLayout);
         secondRefreshLayout = findViewById(R.id.secondRefreshLayout);
@@ -351,6 +353,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         refreshLayout.setVisibility(View.VISIBLE);
         secondRefreshLayout.setVisibility(View.GONE);
         btnToggleView.setText("back");
+        tvRecommendedVideos.setVisibility(View.GONE);
         isCommentsVisible = true;
     }
 
@@ -358,6 +361,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private void showRecommendedVideos() {
         refreshLayout.setVisibility(View.GONE);
         secondRefreshLayout.setVisibility(View.VISIBLE);
+        tvRecommendedVideos.setVisibility(View.VISIBLE);
         btnToggleView.setText("Comments");
         isCommentsVisible = false;
     }

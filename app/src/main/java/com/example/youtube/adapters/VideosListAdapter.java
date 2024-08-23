@@ -52,7 +52,6 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
         if (context.getApplicationContext() instanceof Application) {
             this.videoRepository = new VideoRepository((Application) context.getApplicationContext());
         }
-        // Observe the local database for changes
         videoRepository.getAllVideos().observe((LifecycleOwner) context, videos -> {
             this.videos = videos;
             notifyDataSetChanged();
@@ -63,7 +62,8 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
     @NonNull
     @Override
     public VideoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.video_layout, parent, false);
+        View itemView;
+        itemView = mInflater.inflate(R.layout.video_layout, parent, false);
         return new VideoViewHolder(itemView);
     }
 
