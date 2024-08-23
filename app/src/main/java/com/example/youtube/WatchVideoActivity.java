@@ -1,5 +1,6 @@
 package com.example.youtube;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -7,6 +8,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.MediaController;
@@ -21,6 +23,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.youtube.adapters.CommentsListAdapter;
 import com.example.youtube.adapters.VideosListAdapter;
@@ -44,6 +47,10 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private VideoRepository videoRepository;
     private CommentRepository commentRepository;
     private User loggedInUser = MyApplication.getCurrentUser();
+    private boolean isCommentsVisible = false;
+    private SwipeRefreshLayout refreshLayout;
+    private SwipeRefreshLayout secondRefreshLayout;
+    private Button btnToggleView;
     private int likeCount = 0;
     private boolean isLiked = false;
     private boolean isUnliked = false;
@@ -79,6 +86,17 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         lstRecommendedVideos.setAdapter(recommendedVideoAdapter);
         lstRecommendedVideos.setLayoutManager(new LinearLayoutManager(this));
 
+        refreshLayout = findViewById(R.id.refreshLayout);
+        secondRefreshLayout = findViewById(R.id.secondRefreshLayout);
+        btnToggleView = findViewById(R.id.btnToggleView);
+        showRecommendedVideos();
+        btnToggleView.setOnClickListener(v -> {
+            if (isCommentsVisible) {
+                showRecommendedVideos();
+            } else {
+                showComments();
+            }
+        });
 
         initializeViews();
         initializeCommentsList();
@@ -328,4 +346,19 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         Toast.makeText(this, "You need to be logged in and the owner of this comment to delete it.", Toast.LENGTH_SHORT).show();
     }
 
+    @SuppressLint("SetTextI18n")
+    private void showComments() {
+        refreshLayout.setVisibility(View.VISIBLE);
+        secondRefreshLayout.setVisibility(View.GONE);
+        btnToggleView.setText("back");
+        isCommentsVisible = true;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void showRecommendedVideos() {
+        refreshLayout.setVisibility(View.GONE);
+        secondRefreshLayout.setVisibility(View.VISIBLE);
+        btnToggleView.setText("Comments");
+        isCommentsVisible = false;
+    }
 }
