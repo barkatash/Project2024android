@@ -1,5 +1,6 @@
 package com.example.youtube.adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -57,14 +58,14 @@ public class RecommendedVideoAdapter extends RecyclerView.Adapter<RecommendedVid
         return new VideoViewHolder(itemView);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
         if (recommendedVideos != null) {
             final Video current = recommendedVideos.get(position);
             holder.tvTitle.setText(current.getTitle());
             holder.tvDuration.setText(current.getDuration());
-            holder.tvViews.setText(String.valueOf(current.getVisits()));
-            holder.tvUploadDate.setText(current.getUploadDate());
+            holder.tvViews.setText(String.valueOf(current.getVisits()) + " Views");
 
             String imageUrl = "http://10.0.2.2:8080/" + current.getImage();
             Glide.with(holder.ivPic.getContext())
@@ -93,7 +94,6 @@ public class RecommendedVideoAdapter extends RecyclerView.Adapter<RecommendedVid
         private final ImageView ivPic;
         private final TextView tvDuration;
         private final TextView tvViews;
-        private final TextView tvUploadDate;
 
         public VideoViewHolder(View itemView) {
             super(itemView);
@@ -101,7 +101,6 @@ public class RecommendedVideoAdapter extends RecyclerView.Adapter<RecommendedVid
             ivPic = itemView.findViewById(R.id.imageViewThumbnail);
             tvDuration = itemView.findViewById(R.id.textViewDurationVideo);
             tvViews = itemView.findViewById(R.id.textViewViewsVideo);
-            tvUploadDate = itemView.findViewById(R.id.textViewUploadDateVideo);
         }
     }
 }
