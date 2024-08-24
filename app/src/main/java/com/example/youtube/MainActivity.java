@@ -60,11 +60,9 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView lstVideos = binding.lstVideos;
         videoAdapter = new VideosListAdapter(this);
-
         VideoViewModelFactory factory = new VideoViewModelFactory(getApplication());
         videoViewModel = new ViewModelProvider(this, factory).get(VideoViewModel.class);
         videoViewModel.getVideos().observe(this, videos -> videoAdapter.setVideos(videos));
-
         lstVideos.setAdapter(videoAdapter);
         lstVideos.setLayoutManager(new LinearLayoutManager(this));
 

@@ -81,4 +81,6 @@
     <string name="name">Name</string>
     <string name="new_password">New Password</string>
     <string name="description">Description</string>
+    <string name="recommended_videos_for_you">Recommended Videos For You</string>
+    <string name="more_videos">More Videos</string>
 </resources>

@@ -8,6 +8,7 @@ import com.example.youtube.MyApplication;
 import com.example.youtube.R;
 import com.example.youtube.dao.VideoDao;
 import com.example.youtube.entities.Video;
+import com.example.youtube.RecommendationResponse;
 
 import java.io.File;
 import java.util.List;
@@ -24,12 +25,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class VideoAPI {
 
     private MutableLiveData<List<Video>> videoListData;
+    private MutableLiveData<List<Video>> recommenedVideoListData;
     private VideoDao dao;
     Retrofit retrofit;
     videoWebServiceAPI webServiceAPI;
 
-    public VideoAPI(MutableLiveData<List<Video>> videoListData, VideoDao dao) {
+    public VideoAPI(MutableLiveData<List<Video>> videoListData, MutableLiveData<List<Video>> recommenedVideoListData, VideoDao dao) {
         this.videoListData = videoListData;
+        this.recommenedVideoListData = recommenedVideoListData;
         this.dao = dao;
         retrofit = new Retrofit.Builder()
                 .baseUrl(MyApplication.context.getString(R.string.BaseUrl))
@@ -49,6 +52,25 @@ public class VideoAPI {
             }
             @Override
             public void onFailure (Call<List<Video>> call, Throwable t) {
+                Log.e("error", t.getMessage());
+            }
+        });
+    }
+
+    public void getRecommendedVideos(MutableLiveData<List<Video>> videos, String username) {
+        Call<RecommendationResponse> call = webServiceAPI.getRecommendedVideos(username);
+        call.enqueue(new Callback<RecommendationResponse>() {
+            @Override
+            public void onResponse(Call<RecommendationResponse> call, Response<RecommendationResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    videos.postValue(response.body().getRecommendations());
+                } else {
+                    Log.e("response error", "Response was not successful or body was null");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RecommendationResponse> call, Throwable t) {
                 Log.e("error", t.getMessage());
             }
         });
