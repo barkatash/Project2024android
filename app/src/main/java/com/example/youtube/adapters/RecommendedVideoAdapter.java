@@ -62,7 +62,6 @@ public class RecommendedVideoAdapter extends RecyclerView.Adapter<RecommendedVid
         if (recommendedVideos != null) {
             final Video current = recommendedVideos.get(position);
             holder.tvAuthor.setText(current.getUploader());
-            holder.tvContent.setText(current.getTitle());
             holder.tvDuration.setText(current.getDuration());
             holder.tvViews.setText(String.valueOf(current.getVisits()));
             holder.tvUploadDate.setText(current.getUploadDate());
@@ -91,7 +90,6 @@ public class RecommendedVideoAdapter extends RecyclerView.Adapter<RecommendedVid
 
     public static class VideoViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvAuthor;
-        private final TextView tvContent;
         private final ImageView ivPic;
         private final TextView tvDuration;
         private final TextView tvViews;
@@ -100,7 +98,6 @@ public class RecommendedVideoAdapter extends RecyclerView.Adapter<RecommendedVid
         public VideoViewHolder(View itemView) {
             super(itemView);
             tvAuthor = itemView.findViewById(R.id.textViewTitleVideo);
-            tvContent = itemView.findViewById(R.id.tvContent);
             ivPic = itemView.findViewById(R.id.imageViewThumbnail);
             tvDuration = itemView.findViewById(R.id.textViewDurationVideo);
             tvViews = itemView.findViewById(R.id.textViewViewsVideo);

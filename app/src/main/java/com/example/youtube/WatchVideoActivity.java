@@ -26,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.youtube.adapters.CommentsListAdapter;
-import com.example.youtube.adapters.VideosListAdapter;
+import com.example.youtube.adapters.RecommendedVideoAdapter;
 import com.example.youtube.entities.Comment;
 import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
@@ -59,7 +59,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
     private ImageButton btnUnlike;
     TextView tvLikeCount;
     private VideoViewModel recommendedVideoViewModel;
-    private VideosListAdapter recommendedVideoAdapter;
+    private RecommendedVideoAdapter recommendedVideoAdapter;
     private TextView tvRecommendedVideos;
 
     @Override
@@ -80,7 +80,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         ImageButton btnAddComment = findViewById(R.id.btnAddComment);
         EditText etComment = findViewById(R.id.etComment);
         RecyclerView lstRecommendedVideos = findViewById(R.id.lstRecommendedVideos);
-        recommendedVideoAdapter = new VideosListAdapter(this);
+        recommendedVideoAdapter = new RecommendedVideoAdapter(this);
         VideoViewModelFactory recommendedVideosFactory = new VideoViewModelFactory(getApplication());
         recommendedVideoViewModel = new ViewModelProvider(this, recommendedVideosFactory).get(VideoViewModel.class);
         recommendedVideoViewModel.getRecommendedVideos().observe(this, videos -> recommendedVideoAdapter.setRecommendedvideos(videos));

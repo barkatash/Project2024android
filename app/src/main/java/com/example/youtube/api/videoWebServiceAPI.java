@@ -1,5 +1,6 @@
 package com.example.youtube.api;
 
+import com.example.youtube.RecommendationResponse;
 import com.example.youtube.entities.Video;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface videoWebServiceAPI {
     @GET("videos")
     Call<List<Video>> getVideos();
     @GET("users/{id}/recommendations")
-    Call<List<Video>> getRecommendedVideos(@Path("id") String id);
+    Call<RecommendationResponse> getRecommendedVideos(@Path("id") String id);
     @Multipart
     @POST("users/{id}/videos")
     Call<Void> addVideo(

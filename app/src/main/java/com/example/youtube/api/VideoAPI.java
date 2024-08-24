@@ -8,6 +8,7 @@ import com.example.youtube.MyApplication;
 import com.example.youtube.R;
 import com.example.youtube.dao.VideoDao;
 import com.example.youtube.entities.Video;
+import com.example.youtube.RecommendationResponse;
 
 import java.io.File;
 import java.util.List;
@@ -57,14 +58,19 @@ public class VideoAPI {
     }
 
     public void getRecommendedVideos(MutableLiveData<List<Video>> videos, String username) {
-        Call<List<Video>> call = webServiceAPI.getRecommendedVideos(username);
-        call.enqueue(new Callback<List<Video>>() {
+        Call<RecommendationResponse> call = webServiceAPI.getRecommendedVideos(username);
+        call.enqueue(new Callback<RecommendationResponse>() {
             @Override
-            public void onResponse(Call<List<Video>> call, Response<List<Video>> response) {
-                videos.postValue(response.body());
+            public void onResponse(Call<RecommendationResponse> call, Response<RecommendationResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    videos.postValue(response.body().getRecommendations());
+                } else {
+                    Log.e("response error", "Response was not successful or body was null");
+                }
             }
+
             @Override
-            public void onFailure (Call<List<Video>> call, Throwable t) {
+            public void onFailure(Call<RecommendationResponse> call, Throwable t) {
                 Log.e("error", t.getMessage());
             }
         });
