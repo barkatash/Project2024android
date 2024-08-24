@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="4dp">
+    android:padding="2dp">
 
     <ImageView
         android:id="@+id/imageViewThumbnail"
-        android:layout_width="150dp"
+        android:layout_width="170dp"
         android:layout_height="100dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
@@ -16,9 +16,9 @@
 
     <TextView
         android:id="@+id/textViewTitleVideo"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/imageViewThumbnail"
         app:layout_constraintStart_toStartOf="parent"
