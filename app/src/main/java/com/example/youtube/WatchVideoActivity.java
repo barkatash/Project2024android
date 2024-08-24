@@ -110,7 +110,7 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
             popupMenu.show();
         });
 
-
+        if(MyApplication.getCurrentUser() == null) tvRecommendedVideos.setVisibility(View.GONE);
         btnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -362,6 +362,9 @@ public class WatchVideoActivity extends AppCompatActivity implements CommentsLis
         refreshLayout.setVisibility(View.GONE);
         secondRefreshLayout.setVisibility(View.VISIBLE);
         tvRecommendedVideos.setVisibility(View.VISIBLE);
+        if(MyApplication.getCurrentUser() == null) {
+            tvRecommendedVideos.setVisibility(View.GONE);
+        }
         btnToggleView.setText("Comments");
         isCommentsVisible = false;
     }
