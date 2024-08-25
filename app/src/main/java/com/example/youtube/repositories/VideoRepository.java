@@ -68,6 +68,9 @@ public class VideoRepository {
         if (MyApplication.getCurrentUser() != null) {
             api.getRecommendedVideos(recommendedVideoListData, MyApplication.getCurrentUser().getUsername());
         }
+        else {
+            api.getRecommendedVideos(recommendedVideoListData, "");
+        }
         loadVideosFromLocal();
     }
     public void deleteVideo(String token, String username, String videoId) {
