@@ -1,6 +1,7 @@
 package com.example.youtube.api;
 
 import com.example.youtube.RecommendationResponse;
+import com.example.youtube.UsernameRequest;
 import com.example.youtube.entities.Video;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -21,8 +23,8 @@ public interface videoWebServiceAPI {
 
     @GET("videos")
     Call<List<Video>> getVideos();
-    @GET("users/{id}/recommendations")
-    Call<RecommendationResponse> getRecommendedVideos(@Path("id") String id);
+    @POST("videos/recommendations")
+    Call<RecommendationResponse> getRecommendedVideos(@Body UsernameRequest usernameRequest);
     @Multipart
     @POST("users/{id}/videos")
     Call<Void> addVideo(

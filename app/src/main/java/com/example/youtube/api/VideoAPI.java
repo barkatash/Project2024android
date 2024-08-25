@@ -6,9 +6,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.youtube.MyApplication;
 import com.example.youtube.R;
+import com.example.youtube.RecommendationResponse;
+import com.example.youtube.UsernameRequest;
 import com.example.youtube.dao.VideoDao;
 import com.example.youtube.entities.Video;
-import com.example.youtube.RecommendationResponse;
 
 import java.io.File;
 import java.util.List;
@@ -58,7 +59,8 @@ public class VideoAPI {
     }
 
     public void getRecommendedVideos(MutableLiveData<List<Video>> videos, String username) {
-        Call<RecommendationResponse> call = webServiceAPI.getRecommendedVideos(username);
+        UsernameRequest usernameRequest = new UsernameRequest(username);
+        Call<RecommendationResponse> call = webServiceAPI.getRecommendedVideos(usernameRequest);
         call.enqueue(new Callback<RecommendationResponse>() {
             @Override
             public void onResponse(Call<RecommendationResponse> call, Response<RecommendationResponse> response) {
