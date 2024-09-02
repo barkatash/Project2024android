@@ -8,7 +8,7 @@ part3 with server will be on the main-server branch.
 part4 with cpp server will be on the part4 branch (this one).
 project status part1: finish.
 project status part3: finish.
-project status part4: in progress.
+project status part4: finish.
 
 link to server github: https://github.com/barkatash/project2024-server
 
