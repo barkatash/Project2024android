@@ -21,7 +21,7 @@ import retrofit2.http.Path;
 
 public interface videoWebServiceAPI {
 
-    @GET("videos")
+    @GET("videos/all")
     Call<List<Video>> getVideos();
     @POST("videos/recommendations")
     Call<RecommendationResponse> getRecommendedVideos(@Body UsernameRequest usernameRequest);
