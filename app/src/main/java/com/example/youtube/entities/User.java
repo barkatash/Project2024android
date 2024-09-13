@@ -1,26 +1,36 @@
 package com.example.youtube.entities;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class User {
     private String username;
-    private String userDisplayName;
+    private String displayName;
     private String password;
+
+    @SerializedName("image")
     private String imageUrl = null;
-    private List<Integer> likedVideos = new ArrayList<>();
+
+    @SerializedName("videoIdListLiked")
+    private List<String> likedVideos = new ArrayList<>();
+    private List<String> videoIdListUnliked = new ArrayList<>();
+    private List <String> commentIdListLiked = new ArrayList<>();
+    private List <String> commentIdListUnliked = new ArrayList<>();
+    private String token;
 
     public User() {}
 
-    private List<Integer> unLikedVideos = new ArrayList<>();
+    private List<String> unLikedVideos = new ArrayList<>();
     private List<Integer> likedComments = new ArrayList<>();
     private List<Integer> unLikedComments = new ArrayList<>();
 
-    public List<Integer> getUnLikedVideos() {
+    public List<String> getUnLikedVideos() {
         return unLikedVideos;
     }
 
-    public void setUnLikedVideos(List<Integer> unLikedVideos) {
+    public void setUnLikedVideos(List<String> unLikedVideos) {
         this.unLikedVideos = unLikedVideos;
     }
 
@@ -40,23 +50,30 @@ public class User {
         this.unLikedComments = unLikedComments;
     }
 
-    public List<Integer> getLikedVideos() {
+    public List<String> getLikedVideos() {
         return likedVideos;
     }
 
-    public void setLikedVideos(List<Integer> likedVideos) {
+    public void setLikedVideos(List<String> likedVideos) {
         this.likedVideos = likedVideos;
     }
 
-    public User(String username, String userDisplayName, String password, String imageUrl) {
+    public String getToken() {
+        return token;
+    }
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public User(String username, String displayName, String password, String imageUrl) {
         this.username = username;
-        this.userDisplayName = userDisplayName;
+        this.displayName = displayName;
         this.password = password;
         this.imageUrl = imageUrl;
     }
-    public User(String username, String userDisplayName, String password) {
+    public User(String username, String displayName, String password) {
         this.username = username;
-        this.userDisplayName = userDisplayName;
+        this.displayName = displayName;
         this.password = password;
     }
 
@@ -65,8 +82,8 @@ public class User {
         return username;
     }
 
-    public String getUserDisplayName() {
-        return userDisplayName;
+    public String getDisplayName() {
+        return displayName;
     }
 
     public String getPassword() {
@@ -82,8 +99,8 @@ public class User {
         this.username = username;
     }
 
-    public void setUserDisplayName(String userDisplayName) {
-        this.userDisplayName = userDisplayName;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public void setPassword(String password) {

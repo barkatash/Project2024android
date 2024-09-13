@@ -9,22 +9,27 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/youtubeicon"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@drawable/youtubeicon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Youtube"
         tools:targetApi="31">
         <activity
+            android:name=".EditUserActivity"
+            android:exported="false" />
+        <activity
             android:name=".UploadActivity"
-            android:exported="true" />
-        <!-- Activities declaration -->
+            android:exported="true" /> <!-- Activities declaration -->
         <activity
             android:name=".SearchActivity"
             android:exported="false" />
@@ -41,6 +46,7 @@
         <activity android:name=".LogInActivity" />
         <activity android:name=".SignInActivity" />
         <activity android:name=".EditVideoActivity" />
+        <activity android:name=".UserPageActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

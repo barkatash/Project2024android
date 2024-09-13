@@ -1,14 +1,22 @@
 package com.example.youtube;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +26,9 @@ import com.example.youtube.adapters.UsersListAdapter;
 import com.example.youtube.adapters.VideosListAdapter;
 import com.example.youtube.databinding.ActivityMainBinding;
 import com.example.youtube.entities.User;
-import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.viewModels.VideoViewModel;
+import com.example.youtube.viewModels.VideoViewModelFactory;
 
 import java.util.List;
 
@@ -27,47 +37,42 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private VideosListAdapter videoAdapter;
     private UsersListAdapter userAdapter;
+    private VideoViewModel videoViewModel;
     private ImageView youBtn;
+    private UserRepository userRepository;
+    private User loggedInUser;
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ImageButton btnToggleDark = binding.modeBtn;
-        btnToggleDark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean isDarkMode = (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
-                if (isDarkMode) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                }
-                recreate();
-            }
-        });
+        userRepository = UserRepository.getInstance(this);
 
+        ImageButton btnToggleDark = binding.modeBtn;
+        btnToggleDark.setOnClickListener(view -> {
+            boolean isDarkMode = (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
+            AppCompatDelegate.setDefaultNightMode(isDarkMode ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+            recreate();
+        });
 
         RecyclerView lstVideos = binding.lstVideos;
         videoAdapter = new VideosListAdapter(this);
+        VideoViewModelFactory factory = new VideoViewModelFactory(getApplication());
+        videoViewModel = new ViewModelProvider(this, factory).get(VideoViewModel.class);
+        videoViewModel.getVideos().observe(this, videos -> videoAdapter.setVideos(videos));
         lstVideos.setAdapter(videoAdapter);
         lstVideos.setLayoutManager(new LinearLayoutManager(this));
-
-        VideoRepository videoRepository = VideoRepository.getInstance(getApplicationContext());
-        List<Video> videos = videoRepository.getVideos();
-        videoAdapter.setVideos(videos);
 
         RecyclerView lstUsers = binding.lstUsers;
         userAdapter = new UsersListAdapter(this);
         lstUsers.setAdapter(userAdapter);
         lstUsers.setLayoutManager(new LinearLayoutManager(this));
 
-        UsersManager usersManager = UsersManager.getInstance();
-        List<User> users = usersManager.getUsers();
-        userAdapter.setUsers(users);
-
+        LiveData<List<User>> users = userRepository.getAllUsers();
+        users.observe(this, userList -> userAdapter.setUsers(userList));
 
         ImageButton searchBtn = binding.searchBtn;
         searchBtn.setOnClickListener(v -> {
@@ -78,13 +83,16 @@ public class MainActivity extends AppCompatActivity {
         ImageButton homeBtn = binding.homeBtn;
         homeBtn.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, MainActivity.class);
-            videoRepository.resetVideos();
             startActivity(i);
         });
 
         ImageButton btnUploadVideo = binding.uploadBtn;
         btnUploadVideo.setOnClickListener(v -> {
-            if (!UsersManager.getInstance().isLoggedIn()) {
+            if (isOffline()) {
+                Toast.makeText(this, "you are offline, to upload a video please connect to the internet first", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (loggedInUser == null) {
                 Toast.makeText(MainActivity.this, "You need to be logged in to upload a video", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -92,57 +100,95 @@ public class MainActivity extends AppCompatActivity {
             startActivity(i);
         });
 
+        loggedInUser = MyApplication.getCurrentUser();
         youBtn = binding.youBtn;
-        updateProfileButtonState();
+        if (loggedInUser == null) {
+            setLoggedOutState();
+        } else {
+            setLoggedInState();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        VideoRepository videoRepository = VideoRepository.getInstance(getApplicationContext());
-        List<Video> videos = videoRepository.getVideos();
-        videoAdapter.setVideos(videos);
-
-        UsersManager usersManager = UsersManager.getInstance();
-        List<User> users = usersManager.getUsers();
-        userAdapter.setUsers(users);
-
-        updateProfileButtonState();
-    }
-
-    private void updateProfileButtonState() {
-        if (UsersManager.getInstance().isLoggedIn()) {
-            setLoggedInState();
-        } else {
-            setLoggedOutState();
-        }
+        RecyclerView lstVideos = binding.lstVideos;
+        videoViewModel.getVideos().observe(this, videos -> videoAdapter.setVideos(videos));
+        lstVideos.setAdapter(videoAdapter);
+        lstVideos.setLayoutManager(new LinearLayoutManager(this));
+        LiveData<List<User>> users = userRepository.getAllUsers();
+        users.observe(this, userList -> userAdapter.setUsers(userList));
     }
 
     private void setLoggedInState() {
-        binding.youBtnText.setText("Log Out");
-        User loggedInUser = UsersManager.getInstance().getLoggedInUser();
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         if (loggedInUser != null) {
-             if (loggedInUser.getImageUrl() != null && !loggedInUser.getImageUrl().isEmpty()) {
+            binding.youBtnText.setText("You");
+            if (loggedInUser.getImageUrl() != null && !loggedInUser.getImageUrl().isEmpty()) {
+                String imageUrl = "http://10.0.2.2:8080/" + loggedInUser.getImageUrl();
                 Glide.with(this)
-                        .load(UsersManager.getInstance().getLoggedInUser().getImageUrl())
+                        .load(imageUrl)
                         .transform(new CircleCrop())
                         .into(youBtn);
             }
         }
-        youBtn.setOnClickListener(v -> {
-            UsersManager.getInstance().logoutUser();
-            setLoggedOutState();
+        youBtn.setOnClickListener(this::showUserOptionsMenu);
+    }
+
+    private void showUserOptionsMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.user_options_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(item -> {
+            CharSequence title = item.getTitle();
+            if (title != null) {
+                if (title.equals("Log Out")) {
+                    setLoggedOutState();
+                    return true;
+                } else if (title.equals("Edit User")) {
+                    if (isOffline()) {
+                        Toast.makeText(this, "you are offline, to edit your user please connect to the internet first", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    Intent editIntent = new Intent(MainActivity.this, EditUserActivity.class);
+                    startActivity(editIntent);
+                    return true;
+                } else if (title.equals("Delete User")) {
+                    if (loggedInUser != null) {
+                        if (isOffline()) {
+                            Toast.makeText(this, "you are offline, to delete your user please connect to the internet first", Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                        userRepository.delete(loggedInUser.getUsername(), loggedInUser.getToken());
+                        setLoggedOutState();
+                    }
+                    return true;
+                }
+            }
+            return false;
         });
+
+        popupMenu.show();
     }
 
     private void setLoggedOutState() {
         binding.youBtnText.setText("Log In");
-        UsersManager.getInstance().setLoggedInUser(null);
+        userRepository.logoutUser();
+        MyApplication.setCurrentUser(null);
         youBtn.setImageResource(R.drawable.baseline_account_circle_24);
         youBtn.setOnClickListener(v -> {
+            if (isOffline()) {
+                Toast.makeText(this, "you are offline, for log in please connect to the internet first", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent i = new Intent(MainActivity.this, LogInActivity.class);
             startActivity(i);
         });
+    }
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
     }
 }

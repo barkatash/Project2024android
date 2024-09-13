@@ -1,6 +1,9 @@
 package com.example.youtube.adapters;
 
+import android.app.Application;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,38 +16,47 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.example.youtube.MyApplication;
 import com.example.youtube.R;
-import com.example.youtube.UsersManager;
 import com.example.youtube.entities.Comment;
+import com.example.youtube.entities.User;
+import com.example.youtube.repositories.CommentRepository;
+import com.example.youtube.repositories.UserRepository;
+import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapter.CommentViewHolder> {
 
     private Context context;
     private List<Comment> comments;
     private CommentInteractionListener listener;
-
+    private final UserRepository userRepository;
+    private CommentRepository commentRepository;
+    private User loggedInUser = MyApplication.getCurrentUser();
     public interface CommentInteractionListener {
         void onDeleteComment(Comment comment);
+        void onEditComment(Comment comment);
     }
 
     public CommentsListAdapter(Context context, CommentInteractionListener listener) {
         this.context = context;
         this.listener = listener;
+        this.userRepository = UserRepository.getInstance(context.getApplicationContext());
+        if (context.getApplicationContext() instanceof Application) {
+            this.commentRepository = new CommentRepository((Application) context.getApplicationContext());
+        }
     }
 
     public class CommentViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvUsername;
         private final TextView tvDescription;
-        private final TextView tvUploadDate;
-        private final TextView tvLikes;
-        private ImageButton btnLike, btnUnlike;
         private EditText etEditComment;
         private ImageButton btnEdit;
         private ImageButton btnDelete;
@@ -56,10 +68,6 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             tvDescription = itemView.findViewById(R.id.tvDescription);
-            tvUploadDate = itemView.findViewById(R.id.tvUploadDateComment);
-            tvLikes = itemView.findViewById(R.id.tvLikes);
-            btnLike = itemView.findViewById(R.id.tvLike);
-            btnUnlike = itemView.findViewById(R.id.tvDislikes);
             etEditComment = itemView.findViewById(R.id.etEditComment);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
@@ -80,84 +88,33 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         if (comments != null) {
             final Comment current = comments.get(position);
-            AtomicBoolean isLiked = new AtomicBoolean(false);
-            AtomicBoolean isUnliked = new AtomicBoolean(false);
 
-            if (UsersManager.getInstance().getLoggedInUser() != null) {
-                isLiked.set(UsersManager.getInstance().getLoggedInUser().getLikedComments().contains(current.getId()));
-                isUnliked.set(UsersManager.getInstance().getLoggedInUser().getUnLikedComments().contains(current.getId()));
-            } else {
-                isUnliked.set(false);
-                isLiked.set(false);
-            }
-
-            holder.btnLike.setImageResource(isLiked.get() ? R.drawable.baseline_thumb_up_24 : R.drawable.baseline_thumb_up_off_alt_24);
-            holder.btnUnlike.setImageResource(isUnliked.get() ? R.drawable.baseline_thumb_down_24 : R.drawable.baseline_thumb_down_off_alt_24);
-
-            holder.tvUsername.setText(current.getUser().getUserDisplayName());
+            holder.tvUsername.setText(current.getUsername());
             holder.tvDescription.setText(current.getDescription());
-            holder.tvUploadDate.setText(current.getUploadDate());
-            holder.tvLikes.setText(String.valueOf(current.getLikes()));
-            holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
-
-             if (current.getUser().getImageUrl() != null && !current.getUser().getImageUrl().isEmpty()) {
-                Glide.with(context)
-                        .load(current.getUser().getImageUrl())
-                        .transform(new CircleCrop())
-                        .into(holder.ivProfilePic);
-            }
-
-            holder.btnLike.setOnClickListener(v -> {
-                if (!UsersManager.getInstance().isLoggedIn()) {
-                    Toast.makeText(context, "You need to be logged in to like a comment", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (!isLiked.get()) {
-                    current.setLikes(current.getLikes() + 1);
-                    holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_24);
-                    UsersManager.getInstance().getLoggedInUser().getLikedComments().add(current.getId());
-                    isLiked.set(true);
-
-                    if (isUnliked.get()) {
-                        isUnliked.set(false);
-                        holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-                        UsersManager.getInstance().getLoggedInUser().getUnLikedComments().remove(Integer.valueOf(current.getId()));
+            userRepository.getAllUsers().observe((LifecycleOwner) context, new Observer<List<User>>() {
+                @Override
+                public void onChanged(List<User> users) {
+                    User foundUser = userRepository.getUserByUsername(current.getUsername());
+                    if (foundUser != null) {
+                        String imageUrl = "http://10.0.2.2:8080/" + foundUser.getImageUrl();
+                        Glide.with(context)
+                                .load(imageUrl)
+                                .transform(new CircleCrop())
+                                .into(holder.ivProfilePic);
+                    } else {
+                        holder.ivProfilePic.setImageResource(R.drawable.baseline_account_circle_24);
                     }
-                } else {
-                    isLiked.set(false);
-                    current.setLikes(current.getLikes() - 1);
-                    holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                    UsersManager.getInstance().getLoggedInUser().getLikedComments().remove(Integer.valueOf(current.getId()));
                 }
-                notifyItemChanged(position);
             });
 
-            holder.btnUnlike.setOnClickListener(v -> {
-                if (!UsersManager.getInstance().isLoggedIn()) {
-                    Toast.makeText(context, "You need to be logged in to unlike a comment", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (!isUnliked.get()) {
-                    isUnliked.set(true);
-                    holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_24);
-                    UsersManager.getInstance().getLoggedInUser().getUnLikedComments().add(current.getId());
-
-                    if (isLiked.get()) {
-                        isLiked.set(false);
-                        current.setLikes(current.getLikes() - 1);
-                        holder.btnLike.setImageResource(R.drawable.baseline_thumb_up_off_alt_24);
-                        UsersManager.getInstance().getLoggedInUser().getLikedComments().remove(Integer.valueOf(current.getId()));
-                    }
-                } else {
-                    holder.btnUnlike.setImageResource(R.drawable.baseline_thumb_down_off_alt_24);
-                    UsersManager.getInstance().getLoggedInUser().getUnLikedComments().remove(Integer.valueOf(current.getId()));
-                }
-                notifyItemChanged(position);
-            });
 
             holder.btnEdit.setOnClickListener(v -> {
-                if (!UsersManager.getInstance().isLoggedIn()) {
-                    Toast.makeText(context, "You need to be logged in to edit a comment", Toast.LENGTH_SHORT).show();
+                if (isOffline()) {
+                    Toast.makeText(context, "you are offline, to edit a comment please connect to the internet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (loggedInUser == null || !loggedInUser.getUsername().equals(current.getUsername())) {
+                    Toast.makeText(context, "You need to be logged in and the owner of this comment to edit it.", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 holder.etEditComment.setVisibility(View.VISIBLE);
@@ -173,7 +130,7 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
                 String editedCommentText = holder.etEditComment.getText().toString().trim();
                 if (!TextUtils.isEmpty(editedCommentText)) {
                     current.setDescription(editedCommentText);
-                    notifyDataSetChanged();
+                    listener.onEditComment(current);
                 }
                 holder.etEditComment.setVisibility(View.GONE);
                 holder.tvDescription.setVisibility(View.VISIBLE);
@@ -193,7 +150,11 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
 
             holder.btnDelete.setOnClickListener(v -> {
-                if (!UsersManager.getInstance().isLoggedIn()) {
+                if (isOffline()) {
+                    Toast.makeText(context, "you are offline, to delete a comment please connect to the internet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (userRepository.getLoggedInUser() == null) {
                     Toast.makeText(context, "You need to be logged in to delete a comment", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -203,7 +164,11 @@ public class CommentsListAdapter extends RecyclerView.Adapter<CommentsListAdapte
             });
         }
     }
-
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
+    }
     @Override
     public int getItemCount() {
         return comments != null ? comments.size() : 0;

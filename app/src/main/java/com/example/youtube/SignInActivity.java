@@ -1,10 +1,13 @@
 package com.example.youtube;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.youtube.entities.User;
+import com.example.youtube.repositories.UserRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,11 +37,11 @@ import java.util.Locale;
 public class SignInActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
-    private static final int CAMERA_REQUEST_CODE = 2;
     private final User newUser = new User();
     private EditText usernameInput, displayNameInput, passwordInput, verifyPasswordInput;
     private Button signInButton, uploadImageButton;
     private ImageView profileImageView;
+    private File imageFile = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +125,7 @@ public class SignInActivity extends AppCompatActivity {
             }
 
             if (bitmap != null) {
-                File imageFile = saveBitmapToFile(bitmap);
+                imageFile = saveBitmapToFile(bitmap);
                 if (imageFile != null) {
                     newUser.setImageUrl(imageFile.getAbsolutePath());
                     profileImageView.setImageBitmap(bitmap);
@@ -140,7 +144,7 @@ public class SignInActivity extends AppCompatActivity {
             storageDir.mkdirs();
         }
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String fileName = "profile_image_" + timeStamp + ".jpg";
+        String fileName = "JPEG" + timeStamp + ".jpg";
         File imageFile = new File(storageDir, fileName);
         try (FileOutputStream out = new FileOutputStream(imageFile)) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
@@ -152,6 +156,10 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void handleSignIn() {
+        if (isOffline()) {
+            Toast.makeText(this, "you are offline, to sign in please connect to the internet first", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String username = usernameInput.getText().toString();
         String displayName = displayNameInput.getText().toString();
         String password = passwordInput.getText().toString();
@@ -160,6 +168,11 @@ public class SignInActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(displayName) ||
                 TextUtils.isEmpty(password) || TextUtils.isEmpty(verifyPassword)) {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (UserRepository.getInstance(this).getUserByUsername(username) != null) {
+            Toast.makeText(this, "This username already taken, please choose other one", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -172,13 +185,19 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             return;
         }
+
         newUser.setPassword(password);
         newUser.setUsername(username);
-        newUser.setUserDisplayName(displayName);
-        UsersManager.addUser(newUser);
+        newUser.setDisplayName(displayName);
+        UserRepository.getInstance(this).addUser(newUser, imageFile);
 
         Toast.makeText(this, "User signed up successfully!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(SignInActivity.this, LogInActivity.class));
         finish();
+    }
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
     }
 }

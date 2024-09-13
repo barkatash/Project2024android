@@ -1,7 +1,11 @@
 package com.example.youtube.adapters;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +15,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.youtube.EditVideoActivity;
+import com.example.youtube.MyApplication;
 import com.example.youtube.R;
-import com.example.youtube.UsersManager;
-import com.example.youtube.VideoRepository;
 import com.example.youtube.WatchVideoActivity;
+import com.example.youtube.entities.User;
 import com.example.youtube.entities.Video;
+import com.example.youtube.repositories.VideoRepository;
 
 import java.util.List;
 
@@ -26,17 +33,37 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
 
     private final LayoutInflater mInflater;
     private List<Video> videos;
+    private List<Video> recommendedvideos;
     private Context context;
+    private User loggedInUser = MyApplication.getCurrentUser();
+    private VideoRepository videoRepository;
+
+    public List<Video> getRecommendedvideos() {
+        return recommendedvideos;
+    }
+
+    public void setRecommendedvideos(List<Video> recommendedvideos) {
+        this.recommendedvideos = recommendedvideos;
+    }
 
     public VideosListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         this.context = context;
+        if (context.getApplicationContext() instanceof Application) {
+            this.videoRepository = new VideoRepository((Application) context.getApplicationContext());
+        }
+        videoRepository.getAllVideos().observe((LifecycleOwner) context, videos -> {
+            this.videos = videos;
+            notifyDataSetChanged();
+        });
+
     }
 
     @NonNull
     @Override
     public VideoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.video_layout, parent, false);
+        View itemView;
+        itemView = mInflater.inflate(R.layout.video_layout, parent, false);
         return new VideoViewHolder(itemView);
     }
 
@@ -44,23 +71,20 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
     public void onBindViewHolder(@NonNull VideoViewHolder holder, int position) {
         if (videos != null) {
             final Video current = videos.get(position);
-            holder.tvAuthor.setText(current.getAuthor());
-            holder.tvContent.setText(current.getContent());
-
-            if (current.getImageBitMap() != null) {
-                holder.ivPic.setImageBitmap(current.getImageBitMap());
-            }
-            else {
-                holder.ivPic.setImageResource(current.getPic());
-            }
-
+            holder.tvAuthor.setText(current.getUploader());
+            holder.tvContent.setText(current.getTitle());
             holder.tvDuration.setText(current.getDuration());
-            holder.tvViews.setText(current.getViews());
+            holder.tvViews.setText(String.valueOf(current.getVisits()));
             holder.tvUploadDate.setText(current.getUploadDate());
 
+            String imageUrl = "http://10.0.2.2:8080/" + current.getImage();
+            Glide.with(holder.ivPic.getContext())
+                    .load(imageUrl)
+                    .into(holder.ivPic);
             holder.ivPic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d("VideosListAdapter", "Image clicked for video ID: " + current.getId());
                     Intent intent = new Intent(context, WatchVideoActivity.class);
                     intent.putExtra("videoId", current.getId());
                     context.startActivity(intent);
@@ -70,12 +94,16 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.btnEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (UsersManager.getInstance().isLoggedIn()) {
+                    if (isOffline()) {
+                        Toast.makeText(context, "you are offline, to edit a video please connect to the internet", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (loggedInUser != null && loggedInUser.getUsername().equals(current.getUploader())) {
                         Intent intent = new Intent(context, EditVideoActivity.class);
                         intent.putExtra("videoId", current.getId());
                         context.startActivity(intent);
                     } else {
-                        Toast.makeText(context ,"You need to be logged in to edit a video.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context ,"You need to be logged in and the owner of this video in order to edit it.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -83,12 +111,16 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             holder.btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (UsersManager.getInstance().isLoggedIn()) {
-                        VideoRepository.getInstance(context.getApplicationContext()).deleteVideo(current.getId());
+                    if (isOffline()) {
+                        Toast.makeText(context, "you are offline, to delete a video please connect to the internet", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (loggedInUser != null && loggedInUser.getUsername().equals(current.getUploader())) {
+                        videoRepository.deleteVideo(loggedInUser.getToken(), loggedInUser.getUsername(), current.getId());
                         videos.remove(current);
                         notifyDataSetChanged();
-                    } else{
-                        Toast.makeText(context ,"You need to be logged in to delete a video.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context ,"You need to be logged in and the owner of this video in order to delete it.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -126,5 +158,10 @@ public class VideosListAdapter extends RecyclerView.Adapter<VideosListAdapter.Vi
             btnDelete = itemView.findViewById(R.id.btnDeleteVideo);
             btnEdit = itemView.findViewById(R.id.btnEditVideo);
         }
+    }
+    private boolean isOffline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo == null || !networkInfo.isConnected();
     }
 }
